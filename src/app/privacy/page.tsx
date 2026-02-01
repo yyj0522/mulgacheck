@@ -1,7 +1,21 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white p-6 md:p-12 text-slate-700">
       <div className="max-w-3xl mx-auto prose prose-slate">
+        {/* ✅ 뒤로가기 버튼 추가 */}
+        <div className="mb-8 not-prose">
+          <Link 
+            href="/" 
+            className="inline-flex items-center gap-2 text-slate-500 hover:text-indigo-600 font-bold transition-colors px-4 py-2 hover:bg-slate-50 rounded-full -ml-4"
+          >
+            <ArrowLeft size={20} />
+            메인으로 돌아가기
+          </Link>
+        </div>
+
         <h1 className="text-3xl font-black text-slate-900 mb-8">개인정보처리방침</h1>
         
         <p className="text-sm text-slate-400 mb-8">최종 수정일: 2026년 2월 2일</p>
