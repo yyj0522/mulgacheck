@@ -26,7 +26,7 @@ export default function TermsPage() {
         </p>
 
         <div className="mt-12 pt-8 border-t border-slate-200">
-          <p className="text-sm">문의: admin@mulgaeottae.site</p>
+          <p className="text-sm">문의: projectc029@gmail.com</p>
         </div>
       </div>
     </div>

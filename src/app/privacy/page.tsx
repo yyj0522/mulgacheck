@@ -29,7 +29,7 @@ export default function PrivacyPage() {
         </p>
 
         <div className="mt-12 pt-8 border-t border-slate-200">
-          <p className="text-sm">개인정보 관리 책임자: admin@mulgaeottae.site</p>
+          <p className="text-sm">개인정보 관리 책임자: projectc029@gmail.com</p>
         </div>
       </div>
     </div>
