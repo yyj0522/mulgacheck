@@ -1,6 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import SearchAndFilter from "@/components/SearchAndFilter";
+import { ArrowRight } from "lucide-react";
 
 export const revalidate = 0;
 
@@ -51,6 +53,31 @@ export default async function Home() {
       </header>
 
       <main className="w-full max-w-7xl px-6 pb-32 z-10">
+        <Link href="/checklist" className="block mb-8 group">
+          {/* 배너 배경 및 텍스트 선명도 개선 */}
+          <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-violet-600 rounded-[2.5rem] p-8 md:p-10 shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-300 hover:-translate-y-1 transition-all duration-300">
+            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div>
+                <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-indigo-50 text-[11px] font-bold uppercase tracking-widest mb-3 border border-white/10">
+                  New Feature
+                </span>
+                {/* 텍스트에 그림자 추가로 선명도 향상 */}
+                <h2 className="text-2xl md:text-3xl font-black text-white mb-2 drop-shadow-md">
+                  빠뜨린 물건 없으신가요?
+                </h2>
+                <p className="text-indigo-100 font-medium drop-shadow-sm opacity-90">
+                  여행 준비물 체크리스트로 완벽하게 짐을 싸보세요.
+                </p>
+              </div>
+              {/* 버튼 UI 개선: 둥근 알약 모양 및 화살표 아이콘 추가 */}
+              <div className="bg-white text-indigo-600 pl-6 pr-5 py-3 rounded-full font-bold text-sm shadow-md flex items-center gap-2 group-hover:bg-indigo-50 transition-all">
+                지금 체크하기 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform"/>
+              </div>
+            </div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+          </div>
+        </Link>
+
         <div className="bg-white/50 backdrop-blur-sm border border-white/60 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-slate-200/40">
           <SearchAndFilter initialData={countries ?? []} />
         </div>

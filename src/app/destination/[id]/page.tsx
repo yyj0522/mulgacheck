@@ -1,11 +1,13 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Plane, ExternalLink } from "lucide-react";
+import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Plane, ExternalLink, Zap, Coins } from "lucide-react";
 import BudgetCalculator from "@/components/BudgetCalculator";
+import CommentSection from "@/components/CommentSection"; // ✅ import 추가
 
 export const revalidate = 0;
 
 export default async function DestinationDetail({ params }: { params: Promise<{ id: string }> }) {
+  // ... (기존 코드와 동일, 생략 없이 유지)
   const { id } = await params;
 
   const { data: country } = await supabase
@@ -24,7 +26,6 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
   const diffPercent = seoulMealPrice > 0 ? Math.round(((mealKrw - seoulMealPrice) / seoulMealPrice) * 100) : 0;
   const isCheaper = diffPercent < 0;
 
-  // 스카이스캐너 링크 생성 (출발: 인천 ICN, 도착: 해당 도시 코드)
   const skyscannerUrl = country.airport_code 
     ? `https://www.skyscanner.co.kr/transport/flights/icn/${country.airport_code.toLowerCase()}`
     : `https://www.skyscanner.co.kr/transport/flights/icn`;
@@ -42,12 +43,11 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
           <p className="text-indigo-500 font-bold text-sm mb-8 tracking-widest uppercase">{country.name_en}</p>
 
           <div className="space-y-4">
-            {/* 항공권 조회 버튼 (신규 추가) */}
             <a 
               href={skyscannerUrl} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="group relative flex items-center justify-between p-5 mb-6 bg-gradient-to-r from-sky-500 to-blue-600 rounded-3xl text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all duration-300"
+              className="group relative flex items-center justify-between p-5 mb-2 bg-gradient-to-r from-sky-500 to-blue-600 rounded-3xl text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all duration-300"
             >
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-white/20 rounded-full">
@@ -60,6 +60,30 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
               </div>
               <ExternalLink size={20} className="opacity-70 group-hover:translate-x-1 transition-transform" />
             </a>
+
+            {/* ... (중간 정보 카드 생략, 기존과 동일) ... */}
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-3xl text-left flex flex-col justify-between h-32">
+                <div className="flex items-start justify-between">
+                  <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">전압 & 플러그</span>
+                  <Zap size={18} className="text-indigo-500" />
+                </div>
+                <div>
+                  <p className="text-xl font-black text-indigo-900">{country.voltage || '정보없음'}</p>
+                  <p className="text-xs font-medium text-indigo-600 break-keep mt-1">{country.plug_type || '확인 필요'}</p>
+                </div>
+              </div>
+
+              <div className="bg-amber-50 border border-amber-100 p-4 rounded-3xl text-left flex flex-col justify-between h-32">
+                <div className="flex items-start justify-between">
+                  <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider">팁 문화</span>
+                  <Coins size={18} className="text-amber-500" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-amber-900 break-keep leading-tight mt-1">{country.tip_policy || '정보없음'}</p>
+                </div>
+              </div>
+            </div>
 
             <div className="bg-slate-50 p-6 rounded-3xl text-left border border-slate-200">
               <p className="text-slate-400 text-[10px] font-bold mb-1 uppercase tracking-wider">실시간 환율</p>
@@ -124,6 +148,9 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
               accommodationKrw={accommodationKrw}
               currencyCode={country.currency_code}
             />
+
+            {/* ✅ 댓글 섹션 추가 */}
+            <CommentSection countryId={country.id} />
           </div>
         </div>
       </div>
