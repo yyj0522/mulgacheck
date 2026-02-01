@@ -2,12 +2,11 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Plane, ExternalLink, Zap, Coins } from "lucide-react";
 import BudgetCalculator from "@/components/BudgetCalculator";
-import CommentSection from "@/components/CommentSection"; // ✅ import 추가
+import CommentSection from "@/components/CommentSection";
 
-export const revalidate = 0;
+export const revalidate = 3600;
 
 export default async function DestinationDetail({ params }: { params: Promise<{ id: string }> }) {
-  // ... (기존 코드와 동일, 생략 없이 유지)
   const { id } = await params;
 
   const { data: country } = await supabase
@@ -61,7 +60,6 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
               <ExternalLink size={20} className="opacity-70 group-hover:translate-x-1 transition-transform" />
             </a>
 
-            {/* ... (중간 정보 카드 생략, 기존과 동일) ... */}
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-3xl text-left flex flex-col justify-between h-32">
                 <div className="flex items-start justify-between">
@@ -149,7 +147,6 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
               currencyCode={country.currency_code}
             />
 
-            {/* ✅ 댓글 섹션 추가 */}
             <CommentSection countryId={country.id} />
           </div>
         </div>
