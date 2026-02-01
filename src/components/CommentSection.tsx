@@ -120,7 +120,7 @@ export default function CommentSection({ countryId }: { countryId: string }) {
           ))
         ) : (
           <div className="text-center py-10 text-slate-400 text-sm bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-            첫 번째 꿀팁을 남겨주세요! 🎉
+            첫 번째 꿀팁을 남겨주세요!
           </div>
         )}
       </div>

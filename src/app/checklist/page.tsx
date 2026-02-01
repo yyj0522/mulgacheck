@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import { CHECKLIST_CATEGORIES } from "@/data/checklistItems";
-import { Check, Share2, Download, RefreshCw, ArrowLeft } from "lucide-react";
+import { Check, Share2, Download, RefreshCw, ArrowLeft, X } from "lucide-react"; // ✅ X 아이콘 추가
 import Link from "next/link";
-import html2canvas from "html2canvas";
+import { toPng } from "html-to-image";
 
 export default function ChecklistPage() {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null); // ✅ 이미지 미리보기 상태
   const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,10 +18,11 @@ export default function ChecklistPage() {
 
     if (sharedData) {
       try {
-        const decoded = JSON.parse(atob(sharedData));
+        const decodedString = decodeURIComponent(atob(sharedData));
+        const decoded = JSON.parse(decodedString);
         setCheckedItems(decoded);
       } catch (e) {
-        console.error("공유 데이터 파싱 실패");
+        console.error("공유 데이터 파싱 실패", e);
       }
     } else {
       const saved = localStorage.getItem("travel_checklist");
@@ -51,31 +53,54 @@ export default function ChecklistPage() {
     }
   };
 
-  const copyShareLink = () => {
-    const data = btoa(JSON.stringify(checkedItems));
-    const url = `${window.location.origin}${window.location.pathname}?data=${data}`;
-    navigator.clipboard.writeText(url);
-    alert("친구에게 공유할 링크가 복사되었습니다!");
+  const handleShare = async () => {
+    try {
+      const data = btoa(encodeURIComponent(JSON.stringify(checkedItems)));
+      const url = `${window.location.origin}${window.location.pathname}?data=${data}`;
+
+      if (navigator.share) {
+        await navigator.share({
+          title: '물가어때 - 여행 짐 싸기 체크리스트',
+          text: `현재 ${checkedItems.length}개의 짐을 챙겼어요! 제 리스트를 확인해보세요.`,
+          url: url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        alert("🔗 링크가 복사되었습니다! 카카오톡이나 디스코드에 붙여넣기 하세요.");
+      }
+    } catch (err) {
+      console.error("공유 실패:", err);
+    }
   };
 
-  // ✅ 수정된 이미지 다운로드 함수
-  const downloadImage = async () => {
-    if (captureRef.current) {
-      try {
-        const canvas = await html2canvas(captureRef.current, {
-          backgroundColor: "#ffffff", // 배경을 완전한 흰색 HEX 코드로 강제 지정하여 lab 색상 오류 방지
-          scale: 2, // 고해상도 캡처
-          useCORS: true, // 크로스 오리진 이미지 허용
-          logging: false, // 로그 끄기
-        });
+  // ✅ [수정됨] 이미지를 바로 다운로드하지 않고 모달로 띄움
+  const handleGenerateImage = async () => {
+    if (captureRef.current === null) return;
+
+    try {
+      // 로딩 중 표시 등을 넣고 싶다면 여기에 state 추가 가능
+      const dataUrl = await toPng(captureRef.current, {
+        cacheBust: true,
+        backgroundColor: "#F8FAFC",
+        pixelRatio: 2,
+      });
+      
+      // PC에서는 바로 다운로드, 모바일에서는 미리보기 띄우기
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        setPreviewUrl(dataUrl); // 모바일: 팝업 띄우기
+      } else {
+        // PC: 바로 다운로드
         const link = document.createElement("a");
-        link.download = "travel_checklist.png";
-        link.href = canvas.toDataURL("image/png");
+        link.download = "mulgaeottae_checklist.png";
+        link.href = dataUrl;
         link.click();
-      } catch (error) {
-        console.error("이미지 저장 실패:", error);
-        alert("이미지 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
       }
+      
+    } catch (err) {
+      console.error("이미지 생성 실패:", err);
+      alert("이미지 생성 중 오류가 발생했습니다.");
     }
   };
 
@@ -86,16 +111,16 @@ export default function ChecklistPage() {
   if (!isLoaded) return <div className="min-h-screen bg-slate-50" />;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-32">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-32 relative">
       <div className="max-w-3xl mx-auto">
         <header className="flex justify-between items-center mb-8">
-          <Link href="/" className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+          <Link href="/" className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm">
             <ArrowLeft size={20} className="text-slate-600" />
           </Link>
           <h1 className="text-2xl font-black text-slate-800">여행 짐 싸기</h1>
           <button 
             onClick={resetList}
-            className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-rose-50 hover:text-rose-500 transition-colors text-slate-400"
+            className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-rose-50 hover:text-rose-500 transition-colors text-slate-400 shadow-sm"
           >
             <RefreshCw size={20} />
           </button>
@@ -117,16 +142,17 @@ export default function ChecklistPage() {
           </div>
         </div>
 
-        {/* 캡처 영역 배경색 명시 */}
-        <div ref={captureRef} className="bg-white p-6 rounded-[2rem] -mx-2 sm:mx-0">
-          <div className="text-center mb-6 md:hidden">
+        <div ref={captureRef} className="bg-[#F8FAFC] p-4 -m-4">
+          <div className="text-center mb-8 md:hidden">
              <h2 className="text-xl font-bold text-slate-800">✈️ 나의 여행 체크리스트</h2>
+             <p className="text-xs text-slate-400 mt-1">물가어때(Mulgaeottae) 제공</p>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {CHECKLIST_CATEGORIES.map((category) => (
-              <div key={category.id} className="bg-slate-50 p-6 rounded-[2rem] border border-slate-200/60">
-                <h3 className="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
-                  <span className="w-2 h-6 bg-indigo-500 rounded-full inline-block" />
+              <div key={category.id} className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                <h3 className="font-bold text-lg text-slate-800 mb-5 flex items-center gap-2 pb-2 border-b border-slate-50">
+                  <span className="w-1.5 h-6 bg-indigo-500 rounded-full inline-block" />
                   {category.label}
                 </h3>
                 <ul className="space-y-3">
@@ -134,17 +160,20 @@ export default function ChecklistPage() {
                     <li 
                       key={item} 
                       onClick={() => toggleItem(item)}
-                      className="flex items-center gap-3 cursor-pointer group"
+                      className="flex items-center gap-3 cursor-pointer group select-none"
                     >
-                      <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+                      <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all ${
                         checkedItems.includes(item) 
                           ? "bg-indigo-500 border-indigo-500" 
-                          : "bg-white border-slate-300 group-hover:border-indigo-400"
+                          : "bg-slate-50 border-slate-200 group-hover:border-indigo-300"
                       }`}>
                         {checkedItems.includes(item) && <Check size={14} className="text-white" strokeWidth={3} />}
                       </div>
-                      <span className={`text-sm font-bold transition-colors ${
-                        checkedItems.includes(item) ? "text-slate-400 line-through" : "text-slate-700"
+                      
+                      <span className={`text-sm transition-colors ${
+                        checkedItems.includes(item) 
+                          ? "text-slate-400 line-through font-medium" 
+                          : "text-slate-700 font-bold"
                       }`}>
                         {item}
                       </span>
@@ -155,28 +184,60 @@ export default function ChecklistPage() {
             ))}
           </div>
           
-          <div className="mt-8 text-center">
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Powered by Mulgaeottae</p>
+          <div className="mt-8 text-center hidden md:block">
+            <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by Mulgaeottae</p>
           </div>
         </div>
       </div>
 
+      {/* 하단 고정 버튼 영역 */}
       <div className="fixed bottom-8 left-0 right-0 px-6 z-30">
         <div className="max-w-3xl mx-auto flex gap-3">
           <button 
-            onClick={copyShareLink}
-            className="flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-2xl shadow-lg shadow-slate-200/50 flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors"
+            onClick={handleShare}
+            className="flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-full shadow-lg shadow-slate-200/50 flex items-center justify-center gap-2 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 transition-all"
           >
-            <Share2 size={20} /> 친구에게 공유
+            <Share2 size={20} /> 친구 공유
           </button>
           <button 
-            onClick={downloadImage}
-            className="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors"
+            onClick={handleGenerateImage}
+            className="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-full shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all"
           >
             <Download size={20} /> 이미지 저장
           </button>
         </div>
       </div>
+
+      {/* ✅ [추가됨] 이미지 저장 미리보기 모달 (모바일 대응) */}
+      {previewUrl && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-md relative shadow-2xl">
+            <button 
+              onClick={() => setPreviewUrl(null)}
+              className="absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200"
+            >
+              <X size={20} />
+            </button>
+            
+            <h3 className="text-lg font-black text-slate-900 mb-2 text-center">이미지 저장하기</h3>
+            <p className="text-sm text-indigo-600 font-bold text-center mb-4 bg-indigo-50 py-2 rounded-xl">
+              👆 이미지를 꾹~ 눌러서 저장하세요!
+            </p>
+            
+            <div className="rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-slate-50">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={previewUrl} alt="체크리스트 결과" className="w-full h-auto object-contain" />
+            </div>
+            
+            <button 
+              onClick={() => setPreviewUrl(null)}
+              className="w-full mt-6 py-4 bg-slate-900 text-white font-bold rounded-xl"
+            >
+              닫기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
