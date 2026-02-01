@@ -1,8 +1,29 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Plane, ExternalLink, Zap, Coins } from "lucide-react";
+import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Plane, ExternalLink, Zap, Coins, Coffee } from "lucide-react";
 import BudgetCalculator from "@/components/BudgetCalculator";
 import CommentSection from "@/components/CommentSection";
+import SurvivalCardList from "@/components/survival/SurvivalCardList";
+
+const BurgerIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M19.4 12.6C19.8 12.8 20 13 20 13.5V15C20 16 19 17 17 17H7C5 17 4 16 4 15V13.5C4 13 4.2 12.8 4.6 12.6L19.4 12.6Z" />
+    <path d="M16 17H8" />
+    <path d="M5 12H19" />
+    <path d="M12 5C7.6 5 4 8.1 4 12H20C20 8.1 16.4 5 12 5Z" />
+  </svg>
+);
 
 export const revalidate = 3600;
 
@@ -21,13 +42,39 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
   const mealKrw = Math.round(country.meal_price_local * rate);
   const transportKrw = Math.round((country.transport_price_local || 0) * rate);
   const accommodationKrw = Math.round((country.accommodation_price_local || 0) * rate);
-  const seoulMealPrice = 10000;
-  const diffPercent = seoulMealPrice > 0 ? Math.round(((mealKrw - seoulMealPrice) / seoulMealPrice) * 100) : 0;
+  const SEOUL_MEAL = 11000;
+  const SEOUL_BIGMAC = 5500;  
+  const SEOUL_STARBUCKS = 5000; 
+  const bigmacKrw = country.bigmac_price_local ? Math.round(country.bigmac_price_local * rate) : 0;
+  const starbucksKrw = country.starbucks_price_local ? Math.round(country.starbucks_price_local * rate) : 0;
+  const diffPercent = SEOUL_MEAL > 0 ? Math.round(((mealKrw - SEOUL_MEAL) / SEOUL_MEAL) * 100) : 0;
   const isCheaper = diffPercent < 0;
 
   const skyscannerUrl = country.airport_code 
     ? `https://www.skyscanner.co.kr/transport/flights/icn/${country.airport_code.toLowerCase()}`
     : `https://www.skyscanner.co.kr/transport/flights/icn`;
+
+  const PriceIndexCard = ({ title, icon: Icon, krwPrice, seoulPrice, colorClass }: any) => {
+    if (krwPrice === 0) return null; 
+    
+    const diff = Math.round(((krwPrice - seoulPrice) / seoulPrice) * 100);
+    const isIndexCheaper = diff < 0;
+    
+    return (
+      <div className={`flex-1 p-4 rounded-3xl border ${colorClass} flex flex-col justify-between min-h-[140px] relative overflow-hidden`}>
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon size={18} className="opacity-70" />
+            <span className="text-[10px] font-bold uppercase tracking-wider opacity-70">{title}</span>
+          </div>
+          <p className="text-xl font-black mb-1">{krwPrice.toLocaleString()}원</p>
+          <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${isIndexCheaper ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}>
+            {isIndexCheaper ? '▼' : '▲'} 한국보다 {Math.abs(diff)}% {isIndexCheaper ? '저렴' : '비쌈'}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-6 pb-20">
@@ -87,6 +134,25 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
               <p className="text-slate-400 text-[10px] font-bold mb-1 uppercase tracking-wider">실시간 환율</p>
               <p className="text-xl font-black text-slate-800 tracking-tight">1 {country.currency_code} = {rate.toLocaleString('ko-KR', { maximumFractionDigits: 2 })}원</p>
             </div>
+            
+            {(bigmacKrw > 0 || starbucksKrw > 0) && (
+              <div className="flex gap-3 text-left">
+                <PriceIndexCard 
+                  title="빅맥 지수" 
+                  icon={BurgerIcon} 
+                  krwPrice={bigmacKrw} 
+                  seoulPrice={SEOUL_BIGMAC} 
+                  colorClass="bg-orange-50 border-orange-100 text-orange-900" 
+                />
+                <PriceIndexCard 
+                  title="스타벅스 라떼" 
+                  icon={Coffee} 
+                  krwPrice={starbucksKrw} 
+                  seoulPrice={SEOUL_STARBUCKS} 
+                  colorClass="bg-green-50 border-green-100 text-green-900" 
+                />
+              </div>
+            )}
 
             <div className="grid grid-cols-1 gap-3">
               <div className="bg-white p-5 rounded-3xl text-left border border-slate-100 flex items-center justify-between shadow-sm">
@@ -139,6 +205,8 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
                   </div>
                </div>
             </div>
+
+            <SurvivalCardList countryName={country.name_en} />
 
             <BudgetCalculator 
               mealKrw={mealKrw} 

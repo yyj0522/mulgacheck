@@ -1,84 +1,72 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-async function fetchWithRetry(url: string, retries = 3) {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const res = await fetch(url, { next: { revalidate: 3600 } });
-      if (res.ok) return res;
-    } catch (err) {
-      if (i === retries - 1) throw err;
-      await sleep(1000);
-    }
-  }
-}
+// Vercel Cron 작업을 위한 설정 (오래 걸려도 끊기지 않게)
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 export async function GET(request: Request) {
+  // 1. 보안 체크 (Vercel Cron에서 호출할 때만 작동)
+  // (로컬 테스트할 때는 주석 처리하거나, 헤더를 맞춰주세요)
   const authHeader = request.headers.get('authorization');
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (process.env.NODE_ENV === 'production' && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const API_KEY = process.env.EXCHANGERATE_API_KEY;
-
   try {
-    const exchangeRes = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/KRW`);
-    const exchangeData = await exchangeRes.json();
+    console.log("💱 [Cron] 환율 업데이트 시작...");
+
+    // 2. 무료 환율 API 호출 (USD 기준) - API 키 필요 없음!
+    const res = await fetch("https://open.er-api.com/v6/latest/USD", { next: { revalidate: 0 } });
     
-    if (exchangeData.result !== 'success') {
-      throw new Error('ExchangeRate API failed');
+    if (!res.ok) {
+      throw new Error("환율 API 호출 실패");
     }
 
-    const rates = exchangeData.conversion_rates;
-    const { data: countries, error: dbError } = await supabase.from('countries').select('*');
+    const data = await res.json();
+    const rates = data.rates; // { KRW: 1300, JPY: 140 ... }
 
-    if (dbError || !countries) {
-      return NextResponse.json({ error: 'Database fetch failed' }, { status: 500 });
+    // 3. 우리 DB에 있는 환율 데이터 가져오기
+    // (countries 테이블이 아니라 exchange_rates 테이블을 기준으로 업데이트합니다)
+    const { data: dbRates, error } = await supabase.from('exchange_rates').select('*');
+
+    if (error || !dbRates) {
+      throw new Error("DB에서 환율 목록을 가져오지 못했습니다.");
     }
 
-    for (const country of countries) {
-      try {
-        const rateToKrw = 1 / rates[country.currency_code];
+    const usdToKrw = rates["KRW"]; // 오늘자 1달러 = ?원
+    let updateCount = 0;
+
+    // 4. 환율 계산 및 업데이트
+    for (const item of dbRates) {
+      const currencyCode = item.currency_code;
+      const usdToLocal = rates[currencyCode]; // 1달러 = ?현지화폐
+
+      // 데이터가 둘 다 존재할 때만 계산
+      if (usdToKrw && usdToLocal) {
+        // 공식: 1 현지화폐 = (1달러->원화) / (1달러->현지화폐)
+        // 예: 1엔 = 1300원 / 140엔 = 9.28원
+        const newRate = usdToKrw / usdToLocal;
+
+        // DB 업데이트
+        await supabase
+          .from('exchange_rates')
+          .update({
+            rate_to_krw: newRate,
+            updated_at: new Date().toISOString()
+          })
+          .eq('currency_code', currencyCode);
         
-        await supabase.from('exchange_rates').upsert({
-          currency_code: country.currency_code,
-          rate_to_krw: rateToKrw,
-          updated_at: new Date()
-        });
-
-        const citySlug = country.base_city.toLowerCase().replace(/\s+/g, '-');
-        const teleportRes = await fetchWithRetry(`https://api.teleport.org/api/urban_areas/slug:${citySlug}/details/`);
-        
-        if (teleportRes && teleportRes.ok) {
-          const teleportData = await teleportRes.json();
-          const costOfLiving = teleportData.categories?.find((c: any) => c.id === 'COST-OF-LIVING');
-
-          if (costOfLiving) {
-            const mealData = costOfLiving.data.find((d: any) => d.id === 'COST-RESTAURANT-MEAL');
-            const transportData = costOfLiving.data.find((d: any) => d.id === 'COST-PUBLIC-TRANSPORT');
-            const hotelData = costOfLiving.data.find((d: any) => d.id === 'COST-HOTEL');
-
-            await supabase.from('countries').update({
-              meal_price_local: mealData ? mealData.currency_amount : country.meal_price_local,
-              transport_price_local: transportData ? transportData.currency_amount : country.transport_price_local,
-              accommodation_price_local: hotelData ? hotelData.currency_amount : country.accommodation_price_local,
-            }).eq('id', country.id);
-          }
-        }
-        
-        await sleep(500);
-
-      } catch (innerError) {
-        console.error(`Failed to update ${country.name_ko}:`, innerError);
-        continue;
+        console.log(`✅ ${currencyCode} 갱신: ${newRate.toFixed(2)}원`);
+        updateCount++;
       }
     }
 
-    return NextResponse.json({ success: true });
+    console.log(`🏁 총 ${updateCount}개국 환율 업데이트 완료`);
+    return NextResponse.json({ success: true, count: updateCount });
 
   } catch (err: any) {
+    console.error("❌ 업데이트 실패:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
