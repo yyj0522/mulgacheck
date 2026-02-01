@@ -12,25 +12,30 @@ export default async function Home() {
     .select("*, exchange_rates(rate_to_krw)");
 
   return (
-    <div className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center">
+    <div className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center relative">
       
-      <header className="w-full max-w-7xl px-6 pt-12 pb-10 flex flex-col items-center z-10">
-        <nav className="w-full flex justify-between items-center mb-16">
-          <div className="relative w-64 h-20">
-            <Image 
-              src="/logo.png" 
-              alt="물가어때" 
-              fill 
-              className="object-contain" 
-              priority 
-              quality={100} 
-            />
-          </div>
-          <div className="px-3 py-1 bg-white border border-slate-200 rounded-full shadow-sm text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-            Beta v1.0
-          </div>
-        </nav>
+      {/* ✅ 네비게이션바: 로고 좌측 상단 고정, 배지 우측 유지 */}
+      <nav className="absolute top-0 left-0 w-full flex justify-between items-start p-4 z-50">
+        {/* 로고: 여백 없이 좌측 상단에 밀착 */}
+        <div className="relative w-40 h-12 md:w-56 md:h-16">
+          <Image 
+            src="/logo.png" 
+            alt="물가어때" 
+            fill 
+            className="object-contain object-left-top" 
+            priority 
+            quality={100} 
+          />
+        </div>
+        
+        {/* 베타 배지: 우측 상단 유지 */}
+        <div className="px-3 py-1 bg-white border border-slate-200 rounded-full shadow-sm text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+          Beta v1.0
+        </div>
+      </nav>
 
+      {/* 헤더: 로고와 겹치지 않게 상단 여백(pt-32) 충분히 확보 */}
+      <header className="w-full max-w-7xl px-6 pt-32 pb-10 flex flex-col items-center z-10">
         <div className="text-center animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 border border-indigo-100 rounded-full text-indigo-600 font-bold text-xs mb-6">
             <span className="relative flex h-2 w-2">
