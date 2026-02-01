@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/api"], 
+      disallow: ["/admin", "/api"],
     },
-    sitemap: "https://mulgaeottae.vercel.app/sitemap.xml", 
+    sitemap: "https://www.mulgaeottae.site/sitemap.xml",
   };
 }
