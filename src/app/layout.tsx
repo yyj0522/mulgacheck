@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,6 +43,7 @@ export const metadata: Metadata = {
     google: "kMXhavZeZtceSQXWqxhL_OctTQ2DYejq581JtY-CZsg",
     other: {
       "naver-site-verification": "7a468ab7e7c7aae2de7abc55274b685e11c804bb",
+      "google-adsense-account": "ca-pub-7927865252694277",
     },
   },
 };
@@ -54,6 +56,12 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={inter.className}>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7927865252694277"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         {children}
         <Analytics />
       </body>
