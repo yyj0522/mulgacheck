@@ -54,14 +54,12 @@ export default async function Home() {
 
       <main className="w-full max-w-7xl px-6 pb-32 z-10">
         <Link href="/checklist" className="block mb-8 group">
-          {/* 배너 배경 및 텍스트 선명도 개선 */}
           <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-violet-600 rounded-[2.5rem] p-8 md:p-10 shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-300 hover:-translate-y-1 transition-all duration-300">
             <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div>
                 <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-indigo-50 text-[11px] font-bold uppercase tracking-widest mb-3 border border-white/10">
                   New Feature
                 </span>
-                {/* 텍스트에 그림자 추가로 선명도 향상 */}
                 <h2 className="text-2xl md:text-3xl font-black text-white mb-2 drop-shadow-md">
                   빠뜨린 물건 없으신가요?
                 </h2>
@@ -69,7 +67,6 @@ export default async function Home() {
                   여행 준비물 체크리스트로 완벽하게 짐을 싸보세요.
                 </p>
               </div>
-              {/* 버튼 UI 개선: 둥근 알약 모양 및 화살표 아이콘 추가 */}
               <div className="bg-white text-indigo-600 pl-6 pr-5 py-3 rounded-full font-bold text-sm shadow-md flex items-center gap-2 group-hover:bg-indigo-50 transition-all">
                 지금 체크하기 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform"/>
               </div>
@@ -84,6 +81,15 @@ export default async function Home() {
       </main>
 
       <footer className="w-full py-10 border-t border-slate-200 bg-white text-center">
+        <div className="flex justify-center gap-6 mb-4 text-xs font-bold text-slate-500">
+          <Link href="/terms" className="hover:text-indigo-600 transition-colors">
+            이용약관
+          </Link>
+          <span className="text-slate-300">|</span>
+          <Link href="/privacy" className="hover:text-indigo-600 transition-colors">
+            개인정보처리방침
+          </Link>
+        </div>
         <p className="text-slate-400 text-[10px] font-bold tracking-[0.2em] uppercase">
           © 2026 MULGAEOTTAE. All rights reserved.
         </p>
