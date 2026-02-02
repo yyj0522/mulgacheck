@@ -7,7 +7,7 @@ import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.mulgaeottae.site/"), 
+  metadataBase: new URL("https://www.mulgaeottae.site/"),
   title: {
     template: "%s | 물가어때",
     default: "물가어때 - 여행 예산, 감 말고 데이터로",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     siteName: "물가어때",
     images: [
       {
-        url: "/og-image.png", 
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "물가어때 미리보기",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
   },
   icons: {
-    icon: "/logo.png", 
+    icon: "/logo.png",
   },
   verification: {
     google: "kMXhavZeZtceSQXWqxhL_OctTQ2DYejq581JtY-CZsg",
@@ -49,6 +49,14 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "물가어때",
+  "alternateName": ["Mulgaeottae", "물가어때 여행"],
+  "url": "https://www.mulgaeottae.site/"
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -57,6 +65,10 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={inter.className}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7927865252694277"
