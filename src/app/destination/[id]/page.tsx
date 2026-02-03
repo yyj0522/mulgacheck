@@ -1,9 +1,10 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Plane, ExternalLink, Zap, Coins, Coffee, Bed, Map } from "lucide-react";
+import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Plane, ExternalLink, Zap, Coins, Coffee } from "lucide-react";
 import BudgetCalculator from "@/components/BudgetCalculator";
 import CommentSection from "@/components/CommentSection";
 import SurvivalCardList from "@/components/survival/SurvivalCardList";
+import Image from "next/image";
 
 const BurgerIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
   <svg 
@@ -32,9 +33,15 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
 
   const { data: country } = await supabase
     .from('countries')
-    .select('*, exchange_rates(rate_to_krw), affiliate_links')
+    .select('*, exchange_rates(rate_to_krw)')
     .eq('id', id)
     .single();
+
+  const { data: banners } = await supabase
+    .from('banners')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false });
 
   if (!country) return <div className="p-10 text-center text-slate-400 font-bold">데이터를 찾을 수 없습니다.</div>;
 
@@ -50,10 +57,9 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
   const diffPercent = SEOUL_MEAL > 0 ? Math.round(((mealKrw - SEOUL_MEAL) / SEOUL_MEAL) * 100) : 0;
   const isCheaper = diffPercent < 0;
 
-  const affiliateLinks = country.affiliate_links || {};
-  const skyscannerUrl = affiliateLinks.skyscanner || (country.airport_code 
+  const skyscannerUrl = country.airport_code 
     ? `https://www.skyscanner.co.kr/transport/flights/icn/${country.airport_code.toLowerCase()}`
-    : `https://www.skyscanner.co.kr/transport/flights/icn`);
+    : `https://www.skyscanner.co.kr/transport/flights/icn`;
 
   const PriceIndexCard = ({ title, icon: Icon, krwPrice, seoulPrice, colorClass }: any) => {
     if (krwPrice === 0) return null; 
@@ -108,55 +114,37 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
               <ExternalLink size={20} className="opacity-70 group-hover:translate-x-1 transition-transform" />
             </a>
 
-            {affiliateLinks.agoda && (
-              <a 
-                href={affiliateLinks.agoda} 
-                target="_blank" 
-                rel="noopener noreferrer nofollow"
-                className="group relative flex items-center justify-between p-5 bg-white border border-slate-200 rounded-3xl text-slate-800 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-indigo-50 text-indigo-600 rounded-full">
-                    <Bed size={20} />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Hotel</p>
-                    <p className="text-lg font-black">숙소 특가 확인하기</p>
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-slate-400 group-hover:text-indigo-600 transition-colors">Agoda →</span>
-              </a>
-            )}
-
-            {affiliateLinks.klook && (
-              <a 
-                href={affiliateLinks.klook} 
-                target="_blank" 
-                rel="noopener noreferrer nofollow"
-                className="group relative flex items-center justify-between p-5 bg-white border border-slate-200 rounded-3xl text-slate-800 shadow-sm hover:shadow-md hover:border-orange-200 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-orange-50 text-orange-600 rounded-full">
-                    <Map size={20} />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-[10px] font-bold text-orange-500 uppercase tracking-wider">Activity</p>
-                    <p className="text-lg font-black">투어 & 티켓 예약</p>
-                  </div>
-                </div>
-                <span className="text-xs font-bold text-slate-400 group-hover:text-orange-600 transition-colors">Klook →</span>
-              </a>
-            )}
-
-            {affiliateLinks.wifi_dosirak && (
-              <a 
-                href={affiliateLinks.wifi_dosirak} 
-                target="_blank" 
-                rel="noopener noreferrer nofollow"
-                className="block text-center p-3 bg-slate-100 rounded-2xl text-xs font-bold text-slate-500 hover:bg-slate-200 transition-colors"
-              >
-                ⚡ 와이파이 도시락 10% 할인받고 예약하기
-              </a>
+            {banners && banners.length > 0 && (
+              <div className="space-y-3 pt-2">
+                {banners.map((banner: any) => (
+                  <a
+                    key={banner.id}
+                    href={banner.link_url}
+                    target="_blank"
+                    rel="noopener noreferrer nofollow"
+                    className="block group relative overflow-hidden rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-all hover:-translate-y-0.5"
+                  >
+                    {banner.image_url ? (
+                      <div className="relative w-full h-24">
+                         <Image 
+                           src={banner.image_url} 
+                           alt={banner.title}
+                           fill
+                           className="object-cover"
+                         />
+                      </div>
+                    ) : (
+                      <div className="p-5 bg-white flex items-center justify-between">
+                         <div className="flex items-center gap-3">
+                            <span className="text-lg">📢</span>
+                            <span className="font-bold text-slate-700">{banner.title}</span>
+                         </div>
+                         <ExternalLink size={16} className="text-slate-300 group-hover:text-indigo-500" />
+                      </div>
+                    )}
+                  </a>
+                ))}
+              </div>
             )}
 
             <div className="grid grid-cols-2 gap-3 mb-6 mt-6">
