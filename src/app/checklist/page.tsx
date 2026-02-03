@@ -11,7 +11,6 @@ export default function ChecklistPage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const captureRef = useRef<HTMLDivElement>(null);
-
   const getAllItems = () => {
     return CHECKLIST_CATEGORIES.flatMap((category) => category.items);
   };
@@ -100,13 +99,8 @@ export default function ChecklistPage() {
     try {
       const dataUrl = await toPng(captureRef.current, {
         cacheBust: true,
-        backgroundColor: "#F8FAFC",
         pixelRatio: 2,
-        width: 800,
-        style: {
-            padding: '40px',
-            margin: '0 auto',
-        }
+        backgroundColor: "#F8FAFC",
       });
       
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -164,7 +158,7 @@ export default function ChecklistPage() {
           </div>
         </div>
 
-        <div ref={captureRef} className="bg-[#F8FAFC] p-4 -m-4">
+        <div className="bg-[#F8FAFC] p-4 -m-4">
           <div className="text-center mb-8 md:hidden">
               <h2 className="text-xl font-bold text-slate-800">나의 여행 체크리스트</h2>
               <p className="text-xs text-slate-400 mt-1">물가어때(Mulgaeottae) 제공</p>
@@ -257,6 +251,69 @@ export default function ChecklistPage() {
           </div>
         </div>
       )}
+
+      <div style={{ position: "fixed", left: "-9999px", top: 0 }}>
+        <div 
+          ref={captureRef} 
+          className="w-[900px] bg-[#F8FAFC] p-12" 
+        >
+          <div className="text-center mb-10">
+            <h1 className="text-4xl font-black text-slate-900 mb-2">나의 여행 체크리스트</h1>
+            <p className="text-lg text-slate-500 font-bold">물가어때 (Mulgaeottae) 제공</p>
+          </div>
+
+          <div className="flex justify-between items-center mb-8 px-4">
+             <div className="flex items-center gap-4">
+                <div className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold text-lg">
+                  진행률 {progress}%
+                </div>
+                <div className="text-slate-500 font-bold text-lg">
+                  {checkedCount} / {totalItems} 완료
+                </div>
+             </div>
+             <div className="text-slate-400 font-medium text-sm">
+                mulgaeottae.site
+             </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-6">
+            {CHECKLIST_CATEGORIES.map((category) => (
+              <div key={category.id} className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
+                <h3 className="font-bold text-2xl text-slate-800 mb-6 flex items-center gap-3 pb-3 border-b border-slate-100">
+                  <span className="w-2 h-8 bg-indigo-500 rounded-full inline-block" />
+                  {category.label}
+                </h3>
+                <ul className="space-y-4">
+                  {category.items.map((item) => (
+                    <li key={item} className="flex items-center gap-4">
+                      <div className={`w-8 h-8 rounded-xl border-2 flex-shrink-0 flex items-center justify-center ${
+                        checkedItems.includes(item) 
+                          ? "bg-indigo-500 border-indigo-500" 
+                          : "bg-slate-50 border-slate-300"
+                      }`}>
+                        {checkedItems.includes(item) && <Check size={20} className="text-white" strokeWidth={4} />}
+                      </div>
+                      <span className={`text-lg ${
+                        checkedItems.includes(item) 
+                          ? "text-slate-400 line-through font-medium" 
+                          : "text-slate-800 font-bold"
+                      }`}>
+                        {item}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 text-center border-t border-slate-200 pt-8">
+            <p className="text-slate-400 font-bold text-sm tracking-widest uppercase">
+              Travel Budget & Checklist Service
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
