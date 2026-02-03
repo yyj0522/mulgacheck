@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Plane, ExternalLink, Zap, Coins, Coffee } from "lucide-react";
+import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Plane, ExternalLink, Zap, Coins, Coffee, Bed, Map } from "lucide-react";
 import BudgetCalculator from "@/components/BudgetCalculator";
 import CommentSection from "@/components/CommentSection";
 import SurvivalCardList from "@/components/survival/SurvivalCardList";
@@ -32,7 +32,7 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
 
   const { data: country } = await supabase
     .from('countries')
-    .select('*, exchange_rates(rate_to_krw)')
+    .select('*, exchange_rates(rate_to_krw), affiliate_links')
     .eq('id', id)
     .single();
 
@@ -50,9 +50,10 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
   const diffPercent = SEOUL_MEAL > 0 ? Math.round(((mealKrw - SEOUL_MEAL) / SEOUL_MEAL) * 100) : 0;
   const isCheaper = diffPercent < 0;
 
-  const skyscannerUrl = country.airport_code 
+  const affiliateLinks = country.affiliate_links || {};
+  const skyscannerUrl = affiliateLinks.skyscanner || (country.airport_code 
     ? `https://www.skyscanner.co.kr/transport/flights/icn/${country.airport_code.toLowerCase()}`
-    : `https://www.skyscanner.co.kr/transport/flights/icn`;
+    : `https://www.skyscanner.co.kr/transport/flights/icn`);
 
   const PriceIndexCard = ({ title, icon: Icon, krwPrice, seoulPrice, colorClass }: any) => {
     if (krwPrice === 0) return null; 
@@ -92,22 +93,73 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
             <a 
               href={skyscannerUrl} 
               target="_blank" 
-              rel="noopener noreferrer"
-              className="group relative flex items-center justify-between p-5 mb-2 bg-gradient-to-r from-sky-500 to-blue-600 rounded-3xl text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all duration-300"
+              rel="noopener noreferrer nofollow"
+              className="group relative flex items-center justify-between p-5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-3xl text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/40 hover:-translate-y-1 transition-all duration-300"
             >
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-white/20 rounded-full">
                   <Plane size={20} className="text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="text-[10px] font-bold opacity-80 uppercase tracking-wider">Flight Ticket</p>
+                  <p className="text-[10px] font-bold opacity-80 uppercase tracking-wider">Flight</p>
                   <p className="text-lg font-black">항공권 최저가 확인</p>
                 </div>
               </div>
               <ExternalLink size={20} className="opacity-70 group-hover:translate-x-1 transition-transform" />
             </a>
 
-            <div className="grid grid-cols-2 gap-3 mb-6">
+            {affiliateLinks.agoda && (
+              <a 
+                href={affiliateLinks.agoda} 
+                target="_blank" 
+                rel="noopener noreferrer nofollow"
+                className="group relative flex items-center justify-between p-5 bg-white border border-slate-200 rounded-3xl text-slate-800 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-indigo-50 text-indigo-600 rounded-full">
+                    <Bed size={20} />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">Hotel</p>
+                    <p className="text-lg font-black">숙소 특가 확인하기</p>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-slate-400 group-hover:text-indigo-600 transition-colors">Agoda →</span>
+              </a>
+            )}
+
+            {affiliateLinks.klook && (
+              <a 
+                href={affiliateLinks.klook} 
+                target="_blank" 
+                rel="noopener noreferrer nofollow"
+                className="group relative flex items-center justify-between p-5 bg-white border border-slate-200 rounded-3xl text-slate-800 shadow-sm hover:shadow-md hover:border-orange-200 transition-all"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-orange-50 text-orange-600 rounded-full">
+                    <Map size={20} />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[10px] font-bold text-orange-500 uppercase tracking-wider">Activity</p>
+                    <p className="text-lg font-black">투어 & 티켓 예약</p>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-slate-400 group-hover:text-orange-600 transition-colors">Klook →</span>
+              </a>
+            )}
+
+            {affiliateLinks.wifi_dosirak && (
+              <a 
+                href={affiliateLinks.wifi_dosirak} 
+                target="_blank" 
+                rel="noopener noreferrer nofollow"
+                className="block text-center p-3 bg-slate-100 rounded-2xl text-xs font-bold text-slate-500 hover:bg-slate-200 transition-colors"
+              >
+                ⚡ 와이파이 도시락 10% 할인받고 예약하기
+              </a>
+            )}
+
+            <div className="grid grid-cols-2 gap-3 mb-6 mt-6">
               <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-3xl text-left flex flex-col justify-between h-32">
                 <div className="flex items-start justify-between">
                   <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">전압 & 플러그</span>

@@ -36,7 +36,7 @@ export default function ChecklistPage() {
           setCheckedItems(restoredItems);
         }
       } catch (e) {
-        console.error("공유 데이터 파싱 실패", e);
+        console.error(e);
       }
     } else {
       const saved = localStorage.getItem("travel_checklist");
@@ -77,18 +77,20 @@ export default function ChecklistPage() {
       const data = btoa(indices.join(","));
       const url = `${window.location.origin}${window.location.pathname}?data=${data}`;
 
-      if (navigator.share) {
-        await navigator.share({
-          title: '물가어때 - 여행 짐 싸기 체크리스트',
-          text: `현재 ${checkedItems.length}개의 짐을 챙겼어요! 제 리스트를 확인해보세요.`,
-          url: url,
-        });
+      const shareData = {
+        title: '물가어때 - 여행 짐 싸기 체크리스트',
+        text: `현재 짐 챙기기 ${progress}% 완료! 제 리스트를 확인해보세요.`,
+        url: url,
+      };
+
+      if (navigator.share && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
       } else {
         await navigator.clipboard.writeText(url);
-        alert("🔗 링크가 복사되었습니다! 카카오톡이나 디스코드에 붙여넣기 하세요.");
+        alert("링크가 복사되었습니다! 카카오톡이나 디스코드에 붙여넣기 하세요.");
       }
     } catch (err) {
-      console.error("공유 실패:", err);
+      console.error(err);
     }
   };
 
@@ -100,6 +102,11 @@ export default function ChecklistPage() {
         cacheBust: true,
         backgroundColor: "#F8FAFC",
         pixelRatio: 2,
+        width: 800,
+        style: {
+            padding: '40px',
+            margin: '0 auto',
+        }
       });
       
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -108,13 +115,13 @@ export default function ChecklistPage() {
         setPreviewUrl(dataUrl);
       } else {
         const link = document.createElement("a");
-        link.download = "mulgaeottae_checklist.png";
+        link.download = `mulgaeottae_checklist_${Date.now()}.png`;
         link.href = dataUrl;
         link.click();
       }
       
     } catch (err) {
-      console.error("이미지 생성 실패:", err);
+      console.error(err);
       alert("이미지 생성 중 오류가 발생했습니다.");
     }
   };
