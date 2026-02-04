@@ -202,6 +202,10 @@ export default function ChecklistPage() {
             ))}
           </div>
 
+          <div className="mt-12 text-center hidden md:block">
+            <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by MulgaCheck</p>
+          </div>
+
           <div className="w-full flex justify-center items-center my-12">
             <div className="hidden md:block">
               <iframe 
@@ -223,10 +227,6 @@ export default function ChecklistPage() {
                 referrerPolicy="unsafe-url"
               />
             </div>
-          </div>
-          
-          <div className="text-center hidden md:block">
-            <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by MulgaCheck</p>
           </div>
         </div>
       </div>
