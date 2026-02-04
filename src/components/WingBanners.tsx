@@ -1,35 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { X } from "lucide-react";
 
 export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
-  const [isVisible, setIsVisible] = useState(true);
-
-  if (!isVisible) return null;
-
   const leftDbBanners = dbBanners.filter((_, i) => i % 2 === 0);
   const rightDbBanners = dbBanners.filter((_, i) => i % 2 !== 0);
 
   return (
-    // ✅ 화면 너비 1024px(lg) 이하에서는 숨김 (콘텐츠 겹침 방지)
     <div className="fixed inset-0 z-40 pointer-events-none hidden lg:block max-w-[1920px] mx-auto">
       
-      {/* ================= 좌측 윙 (Left Wing) ================= */}
-      {/* 화면 왼쪽 벽에서 50px 떨어짐 -> 화면이 줄어들수록 중앙으로 다가옴 */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-[50px] flex flex-col gap-4 pointer-events-auto items-end transition-all duration-300">
-        
-        {/* 닫기 버튼: absolute로 띄워서 배너 높이에 영향 주지 않게 함 */}
-        <button 
-          onClick={() => setIsVisible(false)}
-          className="absolute -top-8 left-0 bg-white border border-slate-200 rounded-full p-1.5 text-slate-400 hover:text-rose-500 shadow-sm transition-colors mb-1"
-          title="광고 닫기"
-        >
-          <X size={16} />
-        </button>
-
-        {/* 메인 고정 배너 */}
+      <div className="absolute top-1/2 -translate-y-1/2 left-[150px] flex flex-col gap-4 pointer-events-auto items-end transition-all duration-300">
         <a 
           href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0012&u_id=" 
           target="_blank" 
@@ -47,7 +27,6 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
           />
         </a>
 
-        {/* 서브 배너들 */}
         {leftDbBanners.map((banner) => (
           <a
             key={banner.id}
@@ -74,20 +53,7 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
         ))}
       </div>
 
-      {/* ================= 우측 윙 (Right Wing) ================= */}
-      {/* 화면 오른쪽 벽에서 50px 떨어짐 -> 화면이 줄어들수록 중앙으로 다가옴 */}
-      <div className="absolute top-1/2 -translate-y-1/2 right-[50px] flex flex-col gap-4 pointer-events-auto items-start transition-all duration-300">
-        
-        {/* 닫기 버튼: 좌측과 동일하게 absolute 처리하여 높이 간섭 제거 */}
-        <button 
-          onClick={() => setIsVisible(false)}
-          className="absolute -top-8 right-0 bg-white border border-slate-200 rounded-full p-1.5 text-slate-400 hover:text-rose-500 shadow-sm transition-colors mb-1"
-          title="광고 닫기"
-        >
-          <X size={16} />
-        </button>
-
-        {/* 메인 고정 배너 (유심사) */}
+      <div className="absolute top-1/2 -translate-y-1/2 right-[150px] flex flex-col gap-4 pointer-events-auto items-start transition-all duration-300">
         <a 
           href="https://click.linkprice.com/click.php?m=usimsa&a=A100702487&l=yjYP&u_id=" 
           target="_blank" 
@@ -105,7 +71,6 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
           />
         </a>
 
-        {/* 서브 배너들 */}
         {rightDbBanners.map((banner) => (
           <a
             key={banner.id}
