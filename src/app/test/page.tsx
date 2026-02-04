@@ -82,9 +82,13 @@ export default function TravelTestPage() {
     }
   };
 
+  // ✅ [푸터 숨김 처리]: fixed inset-0 z-50을 사용하여 전체 화면을 덮어버림
+  // 이렇게 하면 layout.tsx에 있는 Footer가 이 페이지 아래에 깔려서 보이지 않게 됩니다.
+  const pageWrapperClass = "fixed inset-0 z-50 overflow-y-auto bg-slate-50";
+
   if (step === "intro") {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+      <div className={`${pageWrapperClass} flex flex-col items-center justify-center p-6 text-center`}>
         <span className="text-4xl mb-6">✈️</span>
         <h1 className="text-3xl font-black text-slate-900 mb-4">
           나의 여행 스타일<br />
@@ -107,7 +111,7 @@ export default function TravelTestPage() {
 
   if (step === "question") {
     return (
-      <div className="min-h-screen bg-slate-50 p-6 flex flex-col items-center justify-center">
+      <div className={`${pageWrapperClass} p-6 flex flex-col items-center justify-center`}>
         <div className="w-full max-w-md">
           <div className="w-full bg-slate-200 h-2 rounded-full mb-8">
             <div 
@@ -137,7 +141,7 @@ export default function TravelTestPage() {
 
   if (step === "loading") {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
+      <div className={`${pageWrapperClass} flex flex-col items-center justify-center p-6 text-center`}>
         <div className="animate-spin w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full mb-6" />
         <h2 className="text-xl font-bold text-slate-900 animate-pulse">
           여행 성향 분석 중...
@@ -150,7 +154,8 @@ export default function TravelTestPage() {
   const resultData = TEST_RESULTS[result];
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b ${resultData.color} p-6 pb-32`}>
+    // ✅ 결과 페이지도 fixed inset-0 z-50으로 덮어서 푸터 숨김
+    <div className={`fixed inset-0 z-50 overflow-y-auto bg-gradient-to-b ${resultData.color} p-6 pb-32`}>
       <div className="max-w-md mx-auto relative">
         <header className="flex justify-between items-center mb-8 text-white/80">
           <Link href="/" className="flex items-center gap-1 hover:text-white">
@@ -165,7 +170,8 @@ export default function TravelTestPage() {
           </button>
         </header>
 
-        <div className="bg-white rounded-[2.5rem] p-8 shadow-2xl text-center animate-in slide-in-from-bottom-10 duration-700">
+        {/* 결과 카드 (흰색 박스) */}
+        <div className="bg-white rounded-[2.5rem] p-8 shadow-2xl text-center animate-in slide-in-from-bottom-10 duration-700 relative z-10">
           <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 mb-6 uppercase tracking-wider">
             Your Travel Type
           </span>
@@ -198,32 +204,43 @@ export default function TravelTestPage() {
               추천 나라 물가 확인하기
             </Link>
             
-            {/* ✅ 광고 배너 (반응형 적용) */}
-            <div className="py-6 flex justify-center w-full">
-                
-                {/* 1. 모바일용 배너 (320x50) - 화면이 작을 때만 보임 (md:hidden) */}
-                <div className="block md:hidden">
-                    <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0030&u_id=" rel="noopener noreferrer nofollow">
-                        <img src="http://img.linkprice.com/files/glink/klook/20190604/5cf5ff12bb2ba_320_50.jpg" width="320" height="50" alt="Klook" className="rounded-lg shadow-sm" />
-                    </a>
-                    <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0030&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
-                </div>
-
-                {/* 2. PC용 배너 (468x60) - 화면이 클 때만 보임 (hidden md:block) */}
-                <div className="hidden md:block">
-                    <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0015&u_id=" rel="noopener noreferrer nofollow">
-                        <img src="http://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg" width="468" height="60" alt="Klook" className="rounded-lg shadow-sm" />
-                    </a>
-                    <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0015&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
-                </div>
-
-            </div>
+            <button
+              onClick={() => {
+                setStep("intro");
+                setCurrentQ(0);
+                setScores({ BUDGET: 0, FLEX: 0, FOODIE: 0, VIBE: 0 });
+              }}
+              className="w-full py-4 flex items-center justify-center gap-2 bg-slate-100 text-slate-500 font-bold rounded-2xl hover:bg-slate-200 transition-colors"
+            >
+              <RefreshCw size={18} />
+              테스트 다시하기
+            </button>
           </div>
         </div>
+
+        {/* ✅ 광고 배너 위치 이동: 흰색 카드 밖, 하단 버튼 위쪽 */}
+        <div className="mt-6 mb-24 flex justify-center w-full relative z-0">
+            {/* 1. 모바일용 배너 (320x50) */}
+            <div className="block md:hidden">
+                <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0030&u_id=" rel="noopener noreferrer nofollow">
+                    <img src="http://img.linkprice.com/files/glink/klook/20190604/5cf5ff12bb2ba_320_50.jpg" width="320" height="50" alt="Klook" className="rounded-lg shadow-sm" />
+                </a>
+                <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0030&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
+            </div>
+
+            {/* 2. PC용 배너 (468x60) */}
+            <div className="hidden md:block">
+                <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0015&u_id=" rel="noopener noreferrer nofollow">
+                    <img src="http://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg" width="468" height="60" alt="Klook" className="rounded-lg shadow-sm" />
+                </a>
+                <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0015&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
+            </div>
+        </div>
+
       </div>
 
       {/* 하단 고정 공유 버튼 */}
-      <div className="fixed bottom-8 left-0 right-0 px-6 z-30">
+      <div className="fixed bottom-8 left-0 right-0 px-6 z-50">
         <div className="max-w-md mx-auto flex gap-3">
           <button 
             onClick={handleShare}
@@ -240,9 +257,9 @@ export default function TravelTestPage() {
         </div>
       </div>
 
-      {/* 이미지 미리보기 모달 (모바일용) */}
+      {/* 이미지 미리보기 모달 */}
       {previewUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md relative shadow-2xl">
             <button 
               onClick={() => setPreviewUrl(null)}
