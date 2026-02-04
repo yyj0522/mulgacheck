@@ -14,67 +14,38 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center relative">
       
-      <div className="fixed inset-0 z-40 pointer-events-none hidden 2xl:block max-w-[1920px] mx-auto">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-7xl flex justify-between items-start h-[600px]">
-          
-          <div className="relative -left-[200px] pointer-events-auto">
-             <a 
-              href="https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=EtSC&u_id="
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="block w-[160px] h-[600px] shadow-lg hover:shadow-xl transition-shadow bg-white rounded-xl overflow-hidden"
-            >
-              <Image 
-                src="https://img.linkprice.com/files/glink/rakutentr/20230807/G000zNVfRG000_rakutentr_160_600.jpg"
-                alt="Rakuten Travel"
-                width={160}
-                height={600}
-                priority
-                unoptimized
-                className="w-full h-full object-cover"
-              />
-            </a>
-            <p className="text-[10px] text-slate-300 text-center mt-1">AD</p>
-          </div>
-
-          <div className="relative -right-[200px] pointer-events-auto flex flex-col gap-4">
-            <a 
-              href="https://click.linkprice.com/click.php?m=usimsa&a=A100702487&l=ebuY&u_id="
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="block w-[120px] h-[60px] shadow-md hover:shadow-lg transition-shadow bg-white rounded-lg overflow-hidden"
-            >
-              <Image 
-                src="https://img.linkprice.com/files/glink/usimsa/20250415/67fe1b8610f28_120x60.jpg"
-                alt="Usimsa"
-                width={120}
-                height={60}
-                unoptimized
-                className="w-full h-full object-cover"
-              />
-            </a>
-
-            <a 
-              href="https://click.linkprice.com/click.php?m=yanolja&a=A100702487&l=Ai73&u_id="
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="block w-[120px] h-[60px] shadow-md hover:shadow-lg transition-shadow bg-white rounded-lg overflow-hidden"
-            >
-              <Image 
-                src="https://img.linkprice.com/files/glink/yanolja/20250422/0000CsmG00000_NOL_banner_120x60.png"
-                alt="Yanolja"
-                width={120}
-                height={60}
-                unoptimized
-                className="w-full h-full object-cover"
-              />
-            </a>
-            <p className="text-[10px] text-slate-300 text-center">AD</p>
-          </div>
-
+      {/* ================= 메인 페이지용 고정 윙 배너 ================= */}
+      {/* WingBanners.tsx와 동일한 반응형 로직 적용 (xl: 240px, 2xl: 340px) 
+        모바일에서는 보이지 않음 (hidden xl:block)
+      */}
+      <div className="fixed inset-0 z-40 pointer-events-none hidden xl:block max-w-[1920px] mx-auto">
+        
+        {/* 좌측: 라쿠텐 세로 배너 */}
+        <div className="absolute top-1/2 -translate-y-1/2 right-[calc(50%+240px)] 2xl:right-[calc(50%+340px)] pointer-events-auto transition-all duration-300">
+           <a 
+            href="https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=EtSC&u_id="
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="block w-[160px] h-[600px] shadow-lg hover:shadow-xl transition-shadow bg-white rounded-xl overflow-hidden"
+          >
+            <Image 
+              src="https://img.linkprice.com/files/glink/rakutentr/20230807/G000zNVfRG000_rakutentr_160_600.jpg"
+              alt="Rakuten Travel"
+              width={160}
+              height={600}
+              priority
+              unoptimized
+              className="w-full h-full object-cover"
+            />
+          </a>
+          <p className="text-[10px] text-slate-300 text-center mt-1">AD</p>
         </div>
+
+        {/* 우측: 120x60 배너 2개 삭제됨 (요청사항 반영) */}
+        
       </div>
 
+      {/* ================= 상단 네비게이션 ================= */}
       <nav className="absolute top-0 left-0 right-0 mx-auto w-full max-w-7xl flex justify-between items-start px-6 pt-8 md:px-8 z-50">
         <div className="relative w-40 h-12 md:w-56 md:h-16">
           <Image 
@@ -91,6 +62,7 @@ export default async function Home() {
         </div>
       </nav>
 
+      {/* ================= 헤더 타이틀 ================= */}
       <header className="w-full max-w-7xl px-6 pt-40 pb-10 flex flex-col items-center z-10">
         <div className="text-center animate-fade-in-up">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 border border-indigo-100 rounded-full text-indigo-600 font-bold text-xs mb-6">
@@ -113,7 +85,10 @@ export default async function Home() {
         </div>
       </header>
 
+      {/* ================= 메인 컨텐츠 ================= */}
       <main className="w-full max-w-7xl px-6 pb-32 z-10">
+        
+        {/* 3단 카드 링크 */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Link href="/checklist" className="group block h-full">
             <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-violet-600 rounded-[2.5rem] p-8 h-full shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[200px]">
@@ -173,12 +148,19 @@ export default async function Home() {
           </Link>
         </div>
 
-        <div className="w-full flex justify-center mb-8 hidden md:flex">
+        {/* 검색 및 필터 영역 */}
+        <div className="bg-white/50 backdrop-blur-sm border border-white/60 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-slate-200/40 mb-10">
+          <SearchAndFilter initialData={countries ?? []} />
+        </div>
+
+        {/* ✅ 가로형 라쿠텐 배너 (검색창 하단으로 이동됨) */}
+        {/* 모바일에서는 숨김 (hidden md:flex) - 728px은 모바일에서 깨지므로 */}
+        <div className="w-full justify-center hidden md:flex mb-10">
           <a 
             href="https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=5zP1&u_id="
             target="_blank" 
             rel="noopener noreferrer nofollow"
-            className="block max-w-[728px] w-full rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+            className="block max-w-[728px] w-full rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white"
           >
              <Image 
                src="https://img.linkprice.com/files/glink/rakutentr/20230807/000qzILW00000_728x90.png"
@@ -186,13 +168,9 @@ export default async function Home() {
                width={728}
                height={90}
                unoptimized
-               className="w-full h-auto"
+               className="w-full h-auto object-cover"
              />
           </a>
-        </div>
-
-        <div className="bg-white/50 backdrop-blur-sm border border-white/60 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-slate-200/40">
-          <SearchAndFilter initialData={countries ?? []} />
         </div>
       </main>
     </div>
