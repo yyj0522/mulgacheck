@@ -5,7 +5,8 @@ import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
-import LeftWingBanner from "@/components/LeftWingBanner"; // ✅ 추가됨
+import WingBanners from "@/components/WingBanners";
+import { supabase } from "@/lib/supabase";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -60,11 +61,19 @@ const jsonLd = {
   "url": "https://www.mulgaeottae.site/"
 };
 
-export default function RootLayout({
+export const revalidate = 3600;
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { data: banners } = await supabase
+    .from('banners')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false });
+
   return (
     <html lang="ko">
       <body className={inter.className}>
@@ -81,8 +90,7 @@ export default function RootLayout({
         
         {children}
         
-        {/* ✅ 좌측 윙 배너 추가 (PC에서만 보임) */}
-        <LeftWingBanner />
+        <WingBanners dbBanners={banners || []} />
         
         <Footer />
         <CookieConsent />

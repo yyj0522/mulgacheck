@@ -4,7 +4,6 @@ import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Pl
 import BudgetCalculator from "@/components/BudgetCalculator";
 import CommentSection from "@/components/CommentSection";
 import SurvivalCardList from "@/components/survival/SurvivalCardList";
-import Image from "next/image";
 
 const BurgerIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
   <svg 
@@ -36,12 +35,6 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
     .select('*, exchange_rates(rate_to_krw)')
     .eq('id', id)
     .single();
-
-  const { data: banners } = await supabase
-    .from('banners')
-    .select('*')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false });
 
   if (!country) return <div className="p-10 text-center text-slate-400 font-bold">데이터를 찾을 수 없습니다.</div>;
 
@@ -113,48 +106,6 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
               </div>
               <ExternalLink size={20} className="opacity-70 group-hover:translate-x-1 transition-transform" />
             </a>
-
-            {banners && banners.length > 0 && (
-              <div className="mt-8 mb-6">
-                <div className="flex items-center justify-between mb-3 px-1">
-                   <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                     ✨ Recommended Services
-                   </h3>
-                   <span className="text-[10px] text-slate-300">Sponsored</span>
-                </div>
-                
-                <div className="space-y-3">
-                  {banners.map((banner: any) => (
-                    <a
-                      key={banner.id}
-                      href={banner.link_url}
-                      target="_blank"
-                      rel="noopener noreferrer nofollow"
-                      className="block group relative overflow-hidden rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-all hover:-translate-y-0.5"
-                    >
-                      {banner.image_url ? (
-                        <div className="relative w-full h-24">
-                           <Image 
-                             src={banner.image_url} 
-                             alt={banner.title}
-                             fill
-                             className="object-cover"
-                           />
-                        </div>
-                      ) : (
-                        <div className="p-5 bg-white flex items-center justify-between">
-                           <div className="flex items-center gap-3">
-                              <span className="text-lg">📢</span>
-                              <span className="font-bold text-slate-700">{banner.title}</span>
-                           </div>
-                           <ExternalLink size={16} className="text-slate-300 group-hover:text-indigo-500" />
-                        </div>
-                      )}
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
 
             <div className="grid grid-cols-2 gap-3 mb-6 mt-6">
               <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-3xl text-left flex flex-col justify-between h-32">
