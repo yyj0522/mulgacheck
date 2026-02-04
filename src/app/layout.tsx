@@ -5,8 +5,6 @@ import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
-import WingBanners from "@/components/WingBanners";
-import { supabase } from "@/lib/supabase";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -61,19 +59,11 @@ const jsonLd = {
   "url": "https://www.mulgaeottae.site/"
 };
 
-export const revalidate = 3600;
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: banners } = await supabase
-    .from('banners')
-    .select('*')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false });
-
   return (
     <html lang="ko">
       <body className={inter.className}>
@@ -89,8 +79,6 @@ export default async function RootLayout({
         />
         
         {children}
-        
-        <WingBanners dbBanners={banners || []} />
         
         <Footer />
         <CookieConsent />
