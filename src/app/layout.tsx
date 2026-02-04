@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
+import LeftWingBanner from "@/components/LeftWingBanner"; // ✅ 추가됨
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -77,7 +78,12 @@ export default function RootLayout({
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+        
         {children}
+        
+        {/* ✅ 좌측 윙 배너 추가 (PC에서만 보임) */}
+        <LeftWingBanner />
+        
         <Footer />
         <CookieConsent />
         <Analytics />
