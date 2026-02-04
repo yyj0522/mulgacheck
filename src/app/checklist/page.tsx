@@ -206,7 +206,7 @@ export default function ChecklistPage() {
             <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by MulgaCheck</p>
           </div>
 
-          <div className="w-full flex justify-center items-center mt-4 mb-4">
+          <div className="w-full flex justify-center items-center mt-4">
             <div className="hidden md:block">
               <iframe 
                 src="https://ads-partners.coupang.com/widgets.html?id=963064&template=carousel&trackingCode=AF1306700&subId=&width=680&height=140&tsource=" 
