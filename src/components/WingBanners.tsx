@@ -7,9 +7,14 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
   const rightDbBanners = dbBanners.filter((_, i) => i % 2 !== 0);
 
   return (
-    <div className="fixed inset-0 z-40 pointer-events-none hidden lg:block max-w-[1920px] mx-auto">
+    // ✅ 반응형: 화면 너비 1400px 미만이면 숨김 (콘텐츠와 겹치기 전 50px 여유 확보)
+    <div className="fixed inset-0 z-40 pointer-events-none hidden min-[1400px]:block max-w-[1920px] mx-auto">
       
-      <div className="absolute top-1/2 -translate-y-1/2 left-[150px] flex flex-col gap-4 pointer-events-auto items-end transition-all duration-300">
+      {/* ================= 좌측 윙 (Left Wing) ================= */}
+      {/* left-[250px]: 화면 왼쪽 벽에서 250px 떨어짐
+         top-[calc(50%-300px)]: 메인 배너(600px)의 상단이 화면 세로 중앙에 오도록 고정 (높이 일치 핵심)
+      */}
+      <div className="absolute top-[calc(50%-300px)] left-[250px] flex flex-col gap-4 pointer-events-auto items-end transition-all duration-300">
         <a 
           href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0012&u_id=" 
           target="_blank" 
@@ -53,7 +58,11 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
         ))}
       </div>
 
-      <div className="absolute top-1/2 -translate-y-1/2 right-[150px] flex flex-col gap-4 pointer-events-auto items-start transition-all duration-300">
+      {/* ================= 우측 윙 (Right Wing) ================= */}
+      {/* right-[250px]: 화면 오른쪽 벽에서 250px 떨어짐
+         top-[calc(50%-300px)]: 좌측과 동일한 높이 계산식 적용
+      */}
+      <div className="absolute top-[calc(50%-300px)] right-[250px] flex flex-col gap-4 pointer-events-auto items-start transition-all duration-300">
         <a 
           href="https://click.linkprice.com/click.php?m=usimsa&a=A100702487&l=yjYP&u_id=" 
           target="_blank" 
