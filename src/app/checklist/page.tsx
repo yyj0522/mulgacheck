@@ -129,7 +129,8 @@ export default function ChecklistPage() {
   if (!isLoaded) return <div className="min-h-screen bg-slate-50" />;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-32 relative">
+    // ✅ pb-32 -> pb-24 (모바일) / md:pb-12 (PC)로 수정하여 하단 공백 축소
+    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-24 md:pb-12 relative">
       <div className="max-w-3xl mx-auto">
         <header className="flex justify-between items-center mb-8">
           <Link href="/" className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm">
