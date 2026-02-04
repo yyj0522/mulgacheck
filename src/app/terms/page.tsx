@@ -5,7 +5,6 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen bg-white p-6 md:p-12 text-slate-700">
       <div className="max-w-3xl mx-auto prose prose-slate">
-        {/* ✅ 뒤로가기 버튼 추가 */}
         <div className="mb-8 not-prose">
           <Link 
             href="/" 
@@ -18,10 +17,10 @@ export default function TermsPage() {
 
         <h1 className="text-3xl font-black text-slate-900 mb-8">이용약관</h1>
         
-        <p className="text-sm text-slate-400 mb-8">최종 수정일: 2026년 2월 2일</p>
+        <p className="text-sm text-slate-400 mb-8">최종 수정일: 2026년 2월 4일</p>
 
         <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">제1조 (목적)</h3>
-        <p>본 약관은 물가어때(이하 "서비스")가 제공하는 모든 서비스의 이용 조건 및 절차, 이용자와 서비스의 권리, 의무, 책임사항을 규정함을 목적으로 합니다.</p>
+        <p>본 약관은 물가체크(이하 "서비스")가 제공하는 모든 서비스의 이용 조건 및 절차, 이용자와 서비스의 권리, 의무, 책임사항을 규정함을 목적으로 합니다.</p>
 
         <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">제2조 (서비스의 제공 및 변경)</h3>
         <p>

@@ -10,7 +10,9 @@ export default function ChecklistPage() {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  
   const captureRef = useRef<HTMLDivElement>(null);
+
   const getAllItems = () => {
     return CHECKLIST_CATEGORIES.flatMap((category) => category.items);
   };
@@ -77,7 +79,7 @@ export default function ChecklistPage() {
       const url = `${window.location.origin}${window.location.pathname}?data=${data}`;
 
       const shareData = {
-        title: '물가어때 - 여행 짐 싸기 체크리스트',
+        title: '물가체크 - 여행 짐 싸기 체크리스트',
         text: `현재 짐 챙기기 ${progress}% 완료! 제 리스트를 확인해보세요.`,
         url: url,
       };
@@ -109,7 +111,7 @@ export default function ChecklistPage() {
         setPreviewUrl(dataUrl);
       } else {
         const link = document.createElement("a");
-        link.download = `mulgaeottae_checklist_${Date.now()}.png`;
+        link.download = `mulgacheck_checklist_${Date.now()}.png`;
         link.href = dataUrl;
         link.click();
       }
@@ -161,7 +163,7 @@ export default function ChecklistPage() {
         <div className="bg-[#F8FAFC] p-4 -m-4">
           <div className="text-center mb-8 md:hidden">
               <h2 className="text-xl font-bold text-slate-800">나의 여행 체크리스트</h2>
-              <p className="text-xs text-slate-400 mt-1">물가어때(Mulgaeottae) 제공</p>
+              <p className="text-xs text-slate-400 mt-1">물가체크(MulgaCheck) 제공</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -201,7 +203,7 @@ export default function ChecklistPage() {
           </div>
           
           <div className="mt-8 text-center hidden md:block">
-            <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by Mulgaeottae</p>
+            <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by MulgaCheck</p>
           </div>
         </div>
       </div>
@@ -255,11 +257,11 @@ export default function ChecklistPage() {
       <div style={{ position: "fixed", left: "-9999px", top: 0 }}>
         <div 
           ref={captureRef} 
-          className="w-[900px] bg-[#F8FAFC] p-12" 
+          className="w-[900px] bg-[#F8FAFC] p-12"
         >
           <div className="text-center mb-10">
             <h1 className="text-4xl font-black text-slate-900 mb-2">나의 여행 체크리스트</h1>
-            <p className="text-lg text-slate-500 font-bold">물가어때 (Mulgaeottae) 제공</p>
+            <p className="text-lg text-slate-500 font-bold">물가체크 (MulgaCheck) 제공</p>
           </div>
 
           <div className="flex justify-between items-center mb-8 px-4">
@@ -272,7 +274,7 @@ export default function ChecklistPage() {
                 </div>
              </div>
              <div className="text-slate-400 font-medium text-sm">
-                mulgaeottae.site
+                MulgaCheck
              </div>
           </div>
 

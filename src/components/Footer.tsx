@@ -19,15 +19,15 @@ export default function Footer() {
             본 사이트는 정보 제공을 목적으로 운영되며, 여행 상품의 직접적인 판매 당사자가 아닙니다.
           </p>
           <p className="font-medium text-slate-500">
-            이 사이트는 제휴마케팅이 포함된 광고로 커미션을 지급 받습니다.
+            이 포스팅은 제휴마케팅이 포함된 광고로 커미션을 지급 받습니다.
           </p>
           <p className="mt-1 text-slate-400">
-            이 사이트는 링크프라이스 활동을 통해 일정액의 수수료를 제공받을 수 있습니다.
+            이 포스팅은 링크프라이스 이벤트 참여를 위해 작성되었습니다.
           </p>
         </div>
 
         <p className="text-slate-400 text-[10px] font-bold tracking-[0.2em] uppercase">
-          © 2026 MULGAEOTTAE. All rights reserved.
+          © 2026 MULGACHECK. All rights reserved.
         </p>
       </div>
     </footer>

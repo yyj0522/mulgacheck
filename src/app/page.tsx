@@ -13,12 +13,11 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center relative">
-      {/* ✅ 수정됨: 로고와 배지 위치 조정 (안쪽으로 모으고 아래로 내림) */}
       <nav className="absolute top-0 left-0 right-0 mx-auto w-full max-w-7xl flex justify-between items-start px-6 pt-8 md:px-8 z-50">
         <div className="relative w-40 h-12 md:w-56 md:h-16">
           <Image 
             src="/logo.png" 
-            alt="물가어때" 
+            alt="물가체크" 
             fill 
             className="object-contain object-left-top" 
             priority 
@@ -83,7 +82,7 @@ export default async function Home() {
                   예산으로<br/>여행지 찾기
                 </h2>
                 <p className="text-emerald-100 text-sm font-medium opacity-90">
-                  "100만원으로 어디 가지?"<br/>물가어때가 추천해드려요.
+                  "100만원으로 어디 가지?"<br/>물가체크가 추천해드려요.
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm self-start p-3 rounded-full mt-4 group-hover:bg-white/20 transition-colors">

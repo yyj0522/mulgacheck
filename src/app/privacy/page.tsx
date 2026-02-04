@@ -5,7 +5,6 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white p-6 md:p-12 text-slate-700">
       <div className="max-w-3xl mx-auto prose prose-slate">
-        {/* ✅ 뒤로가기 버튼 추가 */}
         <div className="mb-8 not-prose">
           <Link 
             href="/" 
@@ -18,10 +17,10 @@ export default function PrivacyPage() {
 
         <h1 className="text-3xl font-black text-slate-900 mb-8">개인정보처리방침</h1>
         
-        <p className="text-sm text-slate-400 mb-8">최종 수정일: 2026년 2월 2일</p>
+        <p className="text-sm text-slate-400 mb-8">최종 수정일: 2026년 2월 4일</p>
 
         <p>
-          물가어때(이하 "서비스")는 이용자의 개인정보를 소중히 다루며, 관련 법령을 준수하고 있습니다.
+          물가체크(이하 "서비스")는 이용자의 개인정보를 소중히 다루며, 관련 법령을 준수하고 있습니다.
         </p>
 
         <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">1. 수집하는 개인정보 항목</h3>
