@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { ChevronLeft, Plane, ArrowRight, Coins, CalendarDays, Wallet } from "lucide-react";
+import WingBanners from "@/components/WingBanners";
 
 type CountryData = {
   id: string | number;
@@ -23,16 +24,26 @@ export default function BudgetExplorer() {
   const [budget, setBudget] = useState(1500000);
   const [days, setDays] = useState(4);
   const [countries, setCountries] = useState<CountryData[]>([]);
+  const [banners, setBanners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data } = await supabase
+      const { data: countriesData } = await supabase
         .from("countries")
         .select("id, name_ko, name_en, flag_emoji, currency_code, meal_price_local, transport_price_local, accommodation_price_local, exchange_rates(rate_to_krw)");
 
-      if (data) {
-        setCountries(data as any);
+      const { data: bannersData } = await supabase
+        .from("banners")
+        .select("*")
+        .eq("is_active", true)
+        .order("created_at", { ascending: false });
+
+      if (countriesData) {
+        setCountries(countriesData as any);
+      }
+      if (bannersData) {
+        setBanners(bannersData);
       }
       setLoading(false);
     };
@@ -64,6 +75,8 @@ export default function BudgetExplorer() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-6 pb-24">
+      <WingBanners dbBanners={banners} />
+      
       <div className="max-w-md mx-auto">
         <header className="mb-8">
           <Link href="/" className="inline-flex items-center text-slate-400 mb-6 font-bold hover:text-indigo-600 transition-colors">
@@ -150,7 +163,7 @@ export default function BudgetExplorer() {
             <div className="grid grid-cols-1 gap-4">
               {affordableCountries.map((country) => (
                 <Link 
-                  href={`/destination/${country.id}`} // ✅ 여기를 destination으로 수정했습니다!
+                  href={`/destination/${country.id}`}
                   key={country.id}
                   prefetch={false}
                   className="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg hover:border-indigo-100 transition-all relative overflow-hidden block"
