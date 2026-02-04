@@ -13,6 +13,68 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center relative">
+      
+      <div className="fixed inset-0 z-40 pointer-events-none hidden 2xl:block max-w-[1920px] mx-auto">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-7xl flex justify-between items-start h-[600px]">
+          
+          <div className="relative -left-[200px] pointer-events-auto">
+             <a 
+              href="https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=EtSC&u_id="
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="block w-[160px] h-[600px] shadow-lg hover:shadow-xl transition-shadow bg-white rounded-xl overflow-hidden"
+            >
+              <Image 
+                src="https://img.linkprice.com/files/glink/rakutentr/20230807/G000zNVfRG000_rakutentr_160_600.jpg"
+                alt="Rakuten Travel"
+                width={160}
+                height={600}
+                priority
+                unoptimized
+                className="w-full h-full object-cover"
+              />
+            </a>
+            <p className="text-[10px] text-slate-300 text-center mt-1">AD</p>
+          </div>
+
+          <div className="relative -right-[200px] pointer-events-auto flex flex-col gap-4">
+            <a 
+              href="https://click.linkprice.com/click.php?m=usimsa&a=A100702487&l=ebuY&u_id="
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="block w-[120px] h-[60px] shadow-md hover:shadow-lg transition-shadow bg-white rounded-lg overflow-hidden"
+            >
+              <Image 
+                src="https://img.linkprice.com/files/glink/usimsa/20250415/67fe1b8610f28_120x60.jpg"
+                alt="Usimsa"
+                width={120}
+                height={60}
+                unoptimized
+                className="w-full h-full object-cover"
+              />
+            </a>
+
+            <a 
+              href="https://click.linkprice.com/click.php?m=yanolja&a=A100702487&l=Ai73&u_id="
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="block w-[120px] h-[60px] shadow-md hover:shadow-lg transition-shadow bg-white rounded-lg overflow-hidden"
+            >
+              <Image 
+                src="https://img.linkprice.com/files/glink/yanolja/20250422/0000CsmG00000_NOL_banner_120x60.png"
+                alt="Yanolja"
+                width={120}
+                height={60}
+                unoptimized
+                className="w-full h-full object-cover"
+              />
+            </a>
+            <p className="text-[10px] text-slate-300 text-center">AD</p>
+          </div>
+
+        </div>
+      </div>
+
       <nav className="absolute top-0 left-0 right-0 mx-auto w-full max-w-7xl flex justify-between items-start px-6 pt-8 md:px-8 z-50">
         <div className="relative w-40 h-12 md:w-56 md:h-16">
           <Image 
@@ -109,6 +171,24 @@ export default async function Home() {
               </div>
             </div>
           </Link>
+        </div>
+
+        <div className="w-full flex justify-center mb-8 hidden md:flex">
+          <a 
+            href="https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=5zP1&u_id="
+            target="_blank" 
+            rel="noopener noreferrer nofollow"
+            className="block max-w-[728px] w-full rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+          >
+             <Image 
+               src="https://img.linkprice.com/files/glink/rakutentr/20230807/000qzILW00000_728x90.png"
+               alt="Rakuten Travel"
+               width={728}
+               height={90}
+               unoptimized
+               className="w-full h-auto"
+             />
+          </a>
         </div>
 
         <div className="bg-white/50 backdrop-blur-sm border border-white/60 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-slate-200/40">

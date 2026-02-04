@@ -4,7 +4,7 @@ import { ChevronLeft, TrendingDown, TrendingUp, Wallet, Bus, Utensils, Hotel, Pl
 import BudgetCalculator from "@/components/BudgetCalculator";
 import CommentSection from "@/components/CommentSection";
 import SurvivalCardList from "@/components/survival/SurvivalCardList";
-import WingBanners from "@/components/WingBanners"; // ✅ 추가됨
+import WingBanners from "@/components/WingBanners";
 
 const BurgerIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
   <svg 
@@ -37,7 +37,6 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
     .eq('id', id)
     .single();
 
-  // ✅ 윙 배너에 전달할 관리자 등록 배너들 불러오기
   const { data: banners } = await supabase
     .from('banners')
     .select('*')
@@ -88,7 +87,6 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
     <div className="min-h-screen bg-[#F8FAFC] p-6 pb-20">
       <div className="max-w-md mx-auto">
         
-        {/* ✅ 상세 페이지에만 윙 배너 적용 */}
         <WingBanners dbBanners={banners || []} />
 
         <Link href="/" className="inline-flex items-center text-slate-400 mb-8 font-bold hover:text-indigo-600 transition-colors">
