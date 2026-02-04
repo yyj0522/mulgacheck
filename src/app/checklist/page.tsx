@@ -201,8 +201,31 @@ export default function ChecklistPage() {
               </div>
             ))}
           </div>
+
+          <div className="w-full flex justify-center items-center my-12">
+            <div className="hidden md:block">
+              <iframe 
+                src="https://ads-partners.coupang.com/widgets.html?id=963064&template=carousel&trackingCode=AF1306700&subId=&width=680&height=140&tsource=" 
+                width="680" 
+                height="140" 
+                frameBorder="0" 
+                scrolling="no" 
+                referrerPolicy="unsafe-url"
+              />
+            </div>
+            <div className="block md:hidden">
+              <iframe 
+                src="https://ads-partners.coupang.com/widgets.html?id=963064&template=carousel&trackingCode=AF1306700&subId=&width=320&height=100&tsource=" 
+                width="320" 
+                height="100" 
+                frameBorder="0" 
+                scrolling="no" 
+                referrerPolicy="unsafe-url"
+              />
+            </div>
+          </div>
           
-          <div className="mt-8 text-center hidden md:block">
+          <div className="text-center hidden md:block">
             <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by MulgaCheck</p>
           </div>
         </div>
