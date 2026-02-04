@@ -82,8 +82,7 @@ export default function TravelTestPage() {
     }
   };
 
-  // ✅ [푸터 숨김 처리]: fixed inset-0 z-50을 사용하여 전체 화면을 덮어버림
-  // 이렇게 하면 layout.tsx에 있는 Footer가 이 페이지 아래에 깔려서 보이지 않게 됩니다.
+  // ✅ [푸터 숨김 처리]
   const pageWrapperClass = "fixed inset-0 z-50 overflow-y-auto bg-slate-50";
 
   if (step === "intro") {
@@ -154,7 +153,6 @@ export default function TravelTestPage() {
   const resultData = TEST_RESULTS[result];
 
   return (
-    // ✅ 결과 페이지도 fixed inset-0 z-50으로 덮어서 푸터 숨김
     <div className={`fixed inset-0 z-50 overflow-y-auto bg-gradient-to-b ${resultData.color} p-6 pb-32`}>
       <div className="max-w-md mx-auto relative">
         <header className="flex justify-between items-center mb-8 text-white/80">
@@ -170,7 +168,6 @@ export default function TravelTestPage() {
           </button>
         </header>
 
-        {/* 결과 카드 (흰색 박스) */}
         <div className="bg-white rounded-[2.5rem] p-8 shadow-2xl text-center animate-in slide-in-from-bottom-10 duration-700 relative z-10">
           <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 mb-6 uppercase tracking-wider">
             Your Travel Type
@@ -218,20 +215,34 @@ export default function TravelTestPage() {
           </div>
         </div>
 
-        {/* ✅ 광고 배너 위치 이동: 흰색 카드 밖, 하단 버튼 위쪽 */}
+        {/* ✅ 광고 배너 (모바일/PC 구분 적용 및 해상도 최적화) */}
         <div className="mt-6 mb-24 flex justify-center w-full relative z-0">
-            {/* 1. 모바일용 배너 (320x50) */}
+            {/* 1. 모바일용 배너 (320x50) - 화면이 작을 때만 보임 */}
             <div className="block md:hidden">
                 <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0030&u_id=" rel="noopener noreferrer nofollow">
-                    <img src="http://img.linkprice.com/files/glink/klook/20190604/5cf5ff12bb2ba_320_50.jpg" width="320" height="50" alt="Klook" className="rounded-lg shadow-sm" />
+                    {/* 모바일은 max-w-full 유지하여 작은 화면 대응 */}
+                    <img 
+                      src="http://img.linkprice.com/files/glink/klook/20190604/5cf5ff12bb2ba_320_50.jpg" 
+                      width="320" 
+                      height="50" 
+                      alt="Klook" 
+                      style={{ maxWidth: '100%', height: 'auto' }}
+                    />
                 </a>
                 <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0030&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
             </div>
 
-            {/* 2. PC용 배너 (468x60) */}
+            {/* 2. PC용 배너 (468x60) - 화면이 클 때만 보임 */}
             <div className="hidden md:block">
                 <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0015&u_id=" rel="noopener noreferrer nofollow">
-                    <img src="http://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg" width="468" height="60" alt="Klook" className="rounded-lg shadow-sm" />
+                    {/* PC는 max-w-full 제거, rounded 제거, shadow 제거 -> 원본 픽셀 그대로 선명하게 출력 */}
+                    <img 
+                      src="http://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg" 
+                      width="468" 
+                      height="60" 
+                      alt="Klook"
+                      style={{ width: '468px', height: '60px' }} // CSS로 크기 강제 고정 (왜곡 방지)
+                    />
                 </a>
                 <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0015&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
             </div>
