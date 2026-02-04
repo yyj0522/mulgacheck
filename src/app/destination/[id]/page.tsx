@@ -115,35 +115,44 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
             </a>
 
             {banners && banners.length > 0 && (
-              <div className="space-y-3 pt-2">
-                {banners.map((banner: any) => (
-                  <a
-                    key={banner.id}
-                    href={banner.link_url}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    className="block group relative overflow-hidden rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-all hover:-translate-y-0.5"
-                  >
-                    {banner.image_url ? (
-                      <div className="relative w-full h-24">
-                         <Image 
-                           src={banner.image_url} 
-                           alt={banner.title}
-                           fill
-                           className="object-cover"
-                         />
-                      </div>
-                    ) : (
-                      <div className="p-5 bg-white flex items-center justify-between">
-                         <div className="flex items-center gap-3">
-                            <span className="text-lg">📢</span>
-                            <span className="font-bold text-slate-700">{banner.title}</span>
-                         </div>
-                         <ExternalLink size={16} className="text-slate-300 group-hover:text-indigo-500" />
-                      </div>
-                    )}
-                  </a>
-                ))}
+              <div className="mt-8 mb-6">
+                <div className="flex items-center justify-between mb-3 px-1">
+                   <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                     ✨ Recommended Services
+                   </h3>
+                   <span className="text-[10px] text-slate-300">Sponsored</span>
+                </div>
+                
+                <div className="space-y-3">
+                  {banners.map((banner: any) => (
+                    <a
+                      key={banner.id}
+                      href={banner.link_url}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      className="block group relative overflow-hidden rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-all hover:-translate-y-0.5"
+                    >
+                      {banner.image_url ? (
+                        <div className="relative w-full h-24">
+                           <Image 
+                             src={banner.image_url} 
+                             alt={banner.title}
+                             fill
+                             className="object-cover"
+                           />
+                        </div>
+                      ) : (
+                        <div className="p-5 bg-white flex items-center justify-between">
+                           <div className="flex items-center gap-3">
+                              <span className="text-lg">📢</span>
+                              <span className="font-bold text-slate-700">{banner.title}</span>
+                           </div>
+                           <ExternalLink size={16} className="text-slate-300 group-hover:text-indigo-500" />
+                        </div>
+                      )}
+                    </a>
+                  ))}
+                </div>
               </div>
             )}
 

@@ -116,21 +116,6 @@ export default async function Home() {
           <SearchAndFilter initialData={countries ?? []} />
         </div>
       </main>
-
-      <footer className="w-full py-10 border-t border-slate-200 bg-white text-center">
-        <div className="flex justify-center gap-6 mb-4 text-xs font-bold text-slate-500">
-          <Link href="/terms" className="hover:text-indigo-600 transition-colors">
-            이용약관
-          </Link>
-          <span className="text-slate-300">|</span>
-          <Link href="/privacy" className="hover:text-indigo-600 transition-colors">
-            개인정보처리방침
-          </Link>
-        </div>
-        <p className="text-slate-400 text-[10px] font-bold tracking-[0.2em] uppercase">
-          © 2026 MULGAEOTTAE. All rights reserved.
-        </p>
-      </footer>
     </div>
   );
 }
