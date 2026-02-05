@@ -242,7 +242,7 @@ export default function TravelTestPage() {
             </div>
             
             <p className="text-[10px] text-white/50 mt-2 text-center leading-tight">
-              이 포스팅은 제휴 마케팅 활동의 일환으로,<br className="md:hidden"/> 이에 따른 일정액의 수수료를 제공받습니다.
+              이 사이트는 제휴 마케팅 활동의 일환으로,<br className="md:hidden"/> 이에 따른 일정액의 수수료를 제공받을 수 있습니다.
             </p>
         </div>
 

@@ -228,7 +228,7 @@ export default function ChecklistPage() {
               />
             </div>
             <p className="text-[10px] text-slate-300 mt-2 text-center leading-tight">
-              이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br className="md:hidden"/> 이에 따른 일정액의 수수료를 제공받습니다.
+              이 사이트는 쿠팡 파트너스 활동의 일환으로,<br className="md:hidden"/> 이에 따른 일정액의 수수료를 제공받을 수 있습니다.
             </p>
           </div>
         </div>
