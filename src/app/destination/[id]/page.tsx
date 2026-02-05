@@ -226,6 +226,10 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
             />
 
             <CommentSection countryId={country.id} />
+            
+            <p className="text-[10px] text-slate-300 mt-8 mb-4">
+              이 페이지의 제휴 링크를 통해 구매가 발생할 경우,<br className="md:hidden"/> 일정액의 수수료를 제공받을 수 있습니다.
+            </p>
           </div>
         </div>
       </div>

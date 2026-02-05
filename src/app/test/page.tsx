@@ -82,7 +82,6 @@ export default function TravelTestPage() {
     }
   };
 
-  // ✅ [푸터 숨김 처리]
   const pageWrapperClass = "fixed inset-0 z-50 overflow-y-auto bg-slate-50";
 
   if (step === "intro") {
@@ -215,12 +214,9 @@ export default function TravelTestPage() {
           </div>
         </div>
 
-        {/* ✅ 광고 배너 (모바일/PC 구분 적용 및 해상도 최적화) */}
-        <div className="mt-6 mb-24 flex justify-center w-full relative z-0">
-            {/* 1. 모바일용 배너 (320x50) - 화면이 작을 때만 보임 */}
+        <div className="mt-6 mb-24 flex flex-col items-center justify-center w-full relative z-0">
             <div className="block md:hidden">
                 <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0030&u_id=" rel="noopener noreferrer nofollow">
-                    {/* 모바일은 max-w-full 유지하여 작은 화면 대응 */}
                     <img 
                       src="http://img.linkprice.com/files/glink/klook/20190604/5cf5ff12bb2ba_320_50.jpg" 
                       width="320" 
@@ -232,25 +228,26 @@ export default function TravelTestPage() {
                 <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0030&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
             </div>
 
-            {/* 2. PC용 배너 (468x60) - 화면이 클 때만 보임 */}
             <div className="hidden md:block">
                 <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0015&u_id=" rel="noopener noreferrer nofollow">
-                    {/* PC는 max-w-full 제거, rounded 제거, shadow 제거 -> 원본 픽셀 그대로 선명하게 출력 */}
                     <img 
                       src="http://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg" 
                       width="468" 
                       height="60" 
                       alt="Klook"
-                      style={{ width: '468px', height: '60px' }} // CSS로 크기 강제 고정 (왜곡 방지)
+                      style={{ width: '468px', height: '60px' }} 
                     />
                 </a>
                 <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0015&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
             </div>
+            
+            <p className="text-[10px] text-white/50 mt-2 text-center leading-tight">
+              이 포스팅은 제휴 마케팅 활동의 일환으로,<br className="md:hidden"/> 이에 따른 일정액의 수수료를 제공받습니다.
+            </p>
         </div>
 
       </div>
 
-      {/* 하단 고정 공유 버튼 */}
       <div className="fixed bottom-8 left-0 right-0 px-6 z-50">
         <div className="max-w-md mx-auto flex gap-3">
           <button 
@@ -268,7 +265,6 @@ export default function TravelTestPage() {
         </div>
       </div>
 
-      {/* 이미지 미리보기 모달 */}
       {previewUrl && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md relative shadow-2xl">
@@ -298,7 +294,6 @@ export default function TravelTestPage() {
         </div>
       )}
 
-      {/* 캡처용 숨겨진 영역 */}
       <div style={{ position: "fixed", left: "-9999px", top: 0 }}>
         <div 
           ref={captureRef} 

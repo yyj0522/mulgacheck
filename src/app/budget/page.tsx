@@ -160,40 +160,45 @@ export default function BudgetExplorer() {
               <p className="text-slate-400 font-bold text-sm">계산기를 두드리고 있어요...</p>
             </div>
           ) : affordableCountries.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4">
-              {affordableCountries.map((country) => (
-                <Link 
-                  href={`/destination/${country.id}`}
-                  key={country.id}
-                  prefetch={false}
-                  className="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg hover:border-indigo-100 transition-all relative overflow-hidden block"
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex items-center gap-4">
-                      <span className="text-4xl filter drop-shadow-sm">{country.flag_emoji}</span>
-                      <div>
-                        <h3 className="font-black text-slate-900 text-lg">{country.name_ko.split(' - ')[1] || country.name_ko}</h3>
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{country.name_en}</p>
+            <>
+              <div className="grid grid-cols-1 gap-4">
+                {affordableCountries.map((country) => (
+                  <Link 
+                    href={`/destination/${country.id}`}
+                    key={country.id}
+                    prefetch={false}
+                    className="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-lg hover:border-indigo-100 transition-all relative overflow-hidden block"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div className="flex items-center gap-4">
+                        <span className="text-4xl filter drop-shadow-sm">{country.flag_emoji}</span>
+                        <div>
+                          <h3 className="font-black text-slate-900 text-lg">{country.name_ko.split(' - ')[1] || country.name_ko}</h3>
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{country.name_en}</p>
+                        </div>
+                      </div>
+                      <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100">
+                        하루 {formatMoney(country.margin)}원 남음
                       </div>
                     </div>
-                    <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100">
-                      하루 {formatMoney(country.margin)}원 남음
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between text-sm bg-slate-50 rounded-2xl p-4 pr-14 relative">
-                    <span className="text-slate-500 font-bold">예상 하루 경비</span>
-                    <span className="font-black text-slate-800 text-lg">
-                      {formatMoney(country.dailyCostKrw)}원
-                    </span>
                     
-                    <div className="absolute right-[-8px] top-1/2 -translate-y-1/2 bg-indigo-600 text-white p-3 rounded-xl shadow-lg shadow-indigo-200 group-hover:bg-indigo-700 transition-colors z-10">
-                      <ArrowRight size={18} />
+                    <div className="flex items-center justify-between text-sm bg-slate-50 rounded-2xl p-4 pr-14 relative">
+                      <span className="text-slate-500 font-bold">예상 하루 경비</span>
+                      <span className="font-black text-slate-800 text-lg">
+                        {formatMoney(country.dailyCostKrw)}원
+                      </span>
+                      
+                      <div className="absolute right-[-8px] top-1/2 -translate-y-1/2 bg-indigo-600 text-white p-3 rounded-xl shadow-lg shadow-indigo-200 group-hover:bg-indigo-700 transition-colors z-10">
+                        <ArrowRight size={18} />
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                  </Link>
+                ))}
+              </div>
+              <p className="text-[10px] text-slate-300 mt-8 text-center">
+                이 페이지의 제휴 링크를 통해 구매가 발생할 경우,<br className="md:hidden"/> 일정액의 수수료를 제공받을 수 있습니다.
+              </p>
+            </>
           ) : (
             <div className="bg-white rounded-[2rem] p-10 text-center border border-slate-100">
               <div className="text-6xl mb-4">💸</div>

@@ -129,7 +129,6 @@ export default function ChecklistPage() {
   if (!isLoaded) return <div className="min-h-screen bg-slate-50" />;
 
   return (
-    // ✅ pb-32 -> pb-24 (모바일) / md:pb-12 (PC)로 수정하여 하단 공백 축소
     <div className="min-h-screen bg-[#F8FAFC] p-6 pb-24 md:pb-12 relative">
       <div className="max-w-3xl mx-auto">
         <header className="flex justify-between items-center mb-8">
@@ -207,7 +206,7 @@ export default function ChecklistPage() {
             <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by MulgaCheck</p>
           </div>
 
-          <div className="w-full flex justify-center items-center mt-4">
+          <div className="w-full flex flex-col justify-center items-center mt-4">
             <div className="hidden md:block">
               <iframe 
                 src="https://ads-partners.coupang.com/widgets.html?id=963064&template=carousel&trackingCode=AF1306700&subId=&width=680&height=140&tsource=" 
@@ -228,6 +227,9 @@ export default function ChecklistPage() {
                 referrerPolicy="unsafe-url"
               />
             </div>
+            <p className="text-[10px] text-slate-300 mt-2 text-center leading-tight">
+              이 포스팅은 쿠팡 파트너스 활동의 일환으로,<br className="md:hidden"/> 이에 따른 일정액의 수수료를 제공받습니다.
+            </p>
           </div>
         </div>
       </div>

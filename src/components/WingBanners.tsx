@@ -7,30 +7,28 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
   const rightDbBanners = dbBanners.filter((_, i) => i % 2 !== 0);
 
   return (
-    // ✅ 반응형: 화면 너비 1400px 미만이면 숨김 (콘텐츠와 겹치기 전 50px 여유 확보)
     <div className="fixed inset-0 z-40 pointer-events-none hidden min-[1400px]:block max-w-[1920px] mx-auto">
       
-      {/* ================= 좌측 윙 (Left Wing) ================= */}
-      {/* left-[250px]: 화면 왼쪽 벽에서 250px 떨어짐
-         top-[calc(50%-300px)]: 메인 배너(600px)의 상단이 화면 세로 중앙에 오도록 고정 (높이 일치 핵심)
-      */}
       <div className="absolute top-[calc(50%-300px)] left-[250px] flex flex-col gap-4 pointer-events-auto items-end transition-all duration-300">
-        <a 
-          href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0012&u_id=" 
-          target="_blank" 
-          rel="noopener noreferrer nofollow"
-          className="block w-[160px] h-[600px] shadow-lg hover:shadow-xl transition-shadow bg-white rounded-lg overflow-hidden"
-        >
-          <Image 
-            src="https://img.linkprice.com/files/glink/klook/20181011/5bbee16a86b6b_160_600.jpg"
-            alt="Klook"
-            width={160}
-            height={600}
-            priority
-            unoptimized
-            className="w-full h-full object-cover"
-          />
-        </a>
+        <div className="flex flex-col items-end">
+            <a 
+              href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0012&u_id=" 
+              target="_blank" 
+              rel="noopener noreferrer nofollow"
+              className="block w-[160px] h-[600px] shadow-lg hover:shadow-xl transition-shadow bg-white rounded-lg overflow-hidden relative"
+            >
+              <Image 
+                src="https://img.linkprice.com/files/glink/klook/20181011/5bbee16a86b6b_160_600.jpg"
+                alt="Klook"
+                width={160}
+                height={600}
+                priority
+                unoptimized
+                className="w-full h-full object-cover"
+              />
+            </a>
+            <span className="text-[10px] text-slate-300 mt-1">제휴 활동으로 수수료를 제공받음</span>
+        </div>
 
         {leftDbBanners.map((banner) => (
           <a
@@ -58,27 +56,26 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
         ))}
       </div>
 
-      {/* ================= 우측 윙 (Right Wing) ================= */}
-      {/* right-[250px]: 화면 오른쪽 벽에서 250px 떨어짐
-         top-[calc(50%-300px)]: 좌측과 동일한 높이 계산식 적용
-      */}
       <div className="absolute top-[calc(50%-300px)] right-[250px] flex flex-col gap-4 pointer-events-auto items-start transition-all duration-300">
-        <a 
-          href="https://click.linkprice.com/click.php?m=usimsa&a=A100702487&l=yjYP&u_id=" 
-          target="_blank" 
-          rel="noopener noreferrer nofollow"
-          className="block w-[160px] h-[600px] shadow-lg hover:shadow-xl transition-shadow bg-white rounded-lg overflow-hidden"
-        >
-          <Image 
-            src="https://img.linkprice.com/files/glink/usimsa/20250207/67a5a76c7e2c7_160x600.jpg"
-            alt="Usimsa"
-            width={160}
-            height={600}
-            priority
-            unoptimized
-            className="w-full h-full object-cover"
-          />
-        </a>
+        <div className="flex flex-col items-start">
+            <a 
+              href="https://click.linkprice.com/click.php?m=usimsa&a=A100702487&l=yjYP&u_id=" 
+              target="_blank" 
+              rel="noopener noreferrer nofollow"
+              className="block w-[160px] h-[600px] shadow-lg hover:shadow-xl transition-shadow bg-white rounded-lg overflow-hidden"
+            >
+              <Image 
+                src="https://img.linkprice.com/files/glink/usimsa/20250207/67a5a76c7e2c7_160x600.jpg"
+                alt="Usimsa"
+                width={160}
+                height={600}
+                priority
+                unoptimized
+                className="w-full h-full object-cover"
+              />
+            </a>
+            <span className="text-[10px] text-slate-300 mt-1">제휴 활동으로 수수료를 제공받음</span>
+        </div>
 
         {rightDbBanners.map((banner) => (
           <a

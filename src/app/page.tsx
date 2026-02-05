@@ -13,6 +13,28 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center relative">
+      
+      <div className="fixed top-1/2 -translate-y-1/2 left-[50px] z-40 hidden lg:flex flex-col items-start gap-2 transition-all duration-300">
+         <a 
+          href="https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=EtSC&u_id="
+          target="_blank" 
+          rel="noopener noreferrer nofollow"
+          className="block w-[160px] h-[600px] shadow-lg hover:shadow-xl transition-shadow bg-white rounded-xl overflow-hidden"
+        >
+          <Image 
+            src="https://img.linkprice.com/files/glink/rakutentr/20230807/G000zNVfRG000_rakutentr_160_600.jpg"
+            alt="Rakuten Travel"
+            width={160}
+            height={600}
+            priority
+            unoptimized
+            className="w-full h-full object-cover"
+          />
+        </a>
+        <p className="text-[10px] text-slate-300 text-center w-full leading-tight">
+          제휴 활동으로<br/>수수료를 제공받음
+        </p>
+      </div>
 
       <nav className="absolute top-0 left-0 right-0 mx-auto w-full max-w-7xl flex justify-between items-start px-6 pt-8 md:px-8 z-50">
         <div className="relative w-40 h-12 md:w-56 md:h-16">
@@ -116,7 +138,7 @@ export default async function Home() {
           <SearchAndFilter initialData={countries ?? []} />
         </div>
 
-        <div className="w-full justify-center hidden md:flex">
+        <div className="w-full flex flex-col items-center justify-center hidden md:flex">
           <a 
             href="https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=5zP1&u_id="
             target="_blank" 
@@ -132,6 +154,9 @@ export default async function Home() {
                className="w-full h-auto object-cover"
              />
           </a>
+          <p className="text-[10px] text-slate-400 mt-2">
+            이 포스팅은 제휴 마케팅 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+          </p>
         </div>
       </main>
     </div>
