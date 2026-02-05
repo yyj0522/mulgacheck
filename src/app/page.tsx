@@ -24,9 +24,6 @@ export default async function Home() {
             quality={75} 
           />
         </div>
-        <div className="px-3 py-1 bg-white border border-slate-200 rounded-full shadow-sm text-[11px] font-bold text-slate-500 uppercase tracking-widest mt-1">
-          Beta v1.0
-        </div>
       </nav>
 
       <header className="w-full max-w-7xl px-6 pt-40 pb-10 flex flex-col items-center z-10">
