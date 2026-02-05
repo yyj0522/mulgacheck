@@ -4,7 +4,6 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import Script from "next/script";
 import Footer from "@/components/Footer";
-import CookieConsent from "@/components/CookieConsent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -81,7 +80,6 @@ export default function RootLayout({
         {children}
         
         <Footer />
-        <CookieConsent />
         <Analytics />
       </body>
     </html>
