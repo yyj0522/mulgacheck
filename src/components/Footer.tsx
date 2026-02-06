@@ -14,7 +14,7 @@ export default function Footer() {
           </Link>
         </div>
 
-        <div className="mb-6 p-4 bg-slate-50 rounded-2xl text-[11px] text-slate-400 leading-relaxed break-keep">
+        <div className="mb-6 p-4 rounded-2xl text-[11px] text-slate-400 leading-relaxed break-keep">
           <p className="mb-1">
             본 사이트는 정보 제공을 목적으로 운영되며, 여행 상품의 직접적인 판매 당사자가 아닙니다.
           </p>
