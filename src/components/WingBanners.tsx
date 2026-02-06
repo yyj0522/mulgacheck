@@ -6,12 +6,8 @@ import Image from "next/image";
 export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
   const leftDbBanners = dbBanners.filter((_, i) => i % 2 === 0);
   const rightDbBanners = dbBanners.filter((_, i) => i % 2 !== 0);
-
-  // 배너 컨테이너의 높이를 측정하기 위한 Ref
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
-
-  // 푸터와 겹치지 않게 하기 위한 Y축 이동 값
   const [offsetY, setOffsetY] = useState(0);
 
   useEffect(() => {
@@ -21,32 +17,18 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
 
       const footerRect = footer.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      
-      // 배너의 기본 시작 위치 (CSS의 top-[calc(50%-300px)] 기준)
-      // 화면 중앙에서 300px 위쪽이 시작점입니다.
       const bannerTopStart = (windowHeight / 2) - 300;
-
-      // 왼쪽, 오른쪽 배너 중 더 긴 쪽의 높이를 기준으로 계산
       const leftHeight = leftRef.current.offsetHeight;
       const rightHeight = rightRef.current.offsetHeight;
       const tallerHeight = Math.max(leftHeight, rightHeight);
-
-      // 배너의 현재 바닥 위치 (뷰포트 기준)
-      // 시작점 + 높이
       const bannerBottom = bannerTopStart + tallerHeight;
-
-      // 푸터 상단 위치 (뷰포트 기준)
       const footerTop = footerRect.top;
-
-      // 배너 바닥이 (푸터 상단 - 50px)보다 아래에 있다면 충돌 발생
       const gap = 50;
       const collisionPoint = footerTop - gap;
 
       if (bannerBottom > collisionPoint) {
-        // 겹치는 만큼 위로 올림 (음수 값)
         setOffsetY(collisionPoint - bannerBottom);
       } else {
-        // 겹치지 않으면 원래 위치 (0)
         setOffsetY(0);
       }
     };
@@ -54,22 +36,16 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleScroll);
     
-    // 초기 로딩 시 한 번 실행
     handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, [dbBanners]); // 배너 데이터가 변경되면 높이가 달라지므로 재계산
+  }, [dbBanners]); 
 
   return (
     <div className="fixed inset-0 z-40 pointer-events-none hidden min-[1400px]:block max-w-[1920px] mx-auto">
-      
-      {/* 왼쪽 배너 그룹 
-        - style transform을 통해 푸터 충돌 시 위로 이동
-        - transition-all을 제거하거나 duration을 짧게 해야 스크롤 시 덜덜거림이 없습니다. 
-      */}
       <div 
         ref={leftRef}
         style={{ transform: `translateY(${offsetY}px)` }}
@@ -121,7 +97,6 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
         ))}
       </div>
 
-      {/* 오른쪽 배너 그룹 */}
       <div 
         ref={rightRef}
         style={{ transform: `translateY(${offsetY}px)` }}

@@ -8,7 +8,7 @@ import WingBanners from "@/components/WingBanners";
 
 const BurgerIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
   <svg 
-    xmlns="http://www.w3.org/2000/svg" 
+    xmlns="https://www.w3.org/2000/svg" 
     width={size} 
     height={size} 
     viewBox="0 0 24 24" 

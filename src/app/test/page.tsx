@@ -192,7 +192,8 @@ export default function TravelTestPage() {
   const resultData = TEST_RESULTS[result];
 
   return (
-    <div className="min-h-screen bg-white p-6 pb-0">
+    // ⭐ 수정: min-h-screen 제거 (레이아웃이 담당), pb-0 -> pb-4 (배너 밑 여백 16px)
+    <div className="w-full bg-white p-6 pb-4">
       <div className="max-w-md mx-auto relative">
         <header className="flex justify-between items-center mb-8 text-slate-500">
           <Link href="/" className="flex items-center gap-1 hover:text-slate-900">
@@ -296,31 +297,33 @@ export default function TravelTestPage() {
           </button>
         </div>
 
-        <div className="mt-8 mb-4 flex flex-col items-center justify-center w-full relative z-0">
+        {/* ⭐ 수정: mb-4 제거 (부모 div에 pb-4를 줬으므로 여기서는 마진 제거하여 이중 여백 방지) */}
+        <div className="mt-8 flex flex-col items-center justify-center w-full relative z-0">
+            {/* ⭐ 수정: Mixed Content 해결 (http -> https) */}
             <div className="block md:hidden">
                 <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0030&u_id=" rel="noopener noreferrer nofollow">
                     <img 
-                      src="http://img.linkprice.com/files/glink/klook/20190604/5cf5ff12bb2ba_320_50.jpg" 
+                      src="https://img.linkprice.com/files/glink/klook/20190604/5cf5ff12bb2ba_320_50.jpg" 
                       width="320" 
                       height="50" 
                       alt="Klook" 
                       style={{ maxWidth: '100%', height: 'auto' }}
                     />
                 </a>
-                <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0030&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
+                <img src="https://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0030&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
             </div>
 
             <div className="hidden md:block">
                 <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0015&u_id=" rel="noopener noreferrer nofollow">
                     <img 
-                      src="http://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg" 
+                      src="https://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg" 
                       width="468" 
                       height="60" 
                       alt="Klook"
                       style={{ width: '468px', height: '60px' }} 
                     />
                 </a>
-                <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0015&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
+                <img src="https://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0015&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
             </div>
         </div>
 
