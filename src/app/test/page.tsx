@@ -192,8 +192,9 @@ export default function TravelTestPage() {
   const resultData = TEST_RESULTS[result];
 
   return (
-    // ⭐ 수정: min-h-screen 제거 (레이아웃이 담당), pb-0 -> pb-4 (배너 밑 여백 16px)
-    <div className="w-full bg-white p-6 pb-4">
+    // ⭐ 수정됨: bg-white -> bg-slate-50 (배경을 연한 회색으로 변경)
+    // 카드 부분은 이미 bg-white가 적용되어 있어 돋보이게 됩니다.
+    <div className="w-full bg-slate-50 p-6 pb-4">
       <div className="max-w-md mx-auto relative">
         <header className="flex justify-between items-center mb-8 text-slate-500">
           <Link href="/" className="flex items-center gap-1 hover:text-slate-900">
@@ -208,6 +209,7 @@ export default function TravelTestPage() {
           </button>
         </header>
 
+        {/* 결과 카드 (흰색 유지) */}
         <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl text-center animate-in slide-in-from-bottom-10 duration-700 relative z-10">
           <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 mb-6 uppercase tracking-wider">
             Your Travel Type
@@ -297,9 +299,7 @@ export default function TravelTestPage() {
           </button>
         </div>
 
-        {/* ⭐ 수정: mb-4 제거 (부모 div에 pb-4를 줬으므로 여기서는 마진 제거하여 이중 여백 방지) */}
         <div className="mt-8 flex flex-col items-center justify-center w-full relative z-0">
-            {/* ⭐ 수정: Mixed Content 해결 (http -> https) */}
             <div className="block md:hidden">
                 <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0030&u_id=" rel="noopener noreferrer nofollow">
                     <img 
