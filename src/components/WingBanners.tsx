@@ -68,7 +68,6 @@ export default function WingBanners({ dbBanners }: { dbBanners: any[] }) {
                 className="w-full h-full object-cover"
               />
             </a>
-            <span className="text-[10px] text-slate-300 mt-1">제휴 활동으로 수수료를 제공받음</span>
         </div>
 
         {leftDbBanners.map((banner) => (

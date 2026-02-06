@@ -128,9 +128,6 @@ export default async function Home() {
                className="w-full h-auto object-cover"
              />
           </a>
-          <p className="text-[10px] text-slate-400 mt-2">
-            이 사이트는 제휴 마케팅 활동으로, 일정액의 수수료를 제공받을 수 있습니다.
-          </p>
         </div>
       </main>
     </div>
