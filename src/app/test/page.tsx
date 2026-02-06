@@ -91,7 +91,7 @@ export default function TravelTestPage() {
         pixelRatio: 3,
         backgroundColor: "#ffffff",
         width: 420,
-        height: 1100, // 이미지가 커졌으므로 높이 여유분을 넉넉히 확보
+        height: 1100, 
       });
       
       captureRef.current.style.cssText = originalStyle;
@@ -129,7 +129,7 @@ export default function TravelTestPage() {
           나만의 여행 성향과 추천 여행지!
         </p>
         <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-100 mb-10 text-sm text-slate-500 font-medium">
-           ⏱ 소요 시간 : 약 3분 &nbsp;|&nbsp; 총 12문항
+            ⏱ 소요 시간 : 약 3분 &nbsp;|&nbsp; 총 12문항
         </div>
         <button
           onClick={() => setStep("question")}
@@ -186,22 +186,22 @@ export default function TravelTestPage() {
   const resultData = TEST_RESULTS[result];
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b ${resultData.color} p-6 pb-0`}>
+    <div className="min-h-screen bg-white p-6 pb-0">
       <div className="max-w-md mx-auto relative">
         <header className="flex justify-between items-center mb-8 text-slate-500">
-          <Link href="/" className="flex items-center gap-1 hover:text-white">
+          <Link href="/" className="flex items-center gap-1 hover:text-slate-900">
             <ChevronLeft size={20} /> 메인으로
           </Link>
           <button onClick={() => {
               setStep("intro");
               setCurrentQ(0);
               setScores({ E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 });
-            }} className="p-2 hover:text-white transition-colors">
+            }} className="p-2 hover:text-slate-900 transition-colors">
             <RefreshCw size={20} />
           </button>
         </header>
 
-        <div className="bg-white rounded-[2.5rem] p-8 shadow-2xl text-center animate-in slide-in-from-bottom-10 duration-700 relative z-10">
+        <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl text-center animate-in slide-in-from-bottom-10 duration-700 relative z-10">
           <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 mb-6 uppercase tracking-wider">
             Your Travel Type
           </span>
@@ -255,7 +255,7 @@ export default function TravelTestPage() {
           <div className="space-y-3">
             <Link 
               href="/"
-              className={`w-full py-4 flex items-center justify-center gap-2 rounded-2xl text-slate-500 font-bold shadow-lg transition-transform hover:-translate-y-1 bg-gradient-to-r ${resultData.color}`}
+              className="w-full py-4 flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-200 transition-transform hover:-translate-y-1"
             >
               <Plane size={20} />
               추천 나라 물가 확인하기
@@ -290,7 +290,6 @@ export default function TravelTestPage() {
           </button>
         </div>
 
-        {/* ✅ 수정: 광고 배너 하단 여백 mb-4 (16px)로 축소 */}
         <div className="mt-8 mb-4 flex flex-col items-center justify-center w-full relative z-0">
             <div className="block md:hidden">
                 <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0030&u_id=" rel="noopener noreferrer nofollow">
@@ -364,14 +363,13 @@ export default function TravelTestPage() {
             wordBreak: 'keep-all',
             whiteSpace: 'normal'
           }}
-          className={`bg-gradient-to-b ${resultData.color} p-6 flex flex-col items-center text-center`}
+          className="bg-white p-6 flex flex-col items-center text-center"
         >
-          <div className="bg-white rounded-[2.5rem] p-8 shadow-xl w-full flex flex-col items-center">
+          <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-xl w-full flex flex-col items-center">
             <div className="text-center mb-6 w-full flex flex-col items-center">
                <span className="inline-block px-4 py-1.5 bg-slate-100 rounded-full text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">
                  Travel MBTI Result
                </span>
-               {/* ✅ 캡처 이미지: max-width 제한 제거하여 크기 확대 */}
                <div className="mb-4 flex justify-center w-full">
                   <Image 
                     src={resultData.image} 
@@ -438,4 +436,4 @@ export default function TravelTestPage() {
 
     </div>
   );
-} 
+}
