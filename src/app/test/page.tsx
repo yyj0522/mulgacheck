@@ -85,13 +85,15 @@ export default function TravelTestPage() {
       captureRef.current.style.width = '420px';
       captureRef.current.style.whiteSpace = 'normal';
       captureRef.current.style.wordBreak = 'keep-all';
+      captureRef.current.style.backgroundColor = '#ffffff';
 
       const dataUrl = await toPng(captureRef.current, {
         cacheBust: true,
         pixelRatio: 3,
         backgroundColor: "#ffffff",
         width: 420,
-        height: 1100, 
+        height: 1100,
+        style: { background: 'white' }
       });
       
       captureRef.current.style.cssText = originalStyle;
@@ -113,11 +115,15 @@ export default function TravelTestPage() {
     }
   };
 
-  const pageWrapperClass = "min-h-screen bg-slate-50";
-
   if (step === "intro") {
     return (
-      <div className={`${pageWrapperClass} flex flex-col items-center justify-center p-6 text-center`}>
+      <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
+        <header className="absolute top-6 left-6">
+          <Link href="/" className="flex items-center gap-1 text-slate-500 hover:text-indigo-600 transition-colors font-bold">
+            <ChevronLeft size={20} /> 메인으로
+          </Link>
+        </header>
+
         <span className="text-4xl mb-6">✈️</span>
         <h1 className="text-3xl font-black text-slate-900 mb-4">
           나의 여행 스타일<br />
@@ -143,7 +149,7 @@ export default function TravelTestPage() {
 
   if (step === "question") {
     return (
-      <div className={`${pageWrapperClass} p-6 flex flex-col items-center justify-center`}>
+      <div className="fixed inset-0 z-50 bg-white p-6 flex flex-col items-center justify-center overflow-y-auto">
         <div className="w-full max-w-md">
           <div className="w-full bg-slate-200 h-2 rounded-full mb-8">
             <div 
@@ -173,7 +179,7 @@ export default function TravelTestPage() {
 
   if (step === "loading") {
     return (
-      <div className={`${pageWrapperClass} flex flex-col items-center justify-center p-6 text-center`}>
+      <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6 text-center">
         <div className="animate-spin w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full mb-6" />
         <h2 className="text-xl font-bold text-slate-900 animate-pulse">
           여행 성향 분석 중...
@@ -361,11 +367,12 @@ export default function TravelTestPage() {
           style={{
             width: '420px',
             wordBreak: 'keep-all',
-            whiteSpace: 'normal'
+            whiteSpace: 'normal',
+            backgroundColor: '#ffffff'
           }}
           className="bg-white p-6 flex flex-col items-center text-center"
         >
-          <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-xl w-full flex flex-col items-center">
+          <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 w-full flex flex-col items-center">
             <div className="text-center mb-6 w-full flex flex-col items-center">
                <span className="inline-block px-4 py-1.5 bg-slate-100 rounded-full text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">
                  Travel MBTI Result
