@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/api"],
+      disallow: ["/x9z-adm-manager", "/api"],
     },
     sitemap: "https://www.mulgaeottae.site/sitemap.xml",
   };

@@ -1,43 +1,64 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { TEST_QUESTIONS, TEST_RESULTS, TestType } from "@/data/travelTest";
+import { TEST_QUESTIONS, TEST_RESULTS } from "@/data/travelTest";
 import { ChevronLeft, Share2, RefreshCw, Plane, Download, X } from "lucide-react";
-import Image from "next/image";
 import { toPng } from "html-to-image";
+import Image from "next/image";
 
 export default function TravelTestPage() {
   const [step, setStep] = useState<"intro" | "question" | "loading" | "result">("intro");
   const [currentQ, setCurrentQ] = useState(0);
+  
   const [scores, setScores] = useState<Record<string, number>>({
-    BUDGET: 0, FLEX: 0, FOODIE: 0, VIBE: 0,
+    E: 0, I: 0,
+    S: 0, N: 0,
+    T: 0, F: 0,
+    J: 0, P: 0,
   });
-  const [result, setResult] = useState<keyof typeof TEST_RESULTS>("BUDGET");
+  
+  const [result, setResult] = useState<string>("ISTJ");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const captureRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const sharedResult = params.get("result");
+      
+      if (sharedResult && TEST_RESULTS[sharedResult]) {
+        setResult(sharedResult);
+        setStep("result");
+      }
+    }
+  }, []);
+
   const handleAnswer = (type: string) => {
-    const newScores = { ...scores, [type]: scores[type] + 1 };
-    setScores(newScores);
+    setScores((prev) => ({ ...prev, [type]: prev[type] + 1 }));
 
     if (currentQ < TEST_QUESTIONS.length - 1) {
       setCurrentQ(currentQ + 1);
     } else {
       setStep("loading");
-      setTimeout(() => {
-        const finalType = Object.keys(newScores).reduce((a, b) => 
-          newScores[a] > newScores[b] ? a : b
-        ) as keyof typeof TEST_RESULTS;
-        setResult(finalType);
-        setStep("result");
-      }, 2000);
+      setTimeout(() => calculateResult(), 2000);
     }
   };
 
+  const calculateResult = () => {
+    const e = scores.E > scores.I ? "E" : "I";
+    const s = scores.S > scores.N ? "S" : "N";
+    const t = scores.T > scores.F ? "T" : "F";
+    const j = scores.J > scores.P ? "J" : "P";
+    
+    const finalType = `${e}${s}${t}${j}`;
+    setResult(finalType);
+    setStep("result");
+  };
+
   const handleShare = async () => {
-    const url = window.location.href;
+    const url = `${window.location.origin}${window.location.pathname}?result=${result}`;
     const resultData = TEST_RESULTS[result];
     const shareData = {
         title: "나의 여행 성향 테스트 - 물가체크",
@@ -59,11 +80,21 @@ export default function TravelTestPage() {
     if (captureRef.current === null) return;
 
     try {
+      const originalStyle = captureRef.current.style.cssText;
+      
+      captureRef.current.style.width = '420px';
+      captureRef.current.style.whiteSpace = 'normal';
+      captureRef.current.style.wordBreak = 'keep-all';
+
       const dataUrl = await toPng(captureRef.current, {
         cacheBust: true,
-        pixelRatio: 2,
+        pixelRatio: 3,
         backgroundColor: "#ffffff",
+        width: 420,
+        height: 1100, // 이미지가 커졌으므로 높이 여유분을 넉넉히 확보
       });
+      
+      captureRef.current.style.cssText = originalStyle;
       
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       
@@ -82,7 +113,7 @@ export default function TravelTestPage() {
     }
   };
 
-  const pageWrapperClass = "fixed inset-0 z-50 overflow-y-auto bg-slate-50";
+  const pageWrapperClass = "min-h-screen bg-slate-50";
 
   if (step === "intro") {
     return (
@@ -92,11 +123,14 @@ export default function TravelTestPage() {
           나의 여행 스타일<br />
           <span className="text-indigo-600">MBTI 테스트</span>
         </h1>
-        <p className="text-slate-500 mb-10 leading-relaxed">
+        <p className="text-slate-500 mb-8 leading-relaxed">
           나는 어떤 여행자일까?<br />
-          7가지 질문으로 알아보는<br />
+          12가지 질문으로 알아보는<br />
           나만의 여행 성향과 추천 여행지!
         </p>
+        <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-100 mb-10 text-sm text-slate-500 font-medium">
+           ⏱ 소요 시간 : 약 3분 &nbsp;|&nbsp; 총 12문항
+        </div>
         <button
           onClick={() => setStep("question")}
           className="w-full max-w-xs py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all hover:-translate-y-1"
@@ -118,7 +152,7 @@ export default function TravelTestPage() {
             />
           </div>
           <span className="text-indigo-600 font-bold text-sm mb-2 block">Q{currentQ + 1}.</span>
-          <h2 className="text-2xl font-bold text-slate-900 mb-10 h-20 leading-snug">
+          <h2 className="text-2xl font-bold text-slate-900 mb-10 min-h-[80px] leading-snug break-keep">
             {TEST_QUESTIONS[currentQ].question}
           </h2>
           <div className="space-y-4">
@@ -152,16 +186,16 @@ export default function TravelTestPage() {
   const resultData = TEST_RESULTS[result];
 
   return (
-    <div className={`fixed inset-0 z-50 overflow-y-auto bg-gradient-to-b ${resultData.color} p-6 pb-32`}>
+    <div className={`min-h-screen bg-gradient-to-b ${resultData.color} p-6 pb-0`}>
       <div className="max-w-md mx-auto relative">
-        <header className="flex justify-between items-center mb-8 text-white/80">
+        <header className="flex justify-between items-center mb-8 text-slate-500">
           <Link href="/" className="flex items-center gap-1 hover:text-white">
             <ChevronLeft size={20} /> 메인으로
           </Link>
           <button onClick={() => {
               setStep("intro");
               setCurrentQ(0);
-              setScores({ BUDGET: 0, FLEX: 0, FOODIE: 0, VIBE: 0 });
+              setScores({ E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 });
             }} className="p-2 hover:text-white transition-colors">
             <RefreshCw size={20} />
           </button>
@@ -171,6 +205,18 @@ export default function TravelTestPage() {
           <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 mb-6 uppercase tracking-wider">
             Your Travel Type
           </span>
+          
+          <div className="mb-4 flex justify-center w-full">
+             <Image 
+               src={resultData.image} 
+               alt={resultData.title} 
+               width={1200} 
+               height={1200}
+               priority
+               className="w-full h-auto object-contain drop-shadow-md mx-auto" 
+             />
+          </div>
+
           <h1 className="text-3xl font-black text-slate-900 mb-4 leading-tight break-keep">
             {resultData.title}
           </h1>
@@ -190,11 +236,26 @@ export default function TravelTestPage() {
               ))}
             </div>
           </div>
+          
+          <div className="grid grid-cols-2 gap-4 mb-8">
+             <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100 flex flex-col justify-center">
+                <p className="text-[10px] font-bold text-blue-400 uppercase mb-2">환상의 짝꿍</p>
+                <p className="font-bold text-blue-900 text-sm break-keep leading-tight">
+                  {TEST_RESULTS[resultData.best].title}
+                </p>
+             </div>
+             <div className="bg-red-50 p-4 rounded-2xl border border-red-100 flex flex-col justify-center">
+                <p className="text-[10px] font-bold text-red-400 uppercase mb-2">환장의 짝꿍</p>
+                <p className="font-bold text-red-900 text-sm break-keep leading-tight">
+                  {TEST_RESULTS[resultData.worst].title}
+                </p>
+             </div>
+          </div>
 
           <div className="space-y-3">
             <Link 
               href="/"
-              className={`w-full py-4 flex items-center justify-center gap-2 rounded-2xl text-white font-bold shadow-lg transition-transform hover:-translate-y-1 bg-gradient-to-r ${resultData.color}`}
+              className={`w-full py-4 flex items-center justify-center gap-2 rounded-2xl text-slate-500 font-bold shadow-lg transition-transform hover:-translate-y-1 bg-gradient-to-r ${resultData.color}`}
             >
               <Plane size={20} />
               추천 나라 물가 확인하기
@@ -204,7 +265,7 @@ export default function TravelTestPage() {
               onClick={() => {
                 setStep("intro");
                 setCurrentQ(0);
-                setScores({ BUDGET: 0, FLEX: 0, FOODIE: 0, VIBE: 0 });
+                setScores({ E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 });
               }}
               className="w-full py-4 flex items-center justify-center gap-2 bg-slate-100 text-slate-500 font-bold rounded-2xl hover:bg-slate-200 transition-colors"
             >
@@ -214,7 +275,23 @@ export default function TravelTestPage() {
           </div>
         </div>
 
-        <div className="mt-6 mb-24 flex flex-col items-center justify-center w-full relative z-0">
+        <div className="mt-8 flex gap-3 w-full">
+          <button 
+            onClick={handleShare}
+            className="flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-2xl shadow-lg shadow-slate-200/50 flex items-center justify-center gap-2 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 transition-all"
+          >
+            <Share2 size={20} /> 결과 공유
+          </button>
+          <button 
+            onClick={handleGenerateImage}
+            className="flex-1 bg-slate-900 text-white font-bold py-4 rounded-2xl shadow-lg shadow-slate-400/50 flex items-center justify-center gap-2 hover:bg-slate-800 hover:scale-[1.02] active:scale-95 transition-all"
+          >
+            <Download size={20} /> 이미지 저장
+          </button>
+        </div>
+
+        {/* ✅ 수정: 광고 배너 하단 여백 mb-4 (16px)로 축소 */}
+        <div className="mt-8 mb-4 flex flex-col items-center justify-center w-full relative z-0">
             <div className="block md:hidden">
                 <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0030&u_id=" rel="noopener noreferrer nofollow">
                     <img 
@@ -240,29 +317,8 @@ export default function TravelTestPage() {
                 </a>
                 <img src="http://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0015&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
             </div>
-            
-            <p className="text-[10px] text-white/50 mt-2 text-center leading-tight">
-              이 사이트는 제휴 마케팅 활동의 일환으로,<br className="md:hidden"/> 이에 따른 일정액의 수수료를 제공받을 수 있습니다.
-            </p>
         </div>
 
-      </div>
-
-      <div className="fixed bottom-8 left-0 right-0 px-6 z-50">
-        <div className="max-w-md mx-auto flex gap-3">
-          <button 
-            onClick={handleShare}
-            className="flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-full shadow-lg shadow-slate-200/50 flex items-center justify-center gap-2 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 transition-all"
-          >
-            <Share2 size={20} /> 결과 공유
-          </button>
-          <button 
-            onClick={handleGenerateImage}
-            className="flex-1 bg-slate-900 text-white font-bold py-4 rounded-full shadow-lg shadow-slate-400/50 flex items-center justify-center gap-2 hover:bg-slate-800 hover:scale-[1.02] active:scale-95 transition-all"
-          >
-            <Download size={20} /> 이미지 저장
-          </button>
-        </div>
       </div>
 
       {previewUrl && (
@@ -294,39 +350,87 @@ export default function TravelTestPage() {
         </div>
       )}
 
-      <div style={{ position: "fixed", left: "-9999px", top: 0 }}>
+      <div 
+        style={{ 
+          position: "fixed", 
+          left: "-9999px", 
+          top: 0,
+        }}
+      >
         <div 
           ref={captureRef} 
-          className={`w-[600px] bg-gradient-to-b ${resultData.color} p-12 flex flex-col items-center text-center`}
+          style={{
+            width: '420px',
+            wordBreak: 'keep-all',
+            whiteSpace: 'normal'
+          }}
+          className={`bg-gradient-to-b ${resultData.color} p-6 flex flex-col items-center text-center`}
         >
-          <div className="bg-white rounded-[3rem] p-10 shadow-xl w-full">
-            <div className="text-center mb-8">
+          <div className="bg-white rounded-[2.5rem] p-8 shadow-xl w-full flex flex-col items-center">
+            <div className="text-center mb-6 w-full flex flex-col items-center">
                <span className="inline-block px-4 py-1.5 bg-slate-100 rounded-full text-sm font-bold text-slate-500 uppercase tracking-wider mb-4">
                  Travel MBTI Result
                </span>
-               <h1 className="text-4xl font-black text-slate-900 mb-4 leading-tight break-keep">
+               {/* ✅ 캡처 이미지: max-width 제한 제거하여 크기 확대 */}
+               <div className="mb-4 flex justify-center w-full">
+                  <Image 
+                    src={resultData.image} 
+                    alt={resultData.title} 
+                    width={800}
+                    height={800} 
+                    className="w-full h-auto object-contain mx-auto" 
+                  />
+               </div>
+               <h1 
+                 style={{ width: '100%', wordBreak: 'keep-all', whiteSpace: 'normal' }}
+                 className="text-2xl font-black text-slate-900 mb-3 leading-tight"
+               >
                  {resultData.title}
                </h1>
-               <p className="text-slate-500 text-lg leading-relaxed break-keep">
+               <p 
+                 style={{ width: '100%', wordBreak: 'keep-all', whiteSpace: 'normal' }}
+                 className="text-slate-500 text-sm leading-relaxed"
+               >
                  {resultData.desc}
                </p>
             </div>
 
-            <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100 mb-8">
-              <p className="text-sm font-bold text-slate-400 mb-4 uppercase tracking-wider">
+            <div className="bg-slate-50 rounded-3xl p-5 border border-slate-100 mb-6 w-full">
+              <p className="text-xs font-bold text-slate-400 mb-3 uppercase tracking-wider">
                 나에게 추천하는 여행지
               </p>
-              <div className="flex justify-center gap-3 flex-wrap">
+              <div className="flex justify-center gap-2 flex-wrap">
                 {resultData.recommends.map((country, idx) => (
-                  <span key={idx} className="px-5 py-2 bg-white border border-slate-200 rounded-xl text-lg font-bold text-slate-800 shadow-sm">
+                  <span key={idx} className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-800 shadow-sm">
                     {country}
                   </span>
                 ))}
               </div>
             </div>
+            
+            <div className="grid grid-cols-2 gap-3 mb-6 w-full">
+               <div className="bg-blue-50 p-4 rounded-3xl border border-blue-100 flex flex-col justify-center">
+                  <p className="text-[10px] font-bold text-blue-400 uppercase mb-1">환상의 짝꿍</p>
+                  <p 
+                    style={{ width: '100%', wordBreak: 'keep-all', whiteSpace: 'normal' }}
+                    className="font-bold text-blue-900 text-xs leading-tight"
+                  >
+                    {TEST_RESULTS[resultData.best].title}
+                  </p>
+               </div>
+               <div className="bg-red-50 p-4 rounded-3xl border border-red-100 flex flex-col justify-center">
+                  <p className="text-[10px] font-bold text-red-400 uppercase mb-1">환장의 짝꿍</p>
+                  <p 
+                    style={{ width: '100%', wordBreak: 'keep-all', whiteSpace: 'normal' }}
+                    className="font-bold text-red-900 text-xs leading-tight"
+                  >
+                    {TEST_RESULTS[resultData.worst].title}
+                  </p>
+               </div>
+            </div>
 
-            <div className="flex items-center justify-center gap-2 text-slate-400 font-bold text-sm uppercase tracking-widest">
-               <Plane size={16} /> Powered by MulgaCheck
+            <div className="flex items-center justify-center gap-2 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+               <Plane size={12} /> Powered by MulgaCheck
             </div>
           </div>
         </div>
@@ -334,4 +438,4 @@ export default function TravelTestPage() {
 
     </div>
   );
-}
+} 

@@ -2,19 +2,23 @@
 
 import { useState, useEffect, useRef } from "react";
 import { CHECKLIST_CATEGORIES } from "@/data/checklistItems";
-import { Check, Share2, Download, RefreshCw, ArrowLeft, X } from "lucide-react";
+import { Check, Share2, Download, RefreshCw, ArrowLeft, X, Plus, Trash2, PackageCheck } from "lucide-react";
 import Link from "next/link";
 import { toPng } from "html-to-image";
 
 export default function ChecklistPage() {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
+  const [customItems, setCustomItems] = useState<string[]>([]);
+  const [newItemInput, setNewItemInput] = useState("");
+  
   const [isLoaded, setIsLoaded] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   
   const captureRef = useRef<HTMLDivElement>(null);
 
   const getAllItems = () => {
-    return CHECKLIST_CATEGORIES.flatMap((category) => category.items);
+    const standardItems = CHECKLIST_CATEGORIES.flatMap((category) => category.items);
+    return [...standardItems, ...customItems];
   };
 
   useEffect(() => {
@@ -24,15 +28,14 @@ export default function ChecklistPage() {
     if (sharedData) {
       try {
         const decodedString = atob(sharedData);
-        
         if (decodedString.startsWith("[")) {
           const decoded = JSON.parse(decodeURIComponent(decodedString));
           setCheckedItems(decoded);
         } else {
-          const allItems = getAllItems();
+          const standardItems = CHECKLIST_CATEGORIES.flatMap((c) => c.items);
           const indices = decodedString.split(",").map(Number);
           const restoredItems = indices
-            .map((index) => allItems[index])
+            .map((index) => standardItems[index])
             .filter((item) => item !== undefined);
           setCheckedItems(restoredItems);
         }
@@ -40,9 +43,14 @@ export default function ChecklistPage() {
         console.error(e);
       }
     } else {
-      const saved = localStorage.getItem("travel_checklist");
-      if (saved) {
-        setCheckedItems(JSON.parse(saved));
+      const savedChecked = localStorage.getItem("travel_checklist");
+      const savedCustom = localStorage.getItem("travel_custom_items");
+      
+      if (savedChecked) {
+        setCheckedItems(JSON.parse(savedChecked));
+      }
+      if (savedCustom) {
+        setCustomItems(JSON.parse(savedCustom));
       }
     }
     setIsLoaded(true);
@@ -51,8 +59,9 @@ export default function ChecklistPage() {
   useEffect(() => {
     if (isLoaded) {
       localStorage.setItem("travel_checklist", JSON.stringify(checkedItems));
+      localStorage.setItem("travel_custom_items", JSON.stringify(customItems));
     }
-  }, [checkedItems, isLoaded]);
+  }, [checkedItems, customItems, isLoaded]);
 
   const toggleItem = (item: string) => {
     setCheckedItems((prev) =>
@@ -62,34 +71,48 @@ export default function ChecklistPage() {
     );
   };
 
+  const addCustomItem = () => {
+    if (!newItemInput.trim()) return;
+    if (customItems.includes(newItemInput)) {
+        alert("이미 목록에 있는 아이템입니다.");
+        return;
+    }
+    
+    setCustomItems((prev) => [...prev, newItemInput]);
+    setCheckedItems((prev) => [...prev, newItemInput]);
+    setNewItemInput("");
+  };
+
+  const removeCustomItem = (itemToRemove: string) => {
+    if(confirm(`'${itemToRemove}' 항목을 삭제하시겠습니까?`)) {
+        setCustomItems((prev) => prev.filter(item => item !== itemToRemove));
+        setCheckedItems((prev) => prev.filter(item => item !== itemToRemove));
+    }
+  };
+
   const resetList = () => {
-    if (confirm("모든 체크리스트를 초기화하시겠습니까?")) {
+    if (confirm("모든 체크 상태를 초기화하시겠습니까? (추가한 아이템은 유지됩니다)")) {
       setCheckedItems([]);
     }
   };
 
   const handleShare = async () => {
     try {
-      const allItems = getAllItems();
-      const indices = checkedItems
-        .map((item) => allItems.indexOf(item))
-        .filter((index) => index !== -1);
-      
-      const data = btoa(indices.join(","));
-      const url = `${window.location.origin}${window.location.pathname}?data=${data}`;
+        const data = btoa(encodeURIComponent(JSON.stringify(checkedItems)));
+        const url = `${window.location.origin}${window.location.pathname}?data=${data}`;
 
-      const shareData = {
-        title: '물가체크 - 여행 짐 싸기 체크리스트',
-        text: `현재 짐 챙기기 ${progress}% 완료! 제 리스트를 확인해보세요.`,
-        url: url,
-      };
+        const shareData = {
+            title: '물가체크 - 여행 짐 싸기 체크리스트',
+            text: `여행 준비 짐 싸기 리스트를 공유합니다.`,
+            url: url,
+        };
 
-      if (navigator.share && navigator.canShare(shareData)) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(url);
-        alert("링크가 복사되었습니다! 카카오톡이나 디스코드에 붙여넣기 하세요.");
-      }
+        if (navigator.share && navigator.canShare(shareData)) {
+            await navigator.share(shareData);
+        } else {
+            await navigator.clipboard.writeText(url);
+            alert("링크가 복사되었습니다! 카카오톡이나 디스코드에 붙여넣기 하세요.");
+        }
     } catch (err) {
       console.error(err);
     }
@@ -122,16 +145,14 @@ export default function ChecklistPage() {
     }
   };
 
-  const totalItems = CHECKLIST_CATEGORIES.reduce((acc, cat) => acc + cat.items.length, 0);
   const checkedCount = checkedItems.length;
-  const progress = Math.round((checkedCount / totalItems) * 100);
 
   if (!isLoaded) return <div className="min-h-screen bg-slate-50" />;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-24 md:pb-12 relative">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-4 relative">
       <div className="max-w-3xl mx-auto">
-        <header className="flex justify-between items-center mb-8">
+        <header className="flex justify-between items-center mb-6">
           <Link href="/" className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm">
             <ArrowLeft size={20} className="text-slate-600" />
           </Link>
@@ -144,28 +165,21 @@ export default function ChecklistPage() {
           </button>
         </header>
 
-        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 mb-8 sticky top-4 z-20">
-          <div className="flex justify-between items-end mb-2">
-            <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Packing Progress</p>
-              <p className="text-3xl font-black text-indigo-600">{progress}% <span className="text-base text-slate-400 font-medium">완료</span></p>
+        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 mb-8 sticky top-4 z-20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500">
+                <PackageCheck size={24} />
             </div>
-            <p className="text-sm font-bold text-slate-500">{checkedCount} / {totalItems}</p>
-          </div>
-          <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 transition-all duration-500 ease-out rounded-full"
-              style={{ width: `${progress}%` }}
-            />
+            <div>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">Checked Items</p>
+                <p className="text-xl font-black text-slate-800">
+                    현재 <span className="text-indigo-600 text-2xl">{checkedCount}</span>개 챙겼어요
+                </p>
+            </div>
           </div>
         </div>
 
         <div className="bg-[#F8FAFC] p-4 -m-4">
-          <div className="text-center mb-8 md:hidden">
-              <h2 className="text-xl font-bold text-slate-800">나의 여행 체크리스트</h2>
-              <p className="text-xs text-slate-400 mt-1">물가체크(MulgaCheck) 제공</p>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {CHECKLIST_CATEGORIES.map((category) => (
               <div key={category.id} className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
@@ -200,13 +214,76 @@ export default function ChecklistPage() {
                 </ul>
               </div>
             ))}
-          </div>
 
-          <div className="mt-12 text-center hidden md:block">
-            <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by MulgaCheck</p>
-          </div>
+            <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm md:col-span-2">
+                <h3 className="font-bold text-lg text-slate-800 mb-5 flex items-center gap-2 pb-2 border-b border-slate-50">
+                  <span className="w-1.5 h-6 bg-slate-800 rounded-full inline-block" />
+                  나만의 아이템 추가
+                </h3>
+                
+                {customItems.length > 0 && (
+                    <ul className="space-y-3 mb-6">
+                        {customItems.map((item) => (
+                            <li key={item} className="flex items-center justify-between group">
+                                <div 
+                                    onClick={() => toggleItem(item)}
+                                    className="flex items-center gap-3 cursor-pointer select-none flex-1"
+                                >
+                                    <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                                        checkedItems.includes(item) 
+                                        ? "bg-indigo-500 border-indigo-500" 
+                                        : "bg-slate-50 border-slate-200 group-hover:border-indigo-300"
+                                    }`}>
+                                        {checkedItems.includes(item) && <Check size={14} className="text-white" strokeWidth={3} />}
+                                    </div>
+                                    <span className={`text-sm font-bold ${checkedItems.includes(item) ? "text-slate-400 line-through" : "text-slate-700"}`}>
+                                        {item}
+                                    </span>
+                                </div>
+                                <button 
+                                    onClick={() => removeCustomItem(item)}
+                                    className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                )}
 
-          <div className="w-full flex flex-col justify-center items-center mt-4">
+                <div className="flex gap-2">
+                    <input 
+                        type="text" 
+                        value={newItemInput}
+                        onChange={(e) => setNewItemInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && addCustomItem()}
+                        placeholder="예: 애착인형, 비상금"
+                        className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-indigo-500 transition-colors"
+                    />
+                    <button 
+                        onClick={addCustomItem}
+                        className="bg-slate-800 text-white px-4 rounded-xl hover:bg-slate-700 transition-colors flex items-center gap-2 font-bold text-sm"
+                    >
+                        <Plus size={18} /> <span className="hidden sm:inline">추가</span>
+                    </button>
+                </div>
+            </div>
+          </div>
+          <div className="flex gap-3 mt-8">
+            <button 
+              onClick={handleShare}
+              className="flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-2xl shadow-lg shadow-slate-200/50 flex items-center justify-center gap-2 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 transition-all"
+            >
+              <Share2 size={20} /> 친구 공유
+            </button>
+            <button 
+              onClick={handleGenerateImage}
+              className="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all"
+            >
+              <Download size={20} /> 이미지 저장
+            </button>
+          </div>
+          <div className="w-full flex flex-col justify-center items-center mt-8 mb-6">
             <div className="hidden md:block">
               <iframe 
                 src="https://ads-partners.coupang.com/widgets.html?id=963064&template=carousel&trackingCode=AF1306700&subId=&width=680&height=140&tsource=" 
@@ -227,27 +304,11 @@ export default function ChecklistPage() {
                 referrerPolicy="unsafe-url"
               />
             </div>
-            <p className="text-[10px] text-slate-300 mt-2 text-center leading-tight">
-              이 사이트는 쿠팡 파트너스 활동의 일환으로,<br className="md:hidden"/> 이에 따른 일정액의 수수료를 제공받을 수 있습니다.
-            </p>
           </div>
-        </div>
-      </div>
+          <div className="text-center mb-4">
+            <p className="text-[10px] text-slate-300 font-bold uppercase tracking-widest">Powered by MulgaCheck</p>
+          </div>
 
-      <div className="fixed bottom-8 left-0 right-0 px-6 z-30">
-        <div className="max-w-3xl mx-auto flex gap-3">
-          <button 
-            onClick={handleShare}
-            className="flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-full shadow-lg shadow-slate-200/50 flex items-center justify-center gap-2 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 transition-all"
-          >
-            <Share2 size={20} /> 친구 공유
-          </button>
-          <button 
-            onClick={handleGenerateImage}
-            className="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-full shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 hover:bg-indigo-700 hover:scale-[1.02] active:scale-95 transition-all"
-          >
-            <Download size={20} /> 이미지 저장
-          </button>
         </div>
       </div>
 
@@ -283,45 +344,46 @@ export default function ChecklistPage() {
       <div style={{ position: "fixed", left: "-9999px", top: 0 }}>
         <div 
           ref={captureRef} 
-          className="w-[900px] bg-[#F8FAFC] p-12"
+          className="w-[600px] bg-[#F8FAFC] p-10"
         >
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-black text-slate-900 mb-2">나의 여행 체크리스트</h1>
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-black text-slate-900 mb-2">My Travel Packing List</h1>
             <p className="text-lg text-slate-500 font-bold">물가체크 (MulgaCheck) 제공</p>
           </div>
 
-          <div className="flex justify-between items-center mb-8 px-4">
-             <div className="flex items-center gap-4">
-                <div className="px-4 py-2 bg-indigo-600 text-white rounded-xl font-bold text-lg">
-                  진행률 {progress}%
+          <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm mb-6 flex justify-between items-center">
+             <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                    <PackageCheck size={28} />
                 </div>
-                <div className="text-slate-500 font-bold text-lg">
-                  {checkedCount} / {totalItems} 완료
+                <div>
+                    <p className="text-slate-400 text-xs font-bold uppercase mb-0.5">Status</p>
+                    <p className="text-2xl font-black text-slate-800">{checkedCount}개 <span className="text-lg text-slate-500 font-bold">챙김</span></p>
                 </div>
              </div>
-             <div className="text-slate-400 font-medium text-sm">
-                MulgaCheck
+             <div className="text-right">
+                <p className="text-sm font-bold text-slate-400">MulgaCheck</p>
              </div>
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             {CHECKLIST_CATEGORIES.map((category) => (
-              <div key={category.id} className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
-                <h3 className="font-bold text-2xl text-slate-800 mb-6 flex items-center gap-3 pb-3 border-b border-slate-100">
-                  <span className="w-2 h-8 bg-indigo-500 rounded-full inline-block" />
+              <div key={category.id} className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
+                <h3 className="font-bold text-xl text-slate-800 mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                  <span className="w-1.5 h-6 bg-indigo-500 rounded-full inline-block" />
                   {category.label}
                 </h3>
-                <ul className="space-y-4">
+                <ul className="space-y-3">
                   {category.items.map((item) => (
-                    <li key={item} className="flex items-center gap-4">
-                      <div className={`w-8 h-8 rounded-xl border-2 flex-shrink-0 flex items-center justify-center ${
+                    <li key={item} className="flex items-center gap-3">
+                      <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center ${
                         checkedItems.includes(item) 
                           ? "bg-indigo-500 border-indigo-500" 
                           : "bg-slate-50 border-slate-300"
                       }`}>
-                        {checkedItems.includes(item) && <Check size={20} className="text-white" strokeWidth={4} />}
+                        {checkedItems.includes(item) && <Check size={14} className="text-white" strokeWidth={4} />}
                       </div>
-                      <span className={`text-lg ${
+                      <span className={`text-base ${
                         checkedItems.includes(item) 
                           ? "text-slate-400 line-through font-medium" 
                           : "text-slate-800 font-bold"
@@ -333,12 +395,31 @@ export default function ChecklistPage() {
                 </ul>
               </div>
             ))}
-          </div>
 
-          <div className="mt-12 text-center border-t border-slate-200 pt-8">
-            <p className="text-slate-400 font-bold text-sm tracking-widest uppercase">
-              Travel Budget & Checklist Service
-            </p>
+            {customItems.length > 0 && (
+                <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm col-span-2">
+                    <h3 className="font-bold text-xl text-slate-800 mb-4 flex items-center gap-2 pb-2 border-b border-slate-100">
+                      <span className="w-1.5 h-6 bg-slate-800 rounded-full inline-block" />
+                      직접 추가한 물건
+                    </h3>
+                    <ul className="space-y-3 grid grid-cols-2 gap-x-4">
+                        {customItems.map((item) => (
+                            <li key={item} className="flex items-center gap-3">
+                                <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center ${
+                                    checkedItems.includes(item) 
+                                    ? "bg-indigo-500 border-indigo-500" 
+                                    : "bg-slate-50 border-slate-300"
+                                }`}>
+                                    {checkedItems.includes(item) && <Check size={14} className="text-white" strokeWidth={4} />}
+                                </div>
+                                <span className={`text-base ${checkedItems.includes(item) ? "text-slate-400 line-through font-medium" : "text-slate-800 font-bold"}`}>
+                                    {item}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
           </div>
         </div>
       </div>

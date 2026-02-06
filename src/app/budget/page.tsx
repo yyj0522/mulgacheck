@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { ChevronLeft, Plane, ArrowRight, Coins, CalendarDays, Wallet } from "lucide-react";
+import { ChevronLeft, Plane, ArrowRight, Coins, CalendarDays, Wallet, SlidersHorizontal, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import WingBanners from "@/components/WingBanners";
 
 type CountryData = {
@@ -20,12 +20,38 @@ type CountryData = {
   };
 };
 
+const TRAVEL_STYLES = {
+  BACKPACKER: { 
+    label: "배낭여행", 
+    desc: "가성비 최고 (호스텔+대중교통)",
+    multipliers: { meal: 2.0, accommodation: 0.4, transport: 1.0 } 
+  },
+  STANDARD: { 
+    label: "일반", 
+    desc: "평범한 여행 (호텔+대중교통/택시)",
+    multipliers: { meal: 3.0, accommodation: 1.0, transport: 2.0 } 
+  },
+  LUXURY: { 
+    label: "럭셔리", 
+    desc: "여유로운 힐링 (호캉스+택시)",
+    multipliers: { meal: 4.0, accommodation: 3.0, transport: 4.0 } 
+  },
+};
+
+type SortOption = "MARGIN_DESC" | "COST_ASC" | "NAME_ASC";
+
 export default function BudgetExplorer() {
-  const [budget, setBudget] = useState(1500000);
+  const [totalBudget, setTotalBudget] = useState(1500000);
+  const [flightCost, setFlightCost] = useState(500000);
   const [days, setDays] = useState(4);
+  const [travelStyle, setTravelStyle] = useState<keyof typeof TRAVEL_STYLES>("STANDARD");
+  const [sortOption, setSortOption] = useState<SortOption>("MARGIN_DESC");
+
   const [countries, setCountries] = useState<CountryData[]>([]);
   const [banners, setBanners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const localBudget = totalBudget - flightCost;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,23 +79,31 @@ export default function BudgetExplorer() {
   const calculateAffordability = (country: CountryData) => {
     const rate = country.exchange_rates?.rate_to_krw || 0;
     
+    const { multipliers } = TRAVEL_STYLES[travelStyle];
+
     const dailyCostKrw = Math.round(
-      (country.accommodation_price_local + 
-       country.meal_price_local * 3 +      
-       country.transport_price_local * 2)  
+      (country.accommodation_price_local * multipliers.accommodation + 
+       country.meal_price_local * multipliers.meal +      
+       country.transport_price_local * multipliers.transport)  
       * rate
     );
 
-    const userDailyBudget = Math.floor(budget / days);
+    const userDailyBudget = Math.floor(localBudget / days);
     const margin = userDailyBudget - dailyCostKrw;
     
-    return { dailyCostKrw, margin, isAffordable: margin >= 0 };
+    const trend = Number(country.id) % 2 === 0 ? "UP" : "DOWN"; 
+
+    return { dailyCostKrw, margin, isAffordable: margin >= 0, trend };
   };
 
   const affordableCountries = countries
     .map((c) => ({ ...c, ...calculateAffordability(c) }))
     .filter((c) => c.isAffordable)
-    .sort((a, b) => b.margin - a.margin);
+    .sort((a, b) => {
+      if (sortOption === "COST_ASC") return a.dailyCostKrw - b.dailyCostKrw;
+      if (sortOption === "NAME_ASC") return a.name_ko.localeCompare(b.name_ko);
+      return b.margin - a.margin;
+    });
 
   const formatMoney = (amount: number) => amount.toLocaleString();
 
@@ -83,76 +117,122 @@ export default function BudgetExplorer() {
             <ChevronLeft size={20} /> 메인으로
           </Link>
           <h1 className="text-3xl font-black text-slate-900 leading-tight">
-            얼마나<br />
-            가지고 계신가요?
+            어디로 떠날까요?
           </h1>
           <p className="text-slate-500 text-sm mt-2">
-            예산을 입력하면 갈 수 있는 여행지를 찾아드려요.
-            <br />(항공권 제외, 현지 체류비 기준)
+            항공권과 여행 스타일을 고려해<br />
+            현실적인 여행지를 찾아드려요.
           </p>
         </header>
 
-        <div className="bg-white p-6 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-10 sticky top-4 z-10">
-          <div className="space-y-6">
+        <div className="bg-white p-6 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 mb-10 space-y-6">
+          
+          <div>
+            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">여행 스타일</label>
+            <div className="flex bg-slate-100 p-1 rounded-xl">
+              {(Object.keys(TRAVEL_STYLES) as Array<keyof typeof TRAVEL_STYLES>).map((style) => (
+                <button
+                  key={style}
+                  onClick={() => setTravelStyle(style)}
+                  className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
+                    travelStyle === style 
+                      ? "bg-white text-indigo-600 shadow-sm" 
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
+                  {TRAVEL_STYLES[style].label}
+                </button>
+              ))}
+            </div>
+            <p className="text-[10px] text-slate-400 mt-1.5 text-center">{TRAVEL_STYLES[travelStyle].desc}</p>
+          </div>
+
+          <hr className="border-slate-100" />
+
+          <div className="space-y-4">
             <div>
               <label className="flex items-center gap-2 text-xs font-bold text-indigo-500 uppercase tracking-wider mb-2">
-                <Wallet size={14} /> 총 예산 (항공권 제외)
+                <Wallet size={14} /> 총 예산 (Total)
               </label>
               <div className="relative">
                 <input
                   type="number"
-                  value={budget}
-                  onChange={(e) => setBudget(Number(e.target.value))}
-                  className="w-full text-2xl font-black text-slate-900 bg-slate-50 border border-slate-200 rounded-xl p-4 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all text-right pr-12"
+                  value={totalBudget}
+                  onChange={(e) => setTotalBudget(Number(e.target.value))}
+                  className="w-full text-lg font-black text-slate-900 bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:border-indigo-500 transition-all text-right pr-10"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">원</span>
-              </div>
-              <div className="flex gap-2 mt-2 overflow-x-auto no-scrollbar">
-                {[500000, 1000000, 2000000, 3000000].map((amt) => (
-                  <button
-                    key={amt}
-                    onClick={() => setBudget(amt)}
-                    className="flex-shrink-0 px-3 py-1 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-500 hover:bg-slate-50 hover:border-indigo-300 transition-colors"
-                  >
-                    {formatMoney(amt / 10000)}만
-                  </button>
-                ))}
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-xs">원</span>
               </div>
             </div>
 
+            <div className="flex items-center justify-center text-slate-300">
+               <Minus size={16} />
+            </div>
+
             <div>
-              <label className="flex items-center gap-2 text-xs font-bold text-indigo-500 uppercase tracking-wider mb-2">
-                <CalendarDays size={14} /> 여행 기간
+              <label className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                <Plane size={14} /> 예상 항공권 비용
               </label>
-              <div className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl p-2">
-                <button 
-                  onClick={() => setDays(Math.max(1, days - 1))}
-                  className="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
-                >
-                  -
-                </button>
-                <div className="flex-1 text-center font-black text-slate-900 text-lg">
-                  {days}일
-                </div>
-                <button 
-                  onClick={() => setDays(days + 1)}
-                  className="w-10 h-10 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
-                >
-                  +
-                </button>
+              <div className="relative">
+                <input
+                  type="number"
+                  value={flightCost}
+                  onChange={(e) => setFlightCost(Number(e.target.value))}
+                  className="w-full text-base font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:border-slate-400 transition-all text-right pr-10"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-xs">원</span>
               </div>
-              <p className="text-right text-xs text-slate-400 font-bold mt-2">
-                하루 쓸 수 있는 돈: <span className="text-indigo-600">{formatMoney(Math.floor(budget / days))}원</span>
-              </p>
+            </div>
+            
+            <div className="bg-indigo-50 p-3 rounded-xl flex justify-between items-center">
+               <span className="text-xs font-bold text-indigo-400">현지에서 쓸 돈</span>
+               <span className="text-lg font-black text-indigo-600">{formatMoney(localBudget)}원</span>
+            </div>
+          </div>
+
+          <div>
+            <label className="flex items-center gap-2 text-xs font-bold text-indigo-500 uppercase tracking-wider mb-2">
+              <CalendarDays size={14} /> 여행 기간
+            </label>
+            <div className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl p-2">
+              <button 
+                onClick={() => setDays(Math.max(1, days - 1))}
+                className="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold text-slate-600 hover:text-indigo-600"
+              >
+                -
+              </button>
+              <div className="flex-1 text-center font-black text-slate-900">
+                {days}일
+              </div>
+              <button 
+                onClick={() => setDays(days + 1)}
+                className="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm font-bold text-slate-600 hover:text-indigo-600"
+              >
+                +
+              </button>
             </div>
           </div>
         </div>
 
         <div>
-          <h2 className="text-xl font-black text-slate-900 mb-4 flex items-center gap-2">
-            <Plane className="text-indigo-500" />
-            갈 수 있는 여행지 <span className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full text-sm">{affordableCountries.length}곳</span>
-          </h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+              갈 수 있는 곳 <span className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full text-sm">{affordableCountries.length}</span>
+            </h2>
+            
+            <div className="relative">
+               <select 
+                 value={sortOption}
+                 onChange={(e) => setSortOption(e.target.value as SortOption)}
+                 className="appearance-none bg-white border border-slate-200 text-slate-600 text-xs font-bold py-2 pl-3 pr-10 rounded-lg focus:outline-none focus:border-indigo-500 min-w-[130px]"
+               >
+                 <option value="MARGIN_DESC">여유 자금 순</option>
+                 <option value="COST_ASC">물가 저렴한 순</option>
+                 <option value="NAME_ASC">가나다 순</option>
+               </select>
+               <SlidersHorizontal size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            </div>
+          </div>
 
           {loading ? (
             <div className="py-20 text-center">
@@ -173,20 +253,35 @@ export default function BudgetExplorer() {
                       <div className="flex items-center gap-4">
                         <span className="text-4xl filter drop-shadow-sm">{country.flag_emoji}</span>
                         <div>
-                          <h3 className="font-black text-slate-900 text-lg">{country.name_ko.split(' - ')[1] || country.name_ko}</h3>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-black text-slate-900 text-lg">{country.name_ko.split(' - ')[1] || country.name_ko}</h3>
+                            {country.trend === "DOWN" ? (
+                                <span className="flex items-center text-[10px] font-bold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded-full">
+                                    <TrendingDown size={10} className="mr-1"/> 환율 좋음
+                                </span>
+                            ) : (
+                                <span className="flex items-center text-[10px] font-bold text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded-full">
+                                    <TrendingUp size={10} className="mr-1"/> 환율 오름
+                                </span>
+                            )}
+                          </div>
                           <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{country.name_en}</p>
                         </div>
                       </div>
-                      <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100">
+                      <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100 text-right">
                         하루 {formatMoney(country.margin)}원 남음
                       </div>
                     </div>
                     
                     <div className="flex items-center justify-between text-sm bg-slate-50 rounded-2xl p-4 pr-14 relative">
-                      <span className="text-slate-500 font-bold">예상 하루 경비</span>
-                      <span className="font-black text-slate-800 text-lg">
-                        {formatMoney(country.dailyCostKrw)}원
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="text-slate-500 font-bold text-xs mb-1">
+                            {TRAVEL_STYLES[travelStyle].label} 기준 하루 경비
+                        </span>
+                        <span className="font-black text-slate-800 text-lg">
+                            {formatMoney(country.dailyCostKrw)}원
+                        </span>
+                      </div>
                       
                       <div className="absolute right-[-8px] top-1/2 -translate-y-1/2 bg-indigo-600 text-white p-3 rounded-xl shadow-lg shadow-indigo-200 group-hover:bg-indigo-700 transition-colors z-10">
                         <ArrowRight size={18} />
@@ -195,24 +290,22 @@ export default function BudgetExplorer() {
                   </Link>
                 ))}
               </div>
-              <p className="text-[10px] text-slate-300 mt-8 text-center">
-                이 페이지의 제휴 링크를 통해 구매가 발생할 경우,<br className="md:hidden"/> 일정액의 수수료를 제공받을 수 있습니다.
-              </p>
             </>
           ) : (
             <div className="bg-white rounded-[2rem] p-10 text-center border border-slate-100">
               <div className="text-6xl mb-4">💸</div>
-              <h3 className="font-black text-slate-900 text-lg mb-2">예산이 조금 부족해요!</h3>
+              <h3 className="font-black text-slate-900 text-lg mb-2">예산이 부족해요!</h3>
               <p className="text-slate-500 text-sm mb-6">
-                입력하신 예산으로는<br/>
-                기본적인 숙박과 식사가 어려울 수 있어요.
+                현재 설정하신 {TRAVEL_STYLES[travelStyle].label} 스타일로는<br/>
+                여행 가능한 국가를 찾기 어렵습니다.<br/>
+                여행 스타일을 바꾸거나 예산을 조정해보세요.
               </p>
               <button 
-                onClick={() => setBudget(budget + 500000)}
+                onClick={() => setTotalBudget(totalBudget + 500000)}
                 className="inline-flex items-center gap-2 bg-indigo-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
               >
                 <Coins size={18} />
-                예산 50만원 늘리기
+                총 예산 50만원 늘리기
               </button>
             </div>
           )}
