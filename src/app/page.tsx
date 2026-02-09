@@ -12,10 +12,7 @@ export default async function Home() {
     .select("*, exchange_rates(rate_to_krw)");
 
   return (
-    <div 
-      className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center relative"
-      style={{ zoom: 0.85 }} // ✅ 다른 코드는 그대로 두고, 85% 축소만 적용했습니다.
-    >
+    <div className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center relative">
       <nav className="absolute top-0 left-0 right-0 mx-auto w-full max-w-7xl flex justify-between items-start px-6 pt-8 md:px-8 z-50">
         <div className="relative w-40 h-12 md:w-56 md:h-16">
           <Image 
