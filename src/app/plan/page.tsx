@@ -252,7 +252,7 @@ function PlanPageContent() {
                 <p className="text-slate-500 text-sm mb-8 leading-relaxed">
                     현재 이용자가 많아 서비스 이용이 제한되었습니다.<br/>
                     <strong>잠시 후(약 1분 뒤)</strong> 다시 시도해주시거나,<br/>
-                    내일 다시 이용해주세요. 🙇‍♂️
+                    내일 다시 이용해주세요.
                 </p>
                 <div className="space-y-3">
                     <button 

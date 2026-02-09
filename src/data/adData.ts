@@ -1,14 +1,16 @@
-// src/data/adData.ts
-
 export interface AdBanner {
   id: string;
   name: string;
   link: string;
-  imgUrl: string; // 이미지 주소
-  trackingUrl: string; // 1x1 픽셀 추적 주소
+  imgUrl?: string;
+  trackingUrl?: string;
+  pcImg?: string;
+  pcTrack?: string;
+  moLink?: string;
+  moImg?: string;
+  moTrack?: string;
 }
 
-// 1. 160x600 세로 배너 (PC 좌우 날개용) - 랜덤 노출용
 export const WING_ADS: AdBanner[] = [
   {
     id: "klook_wing",
@@ -54,8 +56,7 @@ export const WING_ADS: AdBanner[] = [
   }
 ];
 
-// 2. 하단 가로 배너 (PC: 728x90 / Mobile: 468x60)
-export const BOTTOM_ADS = [
+export const BOTTOM_ADS: AdBanner[] = [
   {
     id: "agoda_bottom",
     name: "Agoda",
@@ -99,9 +100,8 @@ export const BOTTOM_ADS = [
   {
     id: "rakuten_bottom",
     name: "Rakuten",
-    link: "https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=EtSC&u_id=", // PC와 동일한 링크 가정 (모바일 전용 링크가 없다면)
-    pcImg: "https://img.linkprice.com/files/glink/rakutentr/20230807/G000zNVfRG000_rakutentr_160_600.jpg", // 라쿠텐은 728 PC 이미지가 없어서 160으로 대체해야하나 요청엔 없으므로 제외하거나 468로 통일 고려. 일단 로직상 분기처리.
-    // *주의: 라쿠텐은 PC 728 이미지를 안 주셨습니다. 모바일 468만 주셔서 PC에서도 468을 띄우거나 다른 걸 띄워야 합니다. 여기선 모바일 데이터를 PC에도 넣어두겠습니다.
+    link: "https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=EtSC&u_id=",
+    pcImg: "",
     pcTrack: "", 
     moLink: "https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=7KKu&u_id=",
     moImg: "https://img.linkprice.com/files/glink/rakutentr/20230807/000aduUW00000_rakutentr_468_60.jpg",
@@ -110,7 +110,7 @@ export const BOTTOM_ADS = [
   {
     id: "rentalcars_bottom",
     name: "Rentalcars",
-    link: "https://click.linkprice.com/click.php?m=rentalcars&a=A100702487&l=0004&u_id=", // PC 728 없음, 모바일 데이터 사용
+    link: "https://click.linkprice.com/click.php?m=rentalcars&a=A100702487&l=0004&u_id=",
     pcImg: "",
     pcTrack: "",
     moLink: "https://click.linkprice.com/click.php?m=rentalcars&a=A100702487&l=0007&u_id=",
@@ -121,7 +121,7 @@ export const BOTTOM_ADS = [
     id: "klook_bottom",
     name: "Klook",
     link: "https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0012&u_id=",
-    pcImg: "", // PC 728 없음
+    pcImg: "",
     pcTrack: "",
     moLink: "https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0015&u_id=",
     moImg: "http://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg",
@@ -129,7 +129,6 @@ export const BOTTOM_ADS = [
   }
 ];
 
-// 3. 120x60 결과 리스트용 배너 (Grid용) - 11개 모두 포함
 export const GRID_ADS: AdBanner[] = [
   {
     id: "klook_grid",
@@ -186,7 +185,5 @@ export const GRID_ADS: AdBanner[] = [
     link: "https://click.linkprice.com/click.php?m=yanolja&a=A100702487&l=Ai73&u_id=",
     imgUrl: "https://img.linkprice.com/files/glink/yanolja/20250422/0000CsmG00000_NOL_banner_120x60.png",
     trackingUrl: "http://track.linkprice.com/lpshow.php?m_id=yanolja&a_id=A100702487&p_id=0000&l_id=Ai73&l_cd1=2&l_cd2=0"
-  },
-  // 이미지 URL을 모르는 나머지 (호텔스컴바인 등)은 제외하거나 추후 추가
-  // 일단 쿠팡은 배너 이미지가 동적이거나 iframe이라 여기서 관리하기 어려울 수 있으니 별도 처리하거나, 정적 이미지 있으면 추가
+  }
 ];
