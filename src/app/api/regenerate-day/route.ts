@@ -1,0 +1,67 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { NextResponse } from "next/server";
+
+const apiKey = process.env.GEMINI_API_KEY;
+const genAI = new GoogleGenerativeAI(apiKey || "");
+
+export async function POST(req: Request) {
+  try {
+    const { day, currentSchedule, prompt: userPrompt, destination, style } = await req.json();
+    const model = genAI.getGenerativeModel({ 
+        model: "gemini-2.5-flash", 
+        generationConfig: { responseMimeType: "application/json" }
+    });
+
+    const prompt = `
+      당신은 여행 플래너입니다. 
+      "${destination}" 여행의 ${day}일차 일정을 수정해주세요.
+      여행 스타일: ${style}
+      
+      [현재 ${day}일차 일정]
+      ${JSON.stringify(currentSchedule)}
+
+      [수정 요청사항]
+      "${userPrompt}"
+
+      위 요청사항을 반영하여 해당 날짜의 일정을 재구성해주세요.
+      - 시간대별로 현실적인 동선을 고려하세요.
+      - 식당/장소는 구체적인 명칭을 사용하세요.
+      - **중요: 반드시 아래 JSON 스키마를 정확히 지켜주세요. schedule 키는 필수이며 배열이어야 합니다.**
+
+      [Output JSON Schema]
+      {
+        "day": ${day},
+        "schedule": [
+          { "time": "HH:MM", "place": "장소명", "desc": "설명" }
+        ]
+      }
+    `;
+
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    const data = JSON.parse(cleanedText);
+
+    if (!data.schedule || !Array.isArray(data.schedule)) {
+        data.schedule = []; 
+    }
+    if (!data.day) {
+        data.day = day;
+    }
+
+    return NextResponse.json(data);
+
+  } catch (error: any) {
+    console.error("Regenerate API Error:", error);
+    
+    if (error.status === 429 || error.message?.includes("429")) {
+        return NextResponse.json({ error: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요." }, { status: 429 });
+    }
+    
+    if (error.status === 404 || error.message?.includes("404")) {
+        return NextResponse.json({ error: "AI 모델을 찾을 수 없습니다. 관리자에게 문의하세요." }, { status: 404 });
+    }
+
+    return NextResponse.json({ error: "수정 중 오류 발생" }, { status: 500 });
+  }
+}

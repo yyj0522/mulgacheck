@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import SearchAndFilter from "@/components/SearchAndFilter";
-import { ArrowRight, Calculator, Sparkles } from "lucide-react";
+import { ArrowRight, Calculator, Sparkles, Map } from "lucide-react";
 
 export const revalidate = 3600;
 
@@ -12,7 +12,10 @@ export default async function Home() {
     .select("*, exchange_rates(rate_to_krw)");
 
   return (
-    <div className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center relative">
+    <div 
+      className="min-h-screen bg-slate-50 bg-dot-pattern flex flex-col items-center relative"
+      style={{ zoom: 0.85 }} // ✅ 다른 코드는 그대로 두고, 85% 축소만 적용했습니다.
+    >
       <nav className="absolute top-0 left-0 right-0 mx-auto w-full max-w-7xl flex justify-between items-start px-6 pt-8 md:px-8 z-50">
         <div className="relative w-40 h-12 md:w-56 md:h-16">
           <Image 
@@ -49,7 +52,51 @@ export default async function Home() {
       </header>
 
       <main className="w-full max-w-7xl px-6 pb-12 z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          
+          <Link href="/plan" className="group block h-full">
+            <div className="relative overflow-hidden bg-gradient-to-br from-sky-500 to-blue-600 rounded-[2.5rem] p-8 h-full shadow-xl shadow-sky-200 hover:shadow-2xl hover:shadow-sky-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[200px]">
+              <div>
+                <div className="flex justify-between items-start mb-3">
+                    <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-emerald-50 text-[10px] font-bold uppercase tracking-widest mb-3 border border-white/10">
+                    AI Planner
+                    </span>
+                    <span className="px-2 py-0.5 bg-white text-blue-600 text-[10px] font-black rounded-full shadow-sm animate-pulse">
+                        NEW
+                    </span>
+                </div>
+                <h2 className="text-2xl font-black text-white mb-2 leading-tight">
+                  AI 여행 일정<br/>자동 생성
+                </h2>
+                <p className="text-emerald-100 text-sm font-medium opacity-90">
+                  몇 번의 클릭으로<br/>완벽한 동선 짜기
+                </p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm self-start p-3 rounded-full mt-4 group-hover:bg-white/20 transition-colors">
+                <Map className="text-white" size={20} />
+              </div>
+            </div>
+          </Link>
+
+          <Link href="/budget" className="group block h-full">
+            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[2.5rem] p-8 h-full shadow-xl shadow-emerald-200 hover:shadow-2xl hover:shadow-emerald-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[200px]">
+              <div>
+                <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-emerald-50 text-[10px] font-bold uppercase tracking-widest mb-3 border border-white/10">
+                  Budget Explorer
+                </span>
+                <h2 className="text-2xl font-black text-white mb-2 leading-tight">
+                  예산으로<br/>여행지 찾기
+                </h2>
+                <p className="text-emerald-100 text-sm font-medium opacity-90">
+                  "100만원으로 어디 가지?"<br/>예산 맞춤 추천
+                </p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm self-start p-3 rounded-full mt-4 group-hover:bg-white/20 transition-colors">
+                <Calculator className="text-white" size={20} />
+              </div>
+            </div>
+          </Link>
+
           <Link href="/checklist" className="group block h-full">
             <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-violet-600 rounded-[2.5rem] p-8 h-full shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[200px]">
               <div>
@@ -69,25 +116,6 @@ export default async function Home() {
             </div>
           </Link>
 
-          <Link href="/budget" className="group block h-full">
-            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-teal-600 rounded-[2.5rem] p-8 h-full shadow-xl shadow-emerald-200 hover:shadow-2xl hover:shadow-emerald-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[200px]">
-              <div>
-                <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-emerald-50 text-[10px] font-bold uppercase tracking-widest mb-3 border border-white/10">
-                  Budget Explorer
-                </span>
-                <h2 className="text-2xl font-black text-white mb-2 leading-tight">
-                  예산으로<br/>여행지 찾기
-                </h2>
-                <p className="text-emerald-100 text-sm font-medium opacity-90">
-                  "100만원으로 어디 가지?"<br/>물가체크가 추천해드려요.
-                </p>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm self-start p-3 rounded-full mt-4 group-hover:bg-white/20 transition-colors">
-                <Calculator className="text-white" size={20} />
-              </div>
-            </div>
-          </Link>
-
           <Link href="/test" className="group block h-full">
             <div className="relative overflow-hidden bg-gradient-to-br from-rose-500 to-pink-600 rounded-[2.5rem] p-8 h-full shadow-xl shadow-rose-200 hover:shadow-2xl hover:shadow-rose-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[200px]">
               <div>
@@ -98,7 +126,7 @@ export default async function Home() {
                   나의 여행<br/>성향 찾기
                 </h2>
                 <p className="text-rose-100 text-sm font-medium opacity-90">
-                  "나는 어떤 여행자일까?"<br/>성향별 여행지 추천받기
+                  "나는 어떤 여행자?"<br/>성향별 여행지 추천
                 </p>
               </div>
               <div className="bg-white/10 backdrop-blur-sm self-start p-3 rounded-full mt-4 group-hover:bg-white/20 transition-colors">
