@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/x9z-adm-manager", "/api"],
     },
-    sitemap: "https://www.mulgaeottae.site/sitemap.xml",
+    sitemap: "https://www.mulgacheck.com/sitemap.xml",
   };
 }

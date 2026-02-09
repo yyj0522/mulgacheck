@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.mulgaeottae.site/"),
+  metadataBase: new URL("https://www.mulgacheck.com/"),
   title: {
     template: "%s | 물가체크",
     default: "물가체크 - 여행 예산, 감 말고 데이터로",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "물가체크 - 여행 예산, 감 말고 데이터로",
     description: "지금 가장 저렴한 여행지는? 빅맥지수, 스타벅스 지수로 알아보는 현실적인 여행 물가.",
-    url: "https://www.mulgaeottae.site/",
+    url: "https://www.mulgacheck.com/",
     siteName: "물가체크",
     images: [
       {
@@ -55,7 +55,7 @@ const jsonLd = {
   "@type": "WebSite",
   "name": "물가체크",
   "alternateName": ["MulgaCheck", "물가체크 여행"],
-  "url": "https://www.mulgaeottae.site/"
+  "url": "https://www.mulgacheck.com/"
 };
 
 export default function RootLayout({

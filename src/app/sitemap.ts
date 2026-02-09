@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 export const revalidate = 3600; 
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://www.mulgaeottae.site"; 
+  const baseUrl = "https://www.mulgacheck.com"; 
 
   const staticPages = [
     {
