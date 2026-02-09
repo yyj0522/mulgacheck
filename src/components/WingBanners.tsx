@@ -17,6 +17,7 @@ function shuffleArray(array: any[]) {
 }
 
 export default function WingBanners({ dbBanners }: WingBannersProps) {
+  const [mounted, setMounted] = useState(false);
   const [leftAd, setLeftAd] = useState(WING_ADS[0]);
   const [rightAd, setRightAd] = useState(WING_ADS[1]);
   const [offsetY, setOffsetY] = useState(0);
@@ -24,6 +25,8 @@ export default function WingBanners({ dbBanners }: WingBannersProps) {
   const rightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setMounted(true);
+    
     if (dbBanners && dbBanners.length >= 2) {
       setLeftAd(dbBanners[0]);
       setRightAd(dbBanners[1]);
@@ -42,7 +45,7 @@ export default function WingBanners({ dbBanners }: WingBannersProps) {
       const footerRect = footer.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       const bannerTopStart = (windowHeight / 2) - 300;
-      const tallerHeight = 600; // 배너 높이
+      const tallerHeight = 600;
       const bannerBottom = bannerTopStart + tallerHeight;
       const footerTop = footerRect.top;
       const gap = 50;
@@ -57,13 +60,15 @@ export default function WingBanners({ dbBanners }: WingBannersProps) {
 
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleScroll);
-    handleScroll(); 
+    handleScroll();
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <div className="fixed inset-0 z-40 pointer-events-none hidden min-[1400px]:block max-w-[1920px] mx-auto">

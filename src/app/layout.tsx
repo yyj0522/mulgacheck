@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
-import Script from "next/script";
 import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -44,8 +43,6 @@ export const metadata: Metadata = {
     google: "kMXhavZeZtceSQXWqxhL_OctTQ2DYejq581JtY-CZsg",
     other: {
       "naver-site-verification": "507a3150e11d4f55d3d786615026d36efdd76d2b",
-      "google-adsense-account": "ca-pub-7927865252694277",
-      "agd-partner-manual-verification": "",
     },
   },
 };
@@ -64,17 +61,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <body className={inter.className}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        <Script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7927865252694277"
-          crossOrigin="anonymous"
-          strategy="afterInteractive"
         />
         
         {children}
