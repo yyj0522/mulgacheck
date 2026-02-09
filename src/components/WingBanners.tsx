@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { WING_ADS } from "@/data/adData"; // 위에서 만든 데이터 import
+import { WING_ADS } from "@/data/adData";
 
-// 배열 섞기 함수 (Fisher-Yates Shuffle)
+type WingBannersProps = {
+  dbBanners?: any[];
+};
+
 function shuffleArray(array: any[]) {
   const newArr = [...array];
   for (let i = newArr.length - 1; i > 0; i--) {
@@ -14,7 +16,7 @@ function shuffleArray(array: any[]) {
   return newArr;
 }
 
-export default function WingBanners() {
+export default function WingBanners({ dbBanners }: WingBannersProps) {
   const [leftAd, setLeftAd] = useState(WING_ADS[0]);
   const [rightAd, setRightAd] = useState(WING_ADS[1]);
   const [offsetY, setOffsetY] = useState(0);
@@ -22,11 +24,15 @@ export default function WingBanners() {
   const rightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 클라이언트 사이드에서만 랜덤 섞기 (Hydration 오류 방지)
-    const shuffled = shuffleArray(WING_ADS);
-    setLeftAd(shuffled[0]);
-    setRightAd(shuffled[1]);
-  }, []);
+    if (dbBanners && dbBanners.length >= 2) {
+      setLeftAd(dbBanners[0]);
+      setRightAd(dbBanners[1]);
+    } else {
+      const shuffled = shuffleArray(WING_ADS);
+      setLeftAd(shuffled[0]);
+      setRightAd(shuffled[1]);
+    }
+  }, [dbBanners]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,7 +42,7 @@ export default function WingBanners() {
       const footerRect = footer.getBoundingClientRect();
       const windowHeight = window.innerHeight;
       const bannerTopStart = (windowHeight / 2) - 300;
-      const tallerHeight = 600; // 배너 높이 고정
+      const tallerHeight = 600; // 배너 높이
       const bannerBottom = bannerTopStart + tallerHeight;
       const footerTop = footerRect.top;
       const gap = 50;
@@ -51,7 +57,7 @@ export default function WingBanners() {
 
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleScroll);
-    handleScroll();
+    handleScroll(); 
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -61,7 +67,6 @@ export default function WingBanners() {
 
   return (
     <div className="fixed inset-0 z-40 pointer-events-none hidden min-[1400px]:block max-w-[1920px] mx-auto">
-      {/* 왼쪽 배너 */}
       <div 
         ref={leftRef}
         style={{ transform: `translateY(${offsetY}px)` }}
@@ -73,7 +78,6 @@ export default function WingBanners() {
         <img src={leftAd.trackingUrl} width="1" height="1" className="hidden" alt="" />
       </div>
 
-      {/* 오른쪽 배너 */}
       <div 
         ref={rightRef}
         style={{ transform: `translateY(${offsetY}px)` }}
