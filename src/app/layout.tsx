@@ -53,9 +53,9 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "물가체크",
-  alternateName: ["MulgaCheck", "물가체크 여행"],
-  url: "https://www.mulgacheck.com/",
+  "name": "물가체크",
+  "alternateName": ["MulgaCheck", "물가체크 여행"],
+  "url": "https://www.mulgacheck.com/"
 };
 
 export default function RootLayout({
@@ -65,9 +65,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body
-        className={`${inter.className} overflow-x-hidden origin-top lg:scale-[0.8] lg:w-[125%]`}
-      >
+      <body className={inter.className}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -78,9 +76,9 @@ export default function RootLayout({
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
-
+        
         {children}
-
+        
         <Footer />
         <Analytics />
       </body>
