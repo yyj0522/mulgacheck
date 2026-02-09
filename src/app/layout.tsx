@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   verification: {
     google: "kMXhavZeZtceSQXWqxhL_OctTQ2DYejq581JtY-CZsg",
     other: {
-      "naver-site-verification": "7a468ab7e7c7aae2de7abc55274b685e11c804bb",
+      "naver-site-verification": "507a3150e11d4f55d3d786615026d36efdd76d2b",
       "google-adsense-account": "ca-pub-7927865252694277",
       "agd-partner-manual-verification": "",
     },
