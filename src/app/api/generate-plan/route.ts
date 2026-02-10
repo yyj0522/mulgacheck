@@ -1,11 +1,22 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
+import { checkRateLimit, saveLog } from "@/utils/rateLimit";
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+
+    const { allowed, limit } = await checkRateLimit(ip, 'generate');
+    if (!allowed) {
+      return NextResponse.json(
+        { error: `일정 생성은 하루에 ${limit}회까지만 가능합니다.` },
+        { status: 429 }
+      );
+    }
+
     if (!apiKey) {
       console.error("API Key is missing");
       return NextResponse.json({ error: "서버 설정 오류: API 키가 없습니다." }, { status: 500 });
@@ -15,6 +26,13 @@ export async function POST(req: Request) {
 
     if (!destination || !days) {
       return NextResponse.json({ error: "필수 정보가 누락되었습니다." }, { status: 400 });
+    }
+
+    if (userPrompt && userPrompt.length > 100) {
+      return NextResponse.json(
+        { error: "추가 요청사항은 100자 이내로 입력해주세요." },
+        { status: 400 }
+      );
     }
 
     const model = genAI.getGenerativeModel({ 
@@ -36,7 +54,7 @@ export async function POST(req: Request) {
       - 추가 요청사항: "${userPrompt || "없음"}"
       
       [필수 지침]
-      1. **동선 최적화**: 이동 시간을 최소화한 현실적인 동선을 짜주세요.
+      1. **동선 최적화**: 이동 시간을 최소화하고 고려해서 현실적인 동선을 짜주세요.
       2. **실제 장소**: 반드시 실존하는 구체적인 상호명과 명소를 추천해주세요.
       3. **한국어 작성**: 자연스러운 한국어로 작성해주세요.
       4. **이모지 제외**: 텍스트에 이모지를 절대 넣지 마세요.
@@ -61,6 +79,8 @@ export async function POST(req: Request) {
 
     const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
     const data = JSON.parse(cleanedText);
+
+    await saveLog(ip, 'generate');
 
     return NextResponse.json(data);
 

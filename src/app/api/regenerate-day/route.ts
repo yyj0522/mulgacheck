@@ -1,12 +1,31 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
+import { checkRateLimit, saveLog } from "@/utils/rateLimit";
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+
+    const { allowed, limit } = await checkRateLimit(ip, 'regenerate');
+    if (!allowed) {
+      return NextResponse.json(
+        { error: `일정 수정은 하루에 ${limit}회까지만 가능합니다.` },
+        { status: 429 }
+      );
+    }
+
     const { day, currentSchedule, prompt: userPrompt, destination, style } = await req.json();
+
+    if (userPrompt && userPrompt.length > 100) {
+      return NextResponse.json(
+        { error: "수정 요청사항은 100자 이내로 입력해주세요." },
+        { status: 400 }
+      );
+    }
+
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash", 
         generationConfig: { responseMimeType: "application/json" }
@@ -25,6 +44,7 @@ export async function POST(req: Request) {
 
       위 요청사항을 반영하여 해당 날짜의 일정을 재구성해주세요.
       - 시간대별로 현실적인 동선을 고려하세요.
+      - 이동시간을 고려하세요.
       - 식당/장소는 구체적인 명칭을 사용하세요.
       - **중요: 반드시 아래 JSON 스키마를 정확히 지켜주세요. schedule 키는 필수이며 배열이어야 합니다.**
 
@@ -48,6 +68,8 @@ export async function POST(req: Request) {
     if (!data.day) {
         data.day = day;
     }
+
+    await saveLog(ip, 'regenerate');
 
     return NextResponse.json(data);
 
