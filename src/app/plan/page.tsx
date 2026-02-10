@@ -619,7 +619,7 @@ function PlanPageContent() {
           </div>
         ) : (
           <div className="bg-indigo-50 rounded-[2rem] p-8 text-center mb-4 border border-indigo-100">
-            <h3 className="font-black text-xl text-indigo-600 mb-2">소중한 의견 감사합니다! 🙇‍♂️</h3>
+            <h3 className="font-black text-xl text-indigo-600 mb-2">소중한 의견 감사합니다.</h3>
             <p className="text-slate-500 text-sm">더 좋은 서비스로 보답하겠습니다.</p>
           </div>
         )}
