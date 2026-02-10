@@ -13,7 +13,6 @@ export default function Footer() {
           <Link href="/privacy" className="hover:text-indigo-600 transition-colors">
             개인정보처리방침
           </Link>
-          <span className="text-slate-300">|</span>
         </div>
 
         <div className="mb-6 p-4 rounded-2xl text-[11px] text-slate-400 leading-relaxed break-keep">
