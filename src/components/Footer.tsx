@@ -4,7 +4,8 @@ export default function Footer() {
   return (
     <footer className="w-full py-10 border-t border-slate-200 bg-white text-center pb-32 md:pb-10">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="flex justify-center gap-6 mb-6 text-xs font-bold text-slate-500">
+        
+        <div className="flex justify-center flex-wrap gap-x-6 gap-y-2 mb-6 text-xs font-bold text-slate-500">
           <Link href="/terms" className="hover:text-indigo-600 transition-colors">
             이용약관
           </Link>
@@ -12,6 +13,13 @@ export default function Footer() {
           <Link href="/privacy" className="hover:text-indigo-600 transition-colors">
             개인정보처리방침
           </Link>
+          <span className="text-slate-300">|</span>
+          <a 
+            href="mailto:projectc029@gmail.com" 
+            className="hover:text-indigo-600 transition-colors"
+          >
+            제휴/오류문의
+          </a>
         </div>
 
         <div className="mb-6 p-4 rounded-2xl text-[11px] text-slate-400 leading-relaxed break-keep">
