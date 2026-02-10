@@ -4,10 +4,11 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation"; 
 import { supabase } from "@/lib/supabase";
 import { BOTTOM_ADS, GRID_ADS } from "@/data/adData";
+import WingBanners from "@/components/WingBanners";
 import { 
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   Star, MessageSquarePlus, ChevronLeft, ThumbsUp, 
-  Copy, Share2, Edit3, ChevronRight, Loader2, AlertTriangle // ✅ AlertTriangle 아이콘 추가
+  Copy, Share2, Edit3, ChevronRight, Loader2, AlertTriangle
 } from "lucide-react";
 import Link from "next/link";
 
@@ -61,7 +62,6 @@ function PlanPageContent() {
   const [comment, setComment] = useState("");
   const [feedbackSent, setFeedbackSent] = useState(false);
 
-  // ✅ [추가] 사용량 초과 상태 관리
   const [isLimitReached, setIsLimitReached] = useState(false);
 
   const isSharedMode = !!shareId;
@@ -100,7 +100,7 @@ function PlanPageContent() {
 
     setStep("LOADING");
     setErrorMsg("");
-    setIsLimitReached(false); // ✅ 초기화
+    setIsLimitReached(false);
 
     try {
       const res = await fetch("/api/generate-plan", {
@@ -109,7 +109,6 @@ function PlanPageContent() {
         body: JSON.stringify(formData),
       });
 
-      // ✅ [추가] 429 에러(사용량 초과) 감지 시 상태 변경 및 중단
       if (res.status === 429) {
         setIsLimitReached(true);
         return; 
@@ -149,7 +148,6 @@ function PlanPageContent() {
         }),
       });
 
-      // ✅ [추가] 부분 수정 시에도 429 에러 체크 (여기서는 alert로 처리)
       if (res.status === 429) {
          alert("현재 이용자가 많아 AI가 응답할 수 없습니다. 잠시 후 다시 시도해주세요.");
          return;
@@ -238,7 +236,6 @@ function PlanPageContent() {
 
   const dayOptions = Array.from({ length: 14 }, (_, i) => `${i + 1}박 ${i + 2}일`);
 
-  // ✅ [추가] 사용량 초과 시 보여줄 예쁜 안내 화면 UI
   if (isLimitReached) {
     return (
         <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center relative z-10">
@@ -273,13 +270,15 @@ function PlanPageContent() {
   if (step === "INPUT") {
     return (
       <div className="min-h-screen bg-[#F8FAFC] p-6 pb-24 flex flex-col items-center justify-center relative z-10">
-        <header className="absolute top-0 left-0 w-full p-6 max-w-3xl mx-auto right-0">
-            <Link href="/" className="inline-flex items-center text-slate-400 font-bold hover:text-indigo-600 transition-colors">
+        <WingBanners />
+        
+        <div className="w-full max-w-md">
+            <Link href="/" className="inline-flex items-center text-slate-400 font-bold hover:text-indigo-600 transition-colors mb-8">
                 <ChevronLeft size={20} /> 메인으로
             </Link>
-        </header>
+        </div>
 
-        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 animate-fade-in-up mt-12">
+        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 animate-fade-in-up">
           <div className="text-center mb-8">
             <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold mb-2">Beta</span>
             <h1 className="text-3xl font-black text-slate-900 leading-tight">
@@ -287,6 +286,7 @@ function PlanPageContent() {
               <span className="text-indigo-600">자동 생성기</span>
             </h1>
             <p className="text-slate-400 text-sm mt-2">AI가 맞춤형 일정을 계획해드립니다</p>
+            <p className="text-slate-400 text-sm mt-2">오류가난다면 잠시후나 다음날 이용 부탁드립니다.</p>
           </div>
 
           <div className="space-y-5">
@@ -390,7 +390,25 @@ function PlanPageContent() {
             </button>
           </div>
         </div>
-        <p className="text-slate-400 text-sm mt-2">오류가 발생하는 경우, 잠시 후 또는 다음 날 다시 이용해 주세요.</p>
+        
+        <div className="w-full max-w-2xl mt-12 flex flex-col items-center">
+           {bottomAd.pcImg && (
+             <div className="hidden md:block shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+               <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
+                 <img src={bottomAd.pcImg} alt={bottomAd.name} width={728} height={90} />
+               </a>
+               <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />
+             </div>
+           )}
+           {bottomAd.moImg && (
+             <div className="block md:hidden shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+               <a href={bottomAd.moLink} target="_blank" rel="noopener noreferrer nofollow">
+                 <img src={bottomAd.moImg} alt={bottomAd.name} width={468} height={60} className="w-full h-auto max-w-[320px] sm:max-w-[468px]" />
+               </a>
+               <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />
+             </div>
+           )}
+        </div>
       </div>
     );
   }
@@ -416,6 +434,7 @@ function PlanPageContent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-6 pb-4 relative z-10">
+      <WingBanners />
       <div className="max-w-3xl mx-auto">
         <header className="flex justify-between items-center mb-8">
           <Link href="/" className="inline-flex items-center text-slate-400 font-bold hover:text-indigo-600 transition-colors">
@@ -476,14 +495,19 @@ function PlanPageContent() {
                   </div>
               )}
 
-              <div className="space-y-6 relative before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
+              <div className="space-y-8 pl-4">
                 {dayPlan.schedule?.map((item, i) => (
-                  <div key={i} className="relative pl-12 group">
-                    <div className="absolute left-0 top-1 w-10 text-xs font-bold text-slate-400 text-right pr-4 bg-white z-10 group-hover:text-indigo-500 transition-colors">
-                      {item.time}
+                  <div key={i} className="relative flex gap-4">
+                    <div className="flex flex-col items-center">
+                        <div className="text-xs font-bold text-indigo-500 bg-indigo-50 px-2 py-1 rounded-md mb-2 w-max">
+                            {item.time}
+                        </div>
+                        <div className="w-0.5 h-full bg-slate-100 relative">
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-white border-[3px] border-indigo-400" />
+                        </div>
                     </div>
-                    <div className="absolute left-[15px] top-1.5 w-2.5 h-2.5 rounded-full bg-white border-[3px] border-indigo-400 z-10 group-hover:scale-125 transition-transform" />
-                    <div>
+                    
+                    <div className="flex-1 pb-4">
                       <h4 className="font-bold text-slate-800 text-base">{item.place}</h4>
                       <p className="text-slate-500 text-sm mt-1 leading-relaxed">{item.desc}</p>
                     </div>
