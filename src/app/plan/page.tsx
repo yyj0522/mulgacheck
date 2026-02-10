@@ -285,8 +285,8 @@ function PlanPageContent() {
               여행 일정<br />
               <span className="text-indigo-600">자동 생성기</span>
             </h1>
-            <p className="text-slate-400 text-sm mt-2">AI가 맞춤형 일정을 계획해드립니다</p>
-            <p className="text-slate-400 text-sm mt-2">오류가난다면 잠시후나 다음날 이용 부탁드립니다.</p>
+            <p className="text-slate-400 text-sm mt-2">맞춤형 일정을 계획해드립니다</p>
+            <p className="text-slate-400 text-sm mt-2">오류가난다면 다음날 이용 부탁드립니다.</p>
           </div>
 
           <div className="space-y-5">
