@@ -14,12 +14,6 @@ export default function Footer() {
             개인정보처리방침
           </Link>
           <span className="text-slate-300">|</span>
-          <a 
-            href="mailto:projectc029@gmail.com" 
-            className="hover:text-indigo-600 transition-colors"
-          >
-            제휴/오류문의
-          </a>
         </div>
 
         <div className="mb-6 p-4 rounded-2xl text-[11px] text-slate-400 leading-relaxed break-keep">
@@ -31,6 +25,9 @@ export default function Footer() {
           </p>
           <p className="mt-1 text-slate-400">
             또한, 이 사이트는 링크프라이스 활동을 통해 일정액의 수수료를 제공받을 수 있습니다.
+          </p>
+          <p className="mt-1 text-slate-400">
+            제휴/오류문의 : projectc029@gmail.com
           </p>
         </div>
 
