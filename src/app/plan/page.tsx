@@ -227,7 +227,7 @@ function PlanPageContent() {
   const handlePublishToCommunity = async () => {
     if (!result) return;
     
-    if(!confirm("커뮤니티에 일정을 공개하시겠습니까? (익명으로 등록됩니다)")) return;
+    if(!confirm("일정을 공개하시겠습니까? (익명으로 등록됩니다)")) return;
 
     const { error } = await supabase
       .from("community_plans")
@@ -243,7 +243,7 @@ function PlanPageContent() {
       });
 
     if (!error) {
-      alert("커뮤니티에 등록되었습니다! 다른 여행자들에게 큰 도움이 될 거예요.");
+      alert("일정이 공유되었습니다!");
     } else {
       console.error(error);
       alert("등록 중 오류가 발생했습니다.");

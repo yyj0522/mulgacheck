@@ -27,9 +27,7 @@ export default function SearchAndFilter({ initialData = [] }: { initialData: any
 
   return (
     <div className="space-y-8">
-      {/* 상단 컨트롤 바: 검색창 + 정렬 */}
       <div className="flex flex-col md:flex-row gap-4">
-        {/* 검색창 */}
         <div className="relative flex-1 group">
           <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors">
             <Search size={22} />
@@ -42,7 +40,6 @@ export default function SearchAndFilter({ initialData = [] }: { initialData: any
           />
         </div>
 
-        {/* 정렬 드롭다운 */}
         <div className="relative w-full md:w-56 group">
           <div className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600">
             <TrendingDown size={20} />
@@ -61,14 +58,12 @@ export default function SearchAndFilter({ initialData = [] }: { initialData: any
         </div>
       </div>
 
-      {/* 도시 리스트 그리드 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {filteredData.length > 0 ? (
           filteredData.map((country) => (
             <Link key={country.id} href={`/destination/${country.id}`} className="group block h-full">
               <div className="h-full bg-white border border-slate-100 rounded-3xl p-6 hover:border-indigo-100 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
                 
-                {/* 상단: 국기 & 화살표 */}
                 <div className="flex justify-between items-start mb-6">
                   <span className="text-4xl filter drop-shadow-sm group-hover:scale-110 transition-transform duration-300">
                     {country.flag_emoji}
@@ -78,7 +73,6 @@ export default function SearchAndFilter({ initialData = [] }: { initialData: any
                   </div>
                 </div>
 
-                {/* 하단: 텍스트 정보 */}
                 <div>
                   <div className="flex items-center gap-1.5 mb-1 opacity-60 group-hover:opacity-100 transition-opacity">
                     <span className="text-[10px] font-black text-indigo-600 uppercase tracking-wider border border-indigo-100 px-1.5 py-0.5 rounded">
@@ -101,7 +95,7 @@ export default function SearchAndFilter({ initialData = [] }: { initialData: any
           ))
         ) : (
           <div className="col-span-full py-20 text-center bg-white border border-dashed border-slate-200 rounded-3xl">
-            <p className="text-slate-400 font-bold mb-2">검색 결과가 없습니다 😢</p>
+            <p className="text-slate-400 font-bold mb-2">검색 결과가 없습니다.</p>
             <p className="text-sm text-slate-400">다른 도시 이름으로 검색해 보세요.</p>
           </div>
         )}

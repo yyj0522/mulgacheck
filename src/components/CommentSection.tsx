@@ -97,7 +97,6 @@ export default function CommentSection({ countryId }: { countryId: string }) {
         </div>
       </form>
 
-      {/* 댓글 목록 */}
       <div className="space-y-4 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar">
         {comments.length > 0 ? (
           comments.map((comment) => (
