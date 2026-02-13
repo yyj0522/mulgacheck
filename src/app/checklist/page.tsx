@@ -5,6 +5,7 @@ import { CHECKLIST_CATEGORIES } from "@/data/checklistItems";
 import { Check, Share2, Download, RefreshCw, ArrowLeft, X, Plus, Trash2, PackageCheck } from "lucide-react";
 import Link from "next/link";
 import { toPng } from "html-to-image";
+import WingBanners from "@/components/WingBanners";
 
 export default function ChecklistPage() {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
@@ -151,7 +152,9 @@ export default function ChecklistPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] p-6 pb-4 relative">
-      <div className="max-w-3xl mx-auto">
+      <WingBanners />
+      
+      <div className="max-w-3xl mx-auto relative z-10">
         <header className="flex justify-between items-center mb-6">
           <Link href="/" className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm">
             <ArrowLeft size={20} className="text-slate-600" />
@@ -229,10 +232,10 @@ export default function ChecklistPage() {
                                     onClick={() => toggleItem(item)}
                                     className="flex items-center gap-3 cursor-pointer select-none flex-1"
                                 >
-                                    <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                                    <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all bg-white ${
                                         checkedItems.includes(item) 
                                         ? "bg-indigo-500 border-indigo-500" 
-                                        : "bg-white border-slate-200 group-hover:border-indigo-300"
+                                        : "border-slate-200 group-hover:border-indigo-300"
                                     }`}>
                                         {checkedItems.includes(item) && <Check size={14} className="text-white" strokeWidth={3} />}
                                     </div>

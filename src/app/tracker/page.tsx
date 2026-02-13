@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { ArrowLeft, Wallet, Plus, Trash2, Download, RefreshCw, X, Coins } from "lucide-react";
 import { toPng } from "html-to-image";
+import WingBanners from "@/components/WingBanners";
 
 type ExpenseItem = {
   id: string;
@@ -150,13 +151,16 @@ export default function TrackerPage() {
   if (!isLoaded) return <div className="min-h-screen bg-slate-50" />;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-24 relative">
+    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-24 relative z-10">
+      <WingBanners />
       <div className="max-w-md mx-auto">
         <header className="flex justify-between items-center mb-6">
           <Link href="/" className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors shadow-sm">
             <ArrowLeft size={20} className="text-slate-600" />
           </Link>
-          <h1 className="text-xl font-black text-slate-800 flex items-center gap-2">여행 가계부</h1>
+          <h1 className="text-xl font-black text-slate-800 flex items-center gap-2">
+            <Wallet className="text-amber-500" size={24} /> 여행 가계부
+          </h1>
           <button 
             onClick={handleReset}
             className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-rose-50 hover:text-rose-500 transition-colors text-slate-400 shadow-sm"
