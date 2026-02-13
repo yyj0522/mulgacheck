@@ -8,7 +8,8 @@ import WingBanners from "@/components/WingBanners";
 import { 
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   Star, MessageSquarePlus, ChevronLeft, ThumbsUp, 
-  Copy, Share2, Edit3, ChevronRight, Loader2, AlertTriangle
+  Copy, Share2, Edit3, ChevronRight, Loader2, AlertTriangle,
+  Plane, Hotel, Wallet, Globe2
 } from "lucide-react";
 import Link from "next/link";
 
@@ -20,11 +21,13 @@ type ScheduleItem = {
 
 type DayPlan = {
   day: number;
+  day_cost?: string;
   schedule: ScheduleItem[];
 };
 
 type TripResult = {
   title: string;
+  total_estimated_cost?: string;
   itinerary: DayPlan[];
 };
 
@@ -33,6 +36,9 @@ type TripData = {
   days: string;
   companion: string;
   style: string;
+  budget: string;
+  includeFlight: boolean;
+  includeAccommodation: boolean;
   prompt: string;
 };
 
@@ -47,6 +53,9 @@ function PlanPageContent() {
     days: "3박 4일",
     companion: "연인과",
     style: "맛집 투어",
+    budget: "",
+    includeFlight: false,
+    includeAccommodation: false,
     prompt: "",
   });
   
@@ -181,17 +190,17 @@ function PlanPageContent() {
   const handleCopyText = () => {
     if (!result) return;
     
-    let text = `[${result.title}]\n여행지: ${formData.destination}\n\n`;
+    let text = `[${result.title}]\n여행지: ${formData.destination}\n예상 비용: ${result.total_estimated_cost || "미정"}\n\n`;
     
     result.itinerary.forEach((day) => {
-      text += `📅 Day ${day.day}\n`;
+      text += `Day ${day.day} (${day.day_cost || ""})\n`;
       day.schedule.forEach((item) => {
         text += `${item.time} | ${item.place}\n  - ${item.desc}\n`;
       });
       text += `\n`;
     });
 
-    text += `\n✨ AI 여행 일정 생성: 물가체크 (MulgaCheck)`;
+    text += `\nAI 여행 일정 생성: 물가체크 (MulgaCheck)`;
     
     navigator.clipboard.writeText(text);
     alert("일정이 텍스트로 복사되었습니다!");
@@ -215,6 +224,32 @@ function PlanPageContent() {
       alert("공유 링크가 복사되었습니다! 친구에게 보내보세요.");
     } else {
       alert("공유 링크 생성 실패. 잠시 후 다시 시도해주세요.");
+    }
+  };
+
+  const handlePublishToCommunity = async () => {
+    if (!result) return;
+    
+    if(!confirm("커뮤니티에 일정을 공개하시겠습니까? (익명으로 등록됩니다)")) return;
+
+    const { error } = await supabase
+      .from("community_plans")
+      .insert({
+        destination: formData.destination,
+        days: formData.days,
+        companion: formData.companion,
+        style: formData.style,
+        budget: formData.budget || "미정",
+        include_flight: formData.includeFlight,
+        include_accommodation: formData.includeAccommodation,
+        plan_data: result
+      });
+
+    if (!error) {
+      alert("커뮤니티에 등록되었습니다! 다른 여행자들에게 큰 도움이 될 거예요.");
+    } else {
+      console.error(error);
+      alert("등록 중 오류가 발생했습니다.");
     }
   };
 
@@ -339,6 +374,39 @@ function PlanPageContent() {
 
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
+                <Wallet size={14} /> 1인당 예산 (선택)
+              </label>
+              <input 
+                type="text" 
+                placeholder="예: 100만원 (미입력 시 가성비)"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition-colors mb-3"
+                value={formData.budget}
+                onChange={(e) => setFormData({...formData, budget: e.target.value})}
+              />
+              <div className="flex gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
+                      <input 
+                          type="checkbox" 
+                          checked={formData.includeFlight}
+                          onChange={(e) => setFormData({...formData, includeFlight: e.target.checked})}
+                          className="w-4 h-4 accent-indigo-600 rounded"
+                      />
+                      <span className="text-xs font-bold text-slate-600 flex items-center gap-1"><Plane size={12}/> 항공권 포함</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
+                      <input 
+                          type="checkbox" 
+                          checked={formData.includeAccommodation}
+                          onChange={(e) => setFormData({...formData, includeAccommodation: e.target.checked})}
+                          className="w-4 h-4 accent-indigo-600 rounded"
+                      />
+                      <span className="text-xs font-bold text-slate-600 flex items-center gap-1"><Hotel size={12}/> 숙소 포함</span>
+                  </label>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
                 <Sparkles size={14} /> 여행 스타일
               </label>
               <div className="flex flex-wrap gap-2">
@@ -449,11 +517,16 @@ function PlanPageContent() {
 
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-black text-slate-900 mb-2">{result?.title || "나만의 여행 일정"}</h1>
-          <p className="text-slate-500 font-medium">
+          <p className="text-slate-500 font-medium mb-3">
             {formData.destination} · {formData.days} · {formData.style}
           </p>
+          {result?.total_estimated_cost && (
+              <div className="inline-block bg-amber-50 text-amber-600 px-4 py-2 rounded-full text-sm font-black border border-amber-100 shadow-sm mb-4">
+                  총 예상 비용: {result.total_estimated_cost}
+              </div>
+          )}
           
-          <div className="flex justify-center gap-3 mt-6">
+          <div className="flex justify-center gap-2 mt-4 flex-wrap">
             <button 
                 onClick={handleCopyText}
                 className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-slate-700 text-sm font-bold shadow-sm hover:bg-slate-50 active:scale-95 transition-all"
@@ -466,6 +539,14 @@ function PlanPageContent() {
             >
                 <Share2 size={16} /> 링크 공유
             </button>
+            {!isSharedMode && (
+                <button 
+                    onClick={handlePublishToCommunity}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full text-sm font-bold shadow-md shadow-emerald-200 hover:opacity-90 active:scale-95 transition-all"
+                >
+                    <Globe2 size={16} /> 일정 자랑하기
+                </button>
+            )}
           </div>
         </div>
 
@@ -473,10 +554,15 @@ function PlanPageContent() {
           {currentItinerary?.map((dayPlan) => (
             <div key={dayPlan.day} className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative">
               
-              <div className="flex justify-between items-center mb-4 pb-3 border-b border-indigo-50">
-                <h3 className="font-black text-lg text-indigo-600 flex items-center gap-2">
-                    <span className="bg-indigo-50 px-3 py-1 rounded-lg text-sm border border-indigo-100">Day {dayPlan.day}</span>
-                </h3>
+              <div className="flex justify-between items-start mb-4 pb-3 border-b border-indigo-50">
+                <div>
+                    <h3 className="font-black text-lg text-indigo-600 flex items-center gap-2 mb-1">
+                        <span className="bg-indigo-50 px-3 py-1 rounded-lg text-sm border border-indigo-100">Day {dayPlan.day}</span>
+                    </h3>
+                    {dayPlan.day_cost && (
+                        <p className="text-xs font-bold text-slate-400">{dayPlan.day_cost}</p>
+                    )}
+                </div>
                 {!isSharedMode && (
                     <button 
                         onClick={() => setEditingDay(dayPlan.day)}
