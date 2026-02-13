@@ -224,15 +224,15 @@ export default function ChecklistPage() {
                 {customItems.length > 0 && (
                     <ul className="space-y-3 mb-6">
                         {customItems.map((item) => (
-                            <li key={item} className="flex items-center justify-between group">
+                            <li key={item} className="flex items-center justify-between group bg-slate-50 rounded-xl p-2 hover:bg-slate-100 transition-colors">
                                 <div 
                                     onClick={() => toggleItem(item)}
                                     className="flex items-center gap-3 cursor-pointer select-none flex-1"
                                 >
-                                    <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all ${
+                                    <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all bg-white ${
                                         checkedItems.includes(item) 
                                         ? "bg-indigo-500 border-indigo-500" 
-                                        : "bg-slate-50 border-slate-200 group-hover:border-indigo-300"
+                                        : "border-slate-200 group-hover:border-indigo-300"
                                     }`}>
                                         {checkedItems.includes(item) && <Check size={14} className="text-white" strokeWidth={3} />}
                                     </div>
@@ -241,10 +241,13 @@ export default function ChecklistPage() {
                                     </span>
                                 </div>
                                 <button 
-                                    onClick={() => removeCustomItem(item)}
-                                    className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeCustomItem(item);
+                                    }}
+                                    className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
                                 >
-                                    <Trash2 size={16} />
+                                    <Trash2 size={18} />
                                 </button>
                             </li>
                         ))}
