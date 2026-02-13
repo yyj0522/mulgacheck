@@ -7,7 +7,7 @@ import { BOTTOM_ADS, GRID_ADS } from "@/data/adData";
 import WingBanners from "@/components/WingBanners";
 import { 
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
-  Star, MessageSquarePlus, ChevronLeft, ThumbsUp, 
+  MessageSquarePlus, ChevronLeft, 
   Copy, Share2, Edit3, ChevronRight, Loader2, AlertTriangle,
   Plane, Hotel, Wallet, Globe2
 } from "lucide-react";
@@ -67,9 +67,6 @@ function PlanPageContent() {
   const [editingDay, setEditingDay] = useState<number | null>(null);
   const [editPrompt, setEditPrompt] = useState("");
   const [isRegeneratingDay, setIsRegeneratingDay] = useState<number | null>(null);
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState("");
-  const [feedbackSent, setFeedbackSent] = useState(false);
 
   const [isLimitReached, setIsLimitReached] = useState(false);
 
@@ -200,7 +197,7 @@ function PlanPageContent() {
       text += `\n`;
     });
 
-    text += `\nAI 여행 일정 생성: 물가체크 (MulgaCheck)`;
+    text += `\n✨ AI 여행 일정 생성: 물가체크 (MulgaCheck)`;
     
     navigator.clipboard.writeText(text);
     alert("일정이 텍스트로 복사되었습니다!");
@@ -250,22 +247,6 @@ function PlanPageContent() {
     } else {
       console.error(error);
       alert("등록 중 오류가 발생했습니다.");
-    }
-  };
-
-  const submitFeedback = async () => {
-    if (rating === 0) {
-      alert("별점을 선택해주세요.");
-      return;
-    }
-    const { error } = await supabase.from("plan_feedback").insert({
-      rating,
-      comment,
-      trip_destination: formData.destination,
-    });
-    if (!error) {
-      setFeedbackSent(true);
-      alert("소중한 의견 감사합니다.");
     }
   };
 
@@ -655,60 +636,6 @@ function PlanPageContent() {
             </p>
           </div>
         </div>
-
-        {!feedbackSent ? (
-          <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-violet-600 rounded-[2rem] p-8 shadow-xl shadow-indigo-200 text-white mb-4">
-             <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-             <div className="absolute bottom-0 left-0 -ml-8 -mb-8 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
-             
-             <div className="relative z-10 flex flex-col items-center text-center">
-                <div className="bg-white/20 p-3 rounded-full mb-4 backdrop-blur-sm">
-                    <ThumbsUp size={24} className="text-white" />
-                </div>
-                <h3 className="font-black text-2xl mb-2">이번 일정, 마음에 드시나요?</h3>
-                <p className="text-indigo-100 text-sm mb-6 max-w-md">
-                    별점을 남겨주시면 AI가 더 똑똑해집니다.<br/>
-                    여러분의 소중한 의견을 들려주세요!
-                </p>
-
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 w-full max-w-md border border-white/20">
-                    <div className="flex justify-center gap-3 mb-6">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                        <button 
-                        key={star} 
-                        onClick={() => setRating(star)}
-                        className="transition-transform hover:scale-110 focus:outline-none"
-                        >
-                        <Star 
-                            size={32} 
-                            className={`transition-colors ${rating >= star ? "text-yellow-400" : "text-indigo-200"}`} 
-                            fill={rating >= star ? "currentColor" : "none"}
-                        />
-                        </button>
-                    ))}
-                    </div>
-                    <input 
-                    type="text" 
-                    placeholder="한줄평을 남겨주세요 (선택)"
-                    className="w-full bg-white/90 border-0 rounded-xl p-4 text-slate-800 text-sm mb-4 placeholder:text-slate-400 focus:ring-2 focus:ring-white outline-none font-medium"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    />
-                    <button 
-                    onClick={submitFeedback}
-                    className="w-full py-3 bg-white text-indigo-600 font-bold rounded-xl text-sm hover:bg-indigo-50 transition-colors shadow-lg"
-                    >
-                    평가 보내기
-                    </button>
-                </div>
-             </div>
-          </div>
-        ) : (
-          <div className="bg-indigo-50 rounded-[2rem] p-8 text-center mb-4 border border-indigo-100">
-            <h3 className="font-black text-xl text-indigo-600 mb-2">소중한 의견 감사합니다.</h3>
-            <p className="text-slate-500 text-sm">더 좋은 서비스로 보답하겠습니다.</p>
-          </div>
-        )}
 
         <div className="mt-0 mb-4 flex flex-col items-center">
            {bottomAd.pcImg && (
