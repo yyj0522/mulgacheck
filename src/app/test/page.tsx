@@ -6,6 +6,7 @@ import { TEST_QUESTIONS, TEST_RESULTS } from "@/data/travelTest";
 import { ChevronLeft, Share2, RefreshCw, Plane, Download, X } from "lucide-react";
 import { toPng } from "html-to-image";
 import Image from "next/image";
+import WingBanners from "@/components/WingBanners";
 
 export default function TravelTestPage() {
   const [step, setStep] = useState<"intro" | "question" | "loading" | "result">("intro");
@@ -117,32 +118,34 @@ export default function TravelTestPage() {
 
   if (step === "intro") {
     return (
-      <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
-        <header className="absolute top-6 left-6">
-          <Link href="/" className="flex items-center gap-1 text-slate-500 hover:text-indigo-600 transition-colors font-bold">
-            <ChevronLeft size={20} /> 메인으로
-          </Link>
-        </header>
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-full max-w-md">
+            <div className="flex justify-start mb-8">
+                <Link href="/" className="flex items-center gap-1 text-slate-500 hover:text-indigo-600 transition-colors font-bold">
+                    <ChevronLeft size={20} /> 메인으로
+                </Link>
+            </div>
 
-        <span className="text-4xl mb-6">✈️</span>
-        <h1 className="text-3xl font-black text-slate-900 mb-4">
-          나의 여행 스타일<br />
-          <span className="text-indigo-600">MBTI 테스트</span>
-        </h1>
-        <p className="text-slate-500 mb-8 leading-relaxed">
-          나는 어떤 여행자일까?<br />
-          12가지 질문으로 알아보는<br />
-          나만의 여행 성향과 추천 여행지!
-        </p>
-        <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-100 mb-10 text-sm text-slate-500 font-medium">
-            ⏱ 소요 시간 : 약 3분 &nbsp;|&nbsp; 총 12문항
+            <span className="text-4xl mb-6 block">✈️</span>
+            <h1 className="text-3xl font-black text-slate-900 mb-4">
+            나의 여행 스타일<br />
+            <span className="text-indigo-600">MBTI 테스트</span>
+            </h1>
+            <p className="text-slate-500 mb-8 leading-relaxed">
+            나는 어떤 여행자일까?<br />
+            12가지 질문으로 알아보는<br />
+            나만의 여행 성향과 추천 여행지!
+            </p>
+            <div className="bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-100 mb-10 text-sm text-slate-500 font-medium inline-block w-full">
+                ⏱ 소요 시간 : 약 3분 &nbsp;|&nbsp; 총 12문항
+            </div>
+            <button
+            onClick={() => setStep("question")}
+            className="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all hover:-translate-y-1"
+            >
+            테스트 시작하기
+            </button>
         </div>
-        <button
-          onClick={() => setStep("question")}
-          className="w-full max-w-xs py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all hover:-translate-y-1"
-        >
-          테스트 시작하기
-        </button>
       </div>
     );
   }
@@ -192,10 +195,10 @@ export default function TravelTestPage() {
   const resultData = TEST_RESULTS[result];
 
   return (
-    // ⭐ 수정됨: bg-white -> bg-slate-50 (배경을 연한 회색으로 변경)
-    // 카드 부분은 이미 bg-white가 적용되어 있어 돋보이게 됩니다.
-    <div className="w-full bg-slate-50 p-6 pb-4">
-      <div className="max-w-md mx-auto relative">
+    <div className="w-full bg-slate-50 p-6 pb-4 relative">
+      <WingBanners />
+      
+      <div className="max-w-md mx-auto relative z-10">
         <header className="flex justify-between items-center mb-8 text-slate-500">
           <Link href="/" className="flex items-center gap-1 hover:text-slate-900">
             <ChevronLeft size={20} /> 메인으로
@@ -209,7 +212,6 @@ export default function TravelTestPage() {
           </button>
         </header>
 
-        {/* 결과 카드 (흰색 유지) */}
         <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl text-center animate-in slide-in-from-bottom-10 duration-700 relative z-10">
           <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 mb-6 uppercase tracking-wider">
             Your Travel Type
