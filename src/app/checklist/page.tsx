@@ -229,10 +229,10 @@ export default function ChecklistPage() {
                                     onClick={() => toggleItem(item)}
                                     className="flex items-center gap-3 cursor-pointer select-none flex-1"
                                 >
-                                    <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all bg-white ${
+                                    <div className={`w-6 h-6 rounded-lg border-2 flex-shrink-0 flex items-center justify-center transition-all ${
                                         checkedItems.includes(item) 
                                         ? "bg-indigo-500 border-indigo-500" 
-                                        : "border-slate-200 group-hover:border-indigo-300"
+                                        : "bg-white border-slate-200 group-hover:border-indigo-300"
                                     }`}>
                                         {checkedItems.includes(item) && <Check size={14} className="text-white" strokeWidth={3} />}
                                     </div>
