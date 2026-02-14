@@ -218,8 +218,22 @@ function PlanPageContent() {
 
     if (data && !error) {
       const url = `${window.location.origin}/plan?shareId=${data.id}`;
-      navigator.clipboard.writeText(url);
-      alert("공유 링크가 복사되었습니다! 친구에게 보내보세요.");
+      const shareData = {
+        title: `[물가체크] ${formData.destination} 여행 일정`,
+        text: `AI가 생성한 ${formData.destination} ${formData.days} 여행 일정을 확인해보세요!`,
+        url: url
+      };
+
+      if (navigator.share && navigator.canShare(shareData)) {
+        try {
+            await navigator.share(shareData);
+        } catch (err) {
+            console.log(err);
+        }
+      } else {
+        navigator.clipboard.writeText(url);
+        alert("공유 링크가 복사되었습니다! 친구에게 보내보세요.");
+      }
     } else {
       alert("공유 링크 생성 실패. 잠시 후 다시 시도해주세요.");
     }
@@ -440,20 +454,19 @@ function PlanPageContent() {
             </div>
 
             <div className="mt-6 animate-fade-in-up delay-100">
-                <Link href="/community" className="group block bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-300/50 transition-all hover:-translate-y-0.5 relative overflow-hidden">
-                    <div className="flex items-center justify-between relative z-10">
-                        <div className="flex items-center gap-4">
-                            <div>
-                                <h3 className="text-slate-900 font-black text-lg leading-tight group-hover:text-indigo-700 transition-colors">
-                                    다른 여행자들은 어디로 갈까?
-                                </h3>
-                                <p className="text-slate-500 text-sm font-bold mt-0.5 group-hover:text-slate-600 transition-colors">
-                                    실제 여행 일정과 예산 구경하기
-                                </p>
-                            </div>
+                <Link href="/community" className="block relative overflow-hidden bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all hover:-translate-y-1 group">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500" />
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-slate-800 font-black text-lg flex items-center gap-2">
+                                다른 여행자들은 어디로 갈까?
+                            </h3>
+                            <p className="text-slate-500 text-sm font-medium mt-1">
+                                실제 여행 일정과 예산 구경하기
+                            </p>
                         </div>
-                        <div className="text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all">
-                            <ArrowRight size={24} />
+                        <div className="bg-indigo-50 p-3 rounded-full text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                            <ArrowRight size={20} />
                         </div>
                     </div>
                 </Link>
@@ -524,7 +537,7 @@ function PlanPageContent() {
           </p>
           {result?.total_estimated_cost && (
               <div className="inline-block bg-amber-50 text-amber-600 px-4 py-2 rounded-full text-sm font-black border border-amber-100 shadow-sm mb-4">
-                  💰 총 예상 비용: {result.total_estimated_cost}
+                  총 예상 비용: {result.total_estimated_cost}
               </div>
           )}
           
@@ -653,7 +666,7 @@ function PlanPageContent() {
           </div>
           <div className="mt-6 pt-4 border-t border-slate-50 text-center">
             <p className="text-[10px] text-slate-300">
-                이 사이트 제휴 마케팅 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+                이 사이트는 제휴 마케팅 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
             </p>
           </div>
         </div>
