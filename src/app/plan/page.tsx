@@ -486,7 +486,6 @@ function PlanPageContent() {
 
             <div className="mt-6 animate-fade-in-up delay-100">
                 <Link href="/community" className="block relative overflow-hidden bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all hover:-translate-y-1 group">
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-indigo-500" />
                     <div className="flex items-center justify-between">
                         <div>
                             <h3 className="text-slate-800 font-black text-lg flex items-center gap-2">

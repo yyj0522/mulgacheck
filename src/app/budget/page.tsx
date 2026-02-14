@@ -49,7 +49,6 @@ export default function BudgetExplorer() {
   const [sortOption, setSortOption] = useState<SortOption>("MARGIN_DESC");
 
   const [countries, setCountries] = useState<CountryData[]>([]);
-  const [banners, setBanners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [calculating, setCalculating] = useState(false);
   const [isCalculated, setIsCalculated] = useState(false);
@@ -65,17 +64,8 @@ export default function BudgetExplorer() {
         .from("countries")
         .select("id, name_ko, name_en, flag_emoji, currency_code, meal_price_local, transport_price_local, accommodation_price_local, exchange_rates(rate_to_krw)");
 
-      const { data: bannersData } = await supabase
-        .from("banners")
-        .select("*")
-        .eq("is_active", true)
-        .order("created_at", { ascending: false });
-
       if (countriesData) {
         setCountries(countriesData as any);
-      }
-      if (bannersData) {
-        setBanners(bannersData);
       }
       setLoading(false);
     };
@@ -127,7 +117,7 @@ export default function BudgetExplorer() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center relative z-10 pt-4 pb-4">
-      <WingBanners dbBanners={banners} />
+      <WingBanners />
       
       <div className="w-full max-w-md px-6">
         <header className="mb-6">

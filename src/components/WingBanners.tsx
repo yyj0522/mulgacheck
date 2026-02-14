@@ -3,10 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import { WING_ADS } from "@/data/adData";
 
-type WingBannersProps = {
-  dbBanners?: any[];
-};
-
 function shuffleArray(array: any[]) {
   const newArr = [...array];
   for (let i = newArr.length - 1; i > 0; i--) {
@@ -16,7 +12,7 @@ function shuffleArray(array: any[]) {
   return newArr;
 }
 
-export default function WingBanners({ dbBanners }: WingBannersProps) {
+export default function WingBanners() {
   const [mounted, setMounted] = useState(false);
   const [leftAd, setLeftAd] = useState(WING_ADS[0]);
   const [rightAd, setRightAd] = useState(WING_ADS[1]);
@@ -26,16 +22,10 @@ export default function WingBanners({ dbBanners }: WingBannersProps) {
 
   useEffect(() => {
     setMounted(true);
-    
-    if (dbBanners && dbBanners.length >= 2) {
-      setLeftAd(dbBanners[0]);
-      setRightAd(dbBanners[1]);
-    } else {
-      const shuffled = shuffleArray(WING_ADS);
-      setLeftAd(shuffled[0]);
-      setRightAd(shuffled[1]);
-    }
-  }, [dbBanners]);
+    const shuffled = shuffleArray(WING_ADS);
+    setLeftAd(shuffled[0]);
+    setRightAd(shuffled[1]);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {

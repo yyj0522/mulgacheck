@@ -68,11 +68,13 @@ export async function POST(req: Request) {
       - 시간대별로 현실적인 동선을 고려하세요.
       - 이동시간을 고려하세요.
       - 식당/장소는 구체적인 명칭을 사용하세요.
+      - **변경된 일정에 맞춰 '일차별 예상 경비(day_cost)'를 반드시 다시 계산해서 작성하세요.**
       - **중요: 반드시 아래 JSON 스키마를 정확히 지켜주세요. schedule 키는 필수이며 배열이어야 합니다.**
 
       [Output JSON Schema]
       {
         "day": ${day},
+        "day_cost": "이 날짜의 예상 식비/교통비 합계 (예: 식비 50,000원 + 교통비 10,000원)",
         "schedule": [
           { "time": "HH:MM", "place": "장소명", "desc": "설명" }
         ]
@@ -89,6 +91,10 @@ export async function POST(req: Request) {
     }
     if (!data.day) {
         data.day = day;
+    }
+    
+    if (!data.day_cost && currentSchedule?.day_cost) {
+        data.day_cost = currentSchedule.day_cost;
     }
 
     await saveLog(ip, 'regenerate');
