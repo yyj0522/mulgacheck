@@ -63,16 +63,26 @@ export const BOTTOM_ADS: AdBanner[] = [
     link: "https://click.linkprice.com/click.php?m=agoda&a=A100702487&l=pDTY&u_id=",
     pcImg: "https://img.linkprice.com/files/glink/agoda/20200429/5ea8ce4a98260_728_90.jpg",
     pcTrack: "http://track.linkprice.com/lpshow.php?m_id=agoda&a_id=A100702487&p_id=0000&l_id=pDTY&l_cd1=2&l_cd2=0",
-    moLink: "https://click.linkprice.com/click.php?m=agoda&a=A100702487&l=0002&u_id=",
-    moImg: "http://img.agoda.net/images/partnermarketing/kr/Ads-KR_468x60.jpg",
-    moTrack: "http://track.linkprice.com/lpshow.php?m_id=agoda&a_id=A100702487&p_id=0000&l_id=0002&l_cd1=2&l_cd2=0"
+    moLink: "https://click.linkprice.com/click.php?m=agoda&a=A100702487&l=A1S5&u_id=",
+    moImg: "https://img.linkprice.com/files/glink/agoda/20200429/5ea8ce4a9501b_468_60.jpg",
+    moTrack: "http://track.linkprice.com/lpshow.php?m_id=agoda&a_id=A100702487&p_id=0000&l_id=A1S5&l_cd1=2&l_cd2=0"
   },
   {
-    id: "hotels_bottom",
-    name: "Hotels.com",
+    id: "hotels_bottom_1",
+    name: "Hotels.com (SPA)",
     link: "https://click.linkprice.com/click.php?m=hotelskr&a=A100702487&l=0Ne1&u_id=",
     pcImg: "https://img.linkprice.com/files/glink/hotelskr/20250708/u00mlk4FS4W00_00000_V1_728x90_45478_SPA.jpg",
     pcTrack: "http://track.linkprice.com/lpshow.php?m_id=hotelskr&a_id=A100702487&p_id=0000&l_id=0Ne1&l_cd1=2&l_cd2=0",
+    moLink: "https://click.linkprice.com/click.php?m=hotelskr&a=A100702487&l=0005&u_id=",
+    moImg: "http://img.linkprice.com/files/glink/hotelskr/20160718/578c20241efeb_468_60.jpg",
+    moTrack: "http://track.linkprice.com/lpshow.php?m_id=hotelskr&a_id=A100702487&p_id=0000&l_id=0005&l_cd1=2&l_cd2=0"
+  },
+  {
+    id: "hotels_bottom_2",
+    name: "Hotels.com (Oct)",
+    link: "https://click.linkprice.com/click.php?m=hotelskr&a=A100702487&l=Y4VC&u_id=",
+    pcImg: "https://img.linkprice.com/files/glink/hotelskr/20230926/3m0jenO5ct3W0_JSFUTURE_Oct_2023_728x90_01.jpg",
+    pcTrack: "http://track.linkprice.com/lpshow.php?m_id=hotelskr&a_id=A100702487&p_id=0000&l_id=Y4VC&l_cd1=2&l_cd2=0",
     moLink: "https://click.linkprice.com/click.php?m=hotelskr&a=A100702487&l=0005&u_id=",
     moImg: "http://img.linkprice.com/files/glink/hotelskr/20160718/578c20241efeb_468_60.jpg",
     moTrack: "http://track.linkprice.com/lpshow.php?m_id=hotelskr&a_id=A100702487&p_id=0000&l_id=0005&l_cd1=2&l_cd2=0"
@@ -88,8 +98,8 @@ export const BOTTOM_ADS: AdBanner[] = [
     moTrack: "http://track.linkprice.com/lpshow.php?m_id=interpark3&a_id=A100702487&p_id=0000&l_id=cmu1&l_cd1=2&l_cd2=0"
   },
   {
-    id: "airalo_bottom",
-    name: "Airalo",
+    id: "airalo_bottom_1",
+    name: "Airalo (Default)",
     link: "https://click.linkprice.com/click.php?m=airalo&a=A100702487&l=F8j8&u_id=",
     pcImg: "https://img.linkprice.com/files/glink/airalo/20230406/e00xVgcWzw680_728_90.png",
     pcTrack: "http://track.linkprice.com/lpshow.php?m_id=airalo&a_id=A100702487&p_id=0000&l_id=F8j8&l_cd1=2&l_cd2=0",
@@ -98,11 +108,21 @@ export const BOTTOM_ADS: AdBanner[] = [
     moTrack: "http://track.linkprice.com/lpshow.php?m_id=airalo&a_id=A100702487&p_id=0000&l_id=ulxJ&l_cd1=2&l_cd2=0"
   },
   {
+    id: "airalo_bottom_2",
+    name: "Airalo (New)",
+    link: "https://click.linkprice.com/click.php?m=airalo&a=A100702487&l=sptL&u_id=",
+    pcImg: "https://img.linkprice.com/files/glink/airalo/20250514/000nsJr000000_728x90 (1).png",
+    pcTrack: "http://track.linkprice.com/lpshow.php?m_id=airalo&a_id=A100702487&p_id=0000&l_id=sptL&l_cd1=2&l_cd2=0",
+    moLink: "https://click.linkprice.com/click.php?m=airalo&a=A100702487&l=ulxJ&u_id=",
+    moImg: "https://img.linkprice.com/files/glink/airalo/20230406/e00xVgcWzw680_468_60.png",
+    moTrack: "http://track.linkprice.com/lpshow.php?m_id=airalo&a_id=A100702487&p_id=0000&l_id=ulxJ&l_cd1=2&l_cd2=0"
+  },
+  {
     id: "rakuten_bottom",
     name: "Rakuten",
-    link: "https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=EtSC&u_id=",
-    pcImg: "",
-    pcTrack: "", 
+    link: "https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=5zP1&u_id=",
+    pcImg: "https://img.linkprice.com/files/glink/rakutentr/20230807/000qzILW00000_728x90.png",
+    pcTrack: "http://track.linkprice.com/lpshow.php?m_id=rakutentr&a_id=A100702487&p_id=0000&l_id=5zP1&l_cd1=2&l_cd2=0",
     moLink: "https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=7KKu&u_id=",
     moImg: "https://img.linkprice.com/files/glink/rakutentr/20230807/000aduUW00000_rakutentr_468_60.jpg",
     moTrack: "http://track.linkprice.com/lpshow.php?m_id=rakutentr&a_id=A100702487&p_id=0000&l_id=7KKu&l_cd1=2&l_cd2=0"
@@ -111,7 +131,7 @@ export const BOTTOM_ADS: AdBanner[] = [
     id: "rentalcars_bottom",
     name: "Rentalcars",
     link: "https://click.linkprice.com/click.php?m=rentalcars&a=A100702487&l=0004&u_id=",
-    pcImg: "",
+    pcImg: "", // PC 이미지 없음 (모바일만 있음)
     pcTrack: "",
     moLink: "https://click.linkprice.com/click.php?m=rentalcars&a=A100702487&l=0007&u_id=",
     moImg: "http://img.linkprice.com/files/glink/rentalcars/20180607/5b18e34c4d6d6_468_60.jpg",
@@ -121,7 +141,7 @@ export const BOTTOM_ADS: AdBanner[] = [
     id: "klook_bottom",
     name: "Klook",
     link: "https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0012&u_id=",
-    pcImg: "",
+    pcImg: "", // PC 이미지 없음 (모바일만 있음)
     pcTrack: "",
     moLink: "https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0015&u_id=",
     moImg: "http://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg",

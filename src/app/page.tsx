@@ -3,10 +3,13 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import SearchAndFilter from "@/components/SearchAndFilter";
 import { ArrowRight, Calculator, Sparkles, Map, Wallet } from "lucide-react";
+import { BOTTOM_ADS } from "@/data/adData";
 
 export const revalidate = 3600;
 
 export default async function Home() {
+  const bottomAd = BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)];
+
   const { data: countries } = await supabase
     .from("countries")
     .select("*, exchange_rates(rate_to_krw)");
@@ -48,9 +51,8 @@ export default async function Home() {
         </div>
       </header>
 
-      <main className="w-full max-w-7xl px-6 pb-12 z-10">
-        {/* ✅ 수정됨: lg:grid-cols-5 (한 줄에 5개 배치) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12">
+      <main className="w-full max-w-7xl px-6 pb-8 z-10 flex flex-col items-center">
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12">
           
           <Link href="/plan" className="group block h-full">
             <div className="relative overflow-hidden bg-gradient-to-br from-sky-500 to-blue-600 rounded-[2rem] p-6 h-full shadow-xl shadow-sky-200 hover:shadow-2xl hover:shadow-sky-300 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between min-h-[200px]">
@@ -154,26 +156,39 @@ export default async function Home() {
 
         </div>
 
-        <div className="bg-white/50 backdrop-blur-sm border border-white/60 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-slate-200/40 mb-10">
+        <div className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-slate-200/40">
           <SearchAndFilter initialData={countries ?? []} />
         </div>
 
-        <div className="w-full flex flex-col items-center justify-center hidden md:flex">
-          <a 
-            href="https://click.linkprice.com/click.php?m=rakutentr&a=A100702487&l=5zP1&u_id="
-            target="_blank" 
-            rel="noopener noreferrer nofollow"
-            className="block max-w-[728px] w-full rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white"
-          >
-             <Image 
-               src="https://img.linkprice.com/files/glink/rakutentr/20230807/000qzILW00000_728x90.png"
-               alt="Rakuten Travel"
-               width={728}
-               height={90}
-               unoptimized
-               className="w-full h-auto object-cover"
-             />
-          </a>
+        <div className="w-full flex justify-center mt-8 min-[1400px]:hidden">
+            {bottomAd.pcImg && (
+                <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+                    <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
+                        <img 
+                            src={bottomAd.pcImg} 
+                            alt={bottomAd.name} 
+                            width={728} 
+                            height={90} 
+                            className="w-full h-auto"
+                        />
+                    </a>
+                    {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
+                </div>
+            )}
+            {bottomAd.moImg && (
+                <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+                    <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
+                        <img 
+                            src={bottomAd.moImg} 
+                            alt={bottomAd.name} 
+                            width={468} 
+                            height={60} 
+                            className="w-full h-auto"
+                        />
+                    </a>
+                    {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
+                </div>
+            )}
         </div>
       </main>
     </div>

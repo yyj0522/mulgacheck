@@ -91,7 +91,6 @@ export default function WingBanners({ dbBanners }: WingBannersProps) {
         <a href={rightAd.link} target="_blank" rel="noopener noreferrer nofollow" className="block shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">
           <img src={rightAd.imgUrl} alt={rightAd.name} width={160} height={600} className="w-[160px] h-[600px] object-cover" />
         </a>
-        <span className="text-[10px] text-slate-300 mt-1 mr-1">제휴 활동으로 수수료를 제공받음</span>
         <img src={rightAd.trackingUrl} width="1" height="1" className="hidden" alt="" />
       </div>
     </div>

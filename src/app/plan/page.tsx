@@ -9,7 +9,7 @@ import {
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   MessageSquarePlus, ChevronLeft, 
   Copy, Share2, Edit3, ChevronRight, Loader2, AlertTriangle,
-  Plane, Hotel, Wallet, Globe2
+  Plane, Hotel, Wallet, Globe2, ArrowRight
 } from "lucide-react";
 import Link from "next/link";
 
@@ -17,6 +17,7 @@ type ScheduleItem = {
   time: string;
   place: string;
   desc: string;
+  imgUrl?: string; 
 };
 
 type DayPlan = {
@@ -285,176 +286,195 @@ function PlanPageContent() {
 
   if (step === "INPUT") {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] p-6 pb-24 flex flex-col items-center justify-center relative z-10">
+      <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center justify-start overflow-x-hidden pt-6 pb-4">
         <WingBanners />
         
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md px-6">
             <Link href="/" className="inline-flex items-center text-slate-400 font-bold hover:text-indigo-600 transition-colors mb-8">
                 <ChevronLeft size={20} /> 메인으로
             </Link>
+
+            <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 animate-fade-in-up">
+              <div className="text-center mb-8">
+                <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold mb-2">Beta</span>
+                <h1 className="text-3xl font-black text-slate-900 leading-tight">
+                  여행 일정<br />
+                  <span className="text-indigo-600">자동 생성기</span>
+                </h1>
+                <p className="text-slate-400 text-sm mt-2">맞춤형 일정을 계획해드립니다</p>
+              </div>
+
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
+                    <MapPin size={14} /> 어디로 가시나요?
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder="예: 오사카, 다낭, 파리"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition-colors"
+                    value={formData.destination}
+                    onChange={(e) => setFormData({...formData, destination: e.target.value})}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
+                      <Calendar size={14} /> 기간
+                    </label>
+                    <select 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none appearance-none"
+                      value={formData.days}
+                      onChange={(e) => setFormData({...formData, days: e.target.value})}
+                    >
+                      {dayOptions.map((day) => (
+                        <option key={day} value={day}>{day}</option>
+                      ))}
+                      <option>15일 이상 (장기)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
+                      <Users size={14} /> 누구와?
+                    </label>
+                    <select 
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none appearance-none"
+                      value={formData.companion}
+                      onChange={(e) => setFormData({...formData, companion: e.target.value})}
+                    >
+                      <option>혼자</option>
+                      <option>연인과</option>
+                      <option>친구와</option>
+                      <option>아이와</option>
+                      <option>부모님과</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
+                    <Wallet size={14} /> 1인당 예산 (선택)
+                  </label>
+                  <input 
+                    type="text" 
+                    placeholder="예: 100만원 (미입력 시 가성비)"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition-colors mb-3"
+                    value={formData.budget}
+                    onChange={(e) => setFormData({...formData, budget: e.target.value})}
+                  />
+                  <div className="flex gap-4">
+                      <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
+                          <input 
+                              type="checkbox" 
+                              checked={formData.includeFlight}
+                              onChange={(e) => setFormData({...formData, includeFlight: e.target.checked})}
+                              className="w-4 h-4 accent-indigo-600 rounded"
+                          />
+                          <span className="text-xs font-bold text-slate-600 flex items-center gap-1"><Plane size={12}/> 항공권 포함</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
+                          <input 
+                              type="checkbox" 
+                              checked={formData.includeAccommodation}
+                              onChange={(e) => setFormData({...formData, includeAccommodation: e.target.checked})}
+                              className="w-4 h-4 accent-indigo-600 rounded"
+                          />
+                          <span className="text-xs font-bold text-slate-600 flex items-center gap-1"><Hotel size={12}/> 숙소 포함</span>
+                      </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
+                    <Sparkles size={14} /> 여행 스타일
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {["맛집 투어", "힐링/휴양", "관광지 정복", "쇼핑 위주", "가성비"].map((tag) => (
+                      <button
+                        key={tag}
+                        onClick={() => setFormData({...formData, style: tag})}
+                        className={`px-4 py-2 rounded-full text-sm font-bold border transition-colors ${
+                          formData.style === tag 
+                          ? "bg-indigo-600 text-white border-indigo-600" 
+                          : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
+                    <MessageSquarePlus size={14} /> 추가 요청사항 (선택)
+                  </label>
+                  <textarea 
+                    maxLength={200}
+                    rows={3}
+                    placeholder="예: 부모님과 함께라서 걷는 일정은 줄여주세요.&#13;&#10;예: 유니버셜 스튜디오는 둘째 날에 꼭 넣어주세요."
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-slate-800 text-sm focus:outline-none focus:border-indigo-500 transition-colors resize-none placeholder:text-slate-300"
+                    value={formData.prompt}
+                    onChange={(e) => setFormData({...formData, prompt: e.target.value})}
+                  />
+                  <div className="text-right text-[10px] text-slate-300 mt-1">
+                    {formData.prompt.length} / 200
+                  </div>
+                </div>
+
+                {errorMsg && (
+                  <div className="bg-rose-50 text-rose-500 p-4 rounded-xl text-sm font-bold flex items-start gap-2">
+                    <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                    {errorMsg}
+                  </div>
+                )}
+
+                <button 
+                  onClick={handleGenerate}
+                  className="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all hover:-translate-y-1"
+                >
+                  일정 생성하기
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-6 animate-fade-in-up delay-100">
+                <Link href="/community" className="group block bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-md hover:border-indigo-300/50 transition-all hover:-translate-y-0.5 relative overflow-hidden">
+                    <div className="flex items-center justify-between relative z-10">
+                        <div className="flex items-center gap-4">
+                            <div>
+                                <h3 className="text-slate-900 font-black text-lg leading-tight group-hover:text-indigo-700 transition-colors">
+                                    다른 여행자들은 어디로 갈까?
+                                </h3>
+                                <p className="text-slate-500 text-sm font-bold mt-0.5 group-hover:text-slate-600 transition-colors">
+                                    실제 여행 일정과 예산 구경하기
+                                </p>
+                            </div>
+                        </div>
+                        <div className="text-slate-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all">
+                            <ArrowRight size={24} />
+                        </div>
+                    </div>
+                </Link>
+            </div>
         </div>
 
-        <div className="max-w-md w-full bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 animate-fade-in-up">
-          <div className="text-center mb-8">
-            <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold mb-2">Beta</span>
-            <h1 className="text-3xl font-black text-slate-900 leading-tight">
-              여행 일정<br />
-              <span className="text-indigo-600">자동 생성기</span>
-            </h1>
-            <p className="text-slate-400 text-sm mt-2">맞춤형 일정을 계획해드립니다</p>
-            <p className="text-slate-400 text-sm mt-2">오류가난다면 다음날 이용 부탁드립니다.</p>
-          </div>
-
-          <div className="space-y-5">
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                <MapPin size={14} /> 어디로 가시나요?
-              </label>
-              <input 
-                type="text" 
-                placeholder="예: 오사카, 다낭, 파리"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition-colors"
-                value={formData.destination}
-                onChange={(e) => setFormData({...formData, destination: e.target.value})}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                  <Calendar size={14} /> 기간
-                </label>
-                <select 
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none appearance-none"
-                  value={formData.days}
-                  onChange={(e) => setFormData({...formData, days: e.target.value})}
-                >
-                  {dayOptions.map((day) => (
-                    <option key={day} value={day}>{day}</option>
-                  ))}
-                  <option>15일 이상 (장기)</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                  <Users size={14} /> 누구와?
-                </label>
-                <select 
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none appearance-none"
-                  value={formData.companion}
-                  onChange={(e) => setFormData({...formData, companion: e.target.value})}
-                >
-                  <option>혼자</option>
-                  <option>연인과</option>
-                  <option>친구와</option>
-                  <option>아이와</option>
-                  <option>부모님과</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                <Wallet size={14} /> 1인당 예산 (선택)
-              </label>
-              <input 
-                type="text" 
-                placeholder="예: 100만원 (미입력 시 가성비)"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition-colors mb-3"
-                value={formData.budget}
-                onChange={(e) => setFormData({...formData, budget: e.target.value})}
-              />
-              <div className="flex gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
-                      <input 
-                          type="checkbox" 
-                          checked={formData.includeFlight}
-                          onChange={(e) => setFormData({...formData, includeFlight: e.target.checked})}
-                          className="w-4 h-4 accent-indigo-600 rounded"
-                      />
-                      <span className="text-xs font-bold text-slate-600 flex items-center gap-1"><Plane size={12}/> 항공권 포함</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
-                      <input 
-                          type="checkbox" 
-                          checked={formData.includeAccommodation}
-                          onChange={(e) => setFormData({...formData, includeAccommodation: e.target.checked})}
-                          className="w-4 h-4 accent-indigo-600 rounded"
-                      />
-                      <span className="text-xs font-bold text-slate-600 flex items-center gap-1"><Hotel size={12}/> 숙소 포함</span>
-                  </label>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                <Sparkles size={14} /> 여행 스타일
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {["맛집 투어", "힐링/휴양", "관광지 정복", "쇼핑 위주", "가성비"].map((tag) => (
-                  <button
-                    key={tag}
-                    onClick={() => setFormData({...formData, style: tag})}
-                    className={`px-4 py-2 rounded-full text-sm font-bold border transition-colors ${
-                      formData.style === tag 
-                      ? "bg-indigo-600 text-white border-indigo-600" 
-                      : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                <MessageSquarePlus size={14} /> 추가 요청사항 (선택)
-              </label>
-              <textarea 
-                maxLength={200}
-                rows={3}
-                placeholder="예: 부모님과 함께라서 걷는 일정은 줄여주세요.&#13;&#10;예: 유니버셜 스튜디오는 둘째 날에 꼭 넣어주세요."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-slate-800 text-sm focus:outline-none focus:border-indigo-500 transition-colors resize-none placeholder:text-slate-300"
-                value={formData.prompt}
-                onChange={(e) => setFormData({...formData, prompt: e.target.value})}
-              />
-              <div className="text-right text-[10px] text-slate-300 mt-1">
-                {formData.prompt.length} / 200
-              </div>
-            </div>
-
-            {errorMsg && (
-              <div className="bg-rose-50 text-rose-500 p-4 rounded-xl text-sm font-bold flex items-start gap-2">
-                <AlertCircle size={16} className="mt-0.5 shrink-0" />
-                {errorMsg}
-              </div>
-            )}
-
-            <button 
-              onClick={handleGenerate}
-              className="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all hover:-translate-y-1"
-            >
-              일정 생성하기
-            </button>
-          </div>
-        </div>
-        
-        <div className="w-full max-w-2xl mt-12 flex flex-col items-center">
+        <div className="w-full flex justify-center mt-4 px-4 min-[1400px]:hidden">
            {bottomAd.pcImg && (
-             <div className="hidden md:block shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+             <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
                <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                 <img src={bottomAd.pcImg} alt={bottomAd.name} width={728} height={90} />
+                 <img src={bottomAd.pcImg} alt={bottomAd.name} width={728} height={90} className="w-full h-auto" />
                </a>
-               <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />
+               {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
              </div>
            )}
            {bottomAd.moImg && (
-             <div className="block md:hidden shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-               <a href={bottomAd.moLink} target="_blank" rel="noopener noreferrer nofollow">
-                 <img src={bottomAd.moImg} alt={bottomAd.name} width={468} height={60} className="w-full h-auto max-w-[320px] sm:max-w-[468px]" />
+             <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+               <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
+                 <img src={bottomAd.moImg} alt={bottomAd.name} width={468} height={60} className="w-full h-auto" />
                </a>
-               <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />
+               {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
              </div>
            )}
         </div>
@@ -482,9 +502,10 @@ function PlanPageContent() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-6 pb-4 relative z-10">
+    <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center pt-6 pb-4">
       <WingBanners />
-      <div className="max-w-3xl mx-auto">
+      
+      <div className="w-full max-w-3xl px-6">
         <header className="flex justify-between items-center mb-8">
           <Link href="/" className="inline-flex items-center text-slate-400 font-bold hover:text-indigo-600 transition-colors">
             <ChevronLeft size={20} /> 메인으로
@@ -503,7 +524,7 @@ function PlanPageContent() {
           </p>
           {result?.total_estimated_cost && (
               <div className="inline-block bg-amber-50 text-amber-600 px-4 py-2 rounded-full text-sm font-black border border-amber-100 shadow-sm mb-4">
-                  총 예상 비용: {result.total_estimated_cost}
+                  💰 총 예상 비용: {result.total_estimated_cost}
               </div>
           )}
           
@@ -636,26 +657,25 @@ function PlanPageContent() {
             </p>
           </div>
         </div>
+      </div>
 
-        <div className="mt-0 mb-4 flex flex-col items-center">
-           {bottomAd.pcImg && (
-             <div className="hidden md:block shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-               <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                 <img src={bottomAd.pcImg} alt={bottomAd.name} width={728} height={90} />
-               </a>
-               <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />
-             </div>
-           )}
-           {bottomAd.moImg && (
-             <div className="block md:hidden shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-               <a href={bottomAd.moLink} target="_blank" rel="noopener noreferrer nofollow">
-                 <img src={bottomAd.moImg} alt={bottomAd.name} width={468} height={60} className="w-full h-auto max-w-[320px] sm:max-w-[468px]" />
-               </a>
-               <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />
-             </div>
-           )}
-        </div>
-
+      <div className="w-full flex justify-center mt-4 px-4 min-[1400px]:hidden">
+         {bottomAd.pcImg && (
+           <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+             <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
+               <img src={bottomAd.pcImg} alt={bottomAd.name} width={728} height={90} className="w-full h-auto" />
+             </a>
+             {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
+           </div>
+         )}
+         {bottomAd.moImg && (
+           <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+             <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
+               <img src={bottomAd.moImg} alt={bottomAd.name} width={468} height={60} className="w-full h-auto" />
+             </a>
+             {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
+           </div>
+         )}
       </div>
 
       {editingDay && (

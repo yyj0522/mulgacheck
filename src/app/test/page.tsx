@@ -7,6 +7,7 @@ import { ChevronLeft, Share2, RefreshCw, Plane, Download, X } from "lucide-react
 import { toPng } from "html-to-image";
 import Image from "next/image";
 import WingBanners from "@/components/WingBanners";
+import { BOTTOM_ADS } from "@/data/adData";
 
 export default function TravelTestPage() {
   const [step, setStep] = useState<"intro" | "question" | "loading" | "result">("intro");
@@ -21,10 +22,13 @@ export default function TravelTestPage() {
   
   const [result, setResult] = useState<string>("ISTJ");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [bottomAd, setBottomAd] = useState(BOTTOM_ADS[0]);
 
   const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setBottomAd(BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)]);
+
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const sharedResult = params.get("result");
@@ -118,14 +122,14 @@ export default function TravelTestPage() {
 
   if (step === "intro") {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
-        <div className="w-full max-w-md">
-            <div className="flex justify-start mb-8">
-                <Link href="/" className="flex items-center gap-1 text-slate-500 hover:text-indigo-600 transition-colors font-bold">
-                    <ChevronLeft size={20} /> 메인으로
-                </Link>
-            </div>
+      <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6 text-center overflow-y-auto">
+        <header className="absolute top-6 left-6 z-10">
+            <Link href="/" className="flex items-center gap-1 text-slate-500 hover:text-indigo-600 transition-colors font-bold">
+                <ChevronLeft size={20} /> 메인으로
+            </Link>
+        </header>
 
+        <div className="w-full max-w-md animate-fade-in-up">
             <span className="text-4xl mb-6 block">✈️</span>
             <h1 className="text-3xl font-black text-slate-900 mb-4">
             나의 여행 스타일<br />
@@ -153,7 +157,7 @@ export default function TravelTestPage() {
   if (step === "question") {
     return (
       <div className="fixed inset-0 z-50 bg-white p-6 flex flex-col items-center justify-center overflow-y-auto">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-md animate-fade-in">
           <div className="w-full bg-slate-200 h-2 rounded-full mb-8">
             <div 
               className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
@@ -195,10 +199,10 @@ export default function TravelTestPage() {
   const resultData = TEST_RESULTS[result];
 
   return (
-    <div className="w-full bg-slate-50 p-6 pb-4 relative">
+    <div className="min-h-screen bg-slate-50 relative z-10 flex flex-col items-center justify-start overflow-x-hidden pt-6 pb-4">
       <WingBanners />
       
-      <div className="max-w-md mx-auto relative z-10">
+      <div className="w-full max-w-md px-6 relative z-10">
         <header className="flex justify-between items-center mb-8 text-slate-500">
           <Link href="/" className="flex items-center gap-1 hover:text-slate-900">
             <ChevronLeft size={20} /> 메인으로
@@ -212,6 +216,7 @@ export default function TravelTestPage() {
           </button>
         </header>
 
+        {/* 결과 컨텐츠 */}
         <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl text-center animate-in slide-in-from-bottom-10 duration-700 relative z-10">
           <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 mb-6 uppercase tracking-wider">
             Your Travel Type
@@ -286,7 +291,8 @@ export default function TravelTestPage() {
           </div>
         </div>
 
-        <div className="mt-8 flex gap-3 w-full">
+        {/* 버튼 2개: 컨텐츠와 16px(mt-4) 간격 */}
+        <div className="mt-4 flex gap-3 w-full">
           <button 
             onClick={handleShare}
             className="flex-1 bg-white border border-slate-200 text-slate-700 font-bold py-4 rounded-2xl shadow-lg shadow-slate-200/50 flex items-center justify-center gap-2 hover:bg-slate-50 hover:scale-[1.02] active:scale-95 transition-all"
@@ -300,35 +306,38 @@ export default function TravelTestPage() {
             <Download size={20} /> 이미지 저장
           </button>
         </div>
+      </div>
 
-        <div className="mt-8 flex flex-col items-center justify-center w-full relative z-0">
-            <div className="block md:hidden">
-                <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0030&u_id=" rel="noopener noreferrer nofollow">
+      {/* 광고 배너: 버튼과 16px(mt-4) 간격 */}
+      <div className="w-full flex justify-center mt-4 px-4 min-[1400px]:hidden">
+        {bottomAd.pcImg && (
+            <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+                <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
                     <img 
-                      src="https://img.linkprice.com/files/glink/klook/20190604/5cf5ff12bb2ba_320_50.jpg" 
-                      width="320" 
-                      height="50" 
-                      alt="Klook" 
-                      style={{ maxWidth: '100%', height: 'auto' }}
+                        src={bottomAd.pcImg} 
+                        alt={bottomAd.name} 
+                        width={728} 
+                        height={90} 
+                        className="w-full h-auto"
                     />
                 </a>
-                <img src="https://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0030&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
+                {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
             </div>
-
-            <div className="hidden md:block">
-                <a target="_blank" href="https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0015&u_id=" rel="noopener noreferrer nofollow">
+        )}
+        {bottomAd.moImg && (
+            <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
+                <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
                     <img 
-                      src="https://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg" 
-                      width="468" 
-                      height="60" 
-                      alt="Klook"
-                      style={{ width: '468px', height: '60px' }} 
+                        src={bottomAd.moImg} 
+                        alt={bottomAd.name} 
+                        width={468} 
+                        height={60} 
+                        className="w-full h-auto"
                     />
                 </a>
-                <img src="https://track.linkprice.com/lpshow.php?m_id=klook&a_id=A100702487&p_id=0000&l_id=0015&l_cd1=2&l_cd2=0" width="1" height="1" style={{ display: 'none' }} alt="" />
+                {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
             </div>
-        </div>
-
+        )}
       </div>
 
       {previewUrl && (
