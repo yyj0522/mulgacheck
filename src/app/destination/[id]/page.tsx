@@ -37,12 +37,6 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
     .eq('id', id)
     .single();
 
-  const { data: banners } = await supabase
-    .from('banners')
-    .select('*')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false });
-
   if (!country) return <div className="p-10 text-center text-slate-400 font-bold">데이터를 찾을 수 없습니다.</div>;
 
   const rate = country.exchange_rates?.rate_to_krw || 0;
@@ -87,7 +81,7 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
     <div className="min-h-screen bg-[#F8FAFC] p-6 pb-20">
       <div className="max-w-md mx-auto">
         
-        <WingBanners dbBanners={banners || []} />
+        <WingBanners />
 
         <Link href="/" className="inline-flex items-center text-slate-400 mb-8 font-bold hover:text-indigo-600 transition-colors">
           <ChevronLeft size={20} /> 뒤로가기
@@ -205,14 +199,14 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
                  <Wallet size={20} className="text-indigo-500" /> 10,000원의 가치
                </h3>
                <div className="grid grid-cols-2 gap-3 mb-8">
-                  <div className="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm text-center">
-                    <p className="text-indigo-600 font-black text-lg mb-1">{mealKrw > 0 ? Math.floor(10000 / mealKrw) : "?"}끼</p>
-                    <p className="text-slate-400 text-xs font-bold uppercase">식사 가능</p>
-                  </div>
-                  <div className="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm text-center">
-                    <p className="text-indigo-600 font-black text-lg mb-1">{transportKrw > 0 ? Math.floor(10000 / transportKrw) : "?"}회</p>
-                    <p className="text-slate-400 text-xs font-bold uppercase">교통 이용</p>
-                  </div>
+                 <div className="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm text-center">
+                   <p className="text-indigo-600 font-black text-lg mb-1">{mealKrw > 0 ? Math.floor(10000 / mealKrw) : "?"}끼</p>
+                   <p className="text-slate-400 text-xs font-bold uppercase">식사 가능</p>
+                 </div>
+                 <div className="bg-white border border-slate-100 p-4 rounded-2xl shadow-sm text-center">
+                   <p className="text-indigo-600 font-black text-lg mb-1">{transportKrw > 0 ? Math.floor(10000 / transportKrw) : "?"}회</p>
+                   <p className="text-slate-400 text-xs font-bold uppercase">교통 이용</p>
+                 </div>
                </div>
             </div>
 
