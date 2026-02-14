@@ -203,18 +203,8 @@ function PlanPageContent() {
         return {
           ...prev,
           itinerary: prev.itinerary.map(item => 
-            item.day === isRegeneratingDay ? newDayData : item
+            item.day === editingDay ? newDayData : item
           )
-        };
-      });
-
-      setResult(prev => {
-        if (!prev) return null;
-        return {
-            ...prev,
-            itinerary: prev.itinerary.map(item => 
-                item.day === editingDay ? newDayData : item 
-            )
         };
       });
 
@@ -486,7 +476,7 @@ function PlanPageContent() {
                 )}
 
                 <button 
-                  onClick={handleGenerateClick} 
+                  onClick={handleGenerateClick}
                   className="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all hover:-translate-y-1"
                 >
                   일정 생성하기
@@ -781,7 +771,7 @@ function PlanPageContent() {
                           취소
                       </button>
                       <button 
-                          onClick={handleRegenerateClick}
+                          onClick={handleRegenerateClick} 
                           className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl text-sm hover:bg-indigo-700"
                       >
                           수정 요청
@@ -819,5 +809,13 @@ function PlanPageContent() {
           </div>
       )}
     </div>
+  );
+}
+
+export default function PlanPage() {
+  return (
+    <Suspense>
+      <PlanPageContent />
+    </Suspense>
   );
 }
