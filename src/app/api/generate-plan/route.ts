@@ -3,13 +3,16 @@ import { NextResponse } from "next/server";
 import { checkRateLimit, saveLog } from "@/utils/rateLimit";
 
 const apiKey = process.env.GEMINI_API_KEY;
+const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0] || "unknown";
+    const forwarded = req.headers.get("x-forwarded-for");
+    const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
 
     const { allowed, limit } = await checkRateLimit(ip, 'generate');
+    
     if (!allowed) {
       return NextResponse.json(
         { error: `일정 생성은 하루에 ${limit}회까지만 가능합니다.` },
@@ -18,7 +21,6 @@ export async function POST(req: Request) {
     }
 
     if (!apiKey) {
-      console.error("API Key is missing");
       return NextResponse.json({ error: "서버 설정 오류: API 키가 없습니다." }, { status: 500 });
     }
 
@@ -30,8 +32,28 @@ export async function POST(req: Request) {
       prompt: userPrompt,
       budget,
       includeFlight,
-      includeAccommodation
+      includeAccommodation,
+      turnstileToken
     } = await req.json();
+
+    if (!turnstileToken) {
+        return NextResponse.json({ error: "보안 검증 토큰이 없습니다." }, { status: 403 });
+    }
+
+    const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            secret: turnstileSecret,
+            response: turnstileToken,
+            remoteip: ip
+        })
+    });
+
+    const verifyData = await verifyRes.json();
+    if (!verifyData.success) {
+        return NextResponse.json({ error: "보안 검증에 실패했습니다." }, { status: 403 });
+    }
 
     if (!destination || !days) {
       return NextResponse.json({ error: "필수 정보가 누락되었습니다." }, { status: 400 });

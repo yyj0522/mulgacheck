@@ -9,9 +9,10 @@ import {
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   MessageSquarePlus, ChevronLeft, 
   Copy, Share2, Edit3, ChevronRight, Loader2, AlertTriangle,
-  Plane, Hotel, Wallet, Globe2, ArrowRight
+  Plane, Hotel, Wallet, Globe2, ArrowRight, X, ShieldCheck
 } from "lucide-react";
 import Link from "next/link";
+import Turnstile from "react-turnstile";
 
 type ScheduleItem = {
   time: string;
@@ -68,9 +69,9 @@ function PlanPageContent() {
   const [editingDay, setEditingDay] = useState<number | null>(null);
   const [editPrompt, setEditPrompt] = useState("");
   const [isRegeneratingDay, setIsRegeneratingDay] = useState<number | null>(null);
-
   const [isLimitReached, setIsLimitReached] = useState(false);
-
+  const [isCaptchaOpen, setIsCaptchaOpen] = useState(false);
+  const [captchaMode, setCaptchaMode] = useState<"GENERATE" | "REGENERATE" | null>(null);
   const isSharedMode = !!shareId;
 
   useEffect(() => {
@@ -99,12 +100,32 @@ function PlanPageContent() {
     }
   };
 
-  const handleGenerate = async () => {
+  const handleGenerateClick = () => {
     if (!formData.destination) {
-      alert("여행지를 입력해주세요.");
-      return;
+        alert("여행지를 입력해주세요.");
+        return;
     }
+    setCaptchaMode("GENERATE");
+    setIsCaptchaOpen(true);
+  };
 
+  const handleRegenerateClick = () => {
+    if (!editingDay || !result) return;
+    setCaptchaMode("REGENERATE");
+    setIsCaptchaOpen(true);
+  };
+
+  const handleCaptchaSuccess = (token: string) => {
+    setIsCaptchaOpen(false); 
+    
+    if (captchaMode === "GENERATE") {
+        executeGenerate(token);
+    } else if (captchaMode === "REGENERATE") {
+        executeRegenerate(token);
+    }
+  };
+
+  const executeGenerate = async (token: string) => {
     setStep("LOADING");
     setErrorMsg("");
     setIsLimitReached(false);
@@ -113,12 +134,18 @@ function PlanPageContent() {
       const res = await fetch("/api/generate-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, turnstileToken: token }),
       });
 
       if (res.status === 429) {
         setIsLimitReached(true);
         return; 
+      }
+
+      if (res.status === 403) {
+        alert("보안 검증에 실패했습니다. 다시 시도해주세요.");
+        setStep("INPUT");
+        return;
       }
 
       const data = await res.json();
@@ -134,14 +161,12 @@ function PlanPageContent() {
     }
   };
 
-  const handleRegenerateDay = async () => {
-    if (!editingDay || !result) return;
-    
+  const executeRegenerate = async (token: string) => {
     setIsRegeneratingDay(editingDay);
     setEditingDay(null); 
 
     try {
-      const targetDayData = result.itinerary.find(d => d.day === editingDay);
+      const targetDayData = result?.itinerary.find(d => d.day === editingDay);
       
       const res = await fetch("/api/regenerate-day", {
         method: "POST",
@@ -151,12 +176,18 @@ function PlanPageContent() {
           currentSchedule: targetDayData,
           prompt: editPrompt,
           destination: formData.destination,
-          style: formData.style
+          style: formData.style,
+          turnstileToken: token
         }),
       });
 
       if (res.status === 429) {
          alert("현재 이용자가 많아 AI가 응답할 수 없습니다. 잠시 후 다시 시도해주세요.");
+         return;
+      }
+
+      if (res.status === 403) {
+         alert("보안 검증에 실패했습니다. 다시 시도해주세요.");
          return;
       }
 
@@ -172,8 +203,18 @@ function PlanPageContent() {
         return {
           ...prev,
           itinerary: prev.itinerary.map(item => 
-            item.day === editingDay ? newDayData : item
+            item.day === isRegeneratingDay ? newDayData : item
           )
+        };
+      });
+
+      setResult(prev => {
+        if (!prev) return null;
+        return {
+            ...prev,
+            itinerary: prev.itinerary.map(item => 
+                item.day === editingDay ? newDayData : item 
+            )
         };
       });
 
@@ -198,7 +239,7 @@ function PlanPageContent() {
       text += `\n`;
     });
 
-    text += `\n✨ AI 여행 일정 생성: 물가체크 (MulgaCheck)`;
+    text += `\nAI 여행 일정 생성: 물가체크 (MulgaCheck)`;
     
     navigator.clipboard.writeText(text);
     alert("일정이 텍스트로 복사되었습니다!");
@@ -445,7 +486,7 @@ function PlanPageContent() {
                 )}
 
                 <button 
-                  onClick={handleGenerate}
+                  onClick={handleGenerateClick} 
                   className="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all hover:-translate-y-1"
                 >
                   일정 생성하기
@@ -491,6 +532,35 @@ function PlanPageContent() {
              </div>
            )}
         </div>
+        
+        {isCaptchaOpen && (
+            <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+                <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl relative text-center">
+                    <button 
+                        onClick={() => setIsCaptchaOpen(false)}
+                        className="absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors"
+                    >
+                        <X size={20} />
+                    </button>
+                    <div className="flex flex-col items-center mb-6">
+                        <div className="w-14 h-14 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 mb-4">
+                            <ShieldCheck size={32} />
+                        </div>
+                        <h3 className="text-xl font-black text-slate-900 mb-1">보안 확인</h3>
+                        <p className="text-sm text-slate-500">봇이 아님을 확인해주세요.</p>
+                    </div>
+                    
+                    <div className="flex justify-center">
+                        <Turnstile 
+                            sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                            onVerify={handleCaptchaSuccess}
+                            theme="light"
+                        />
+                    </div>
+                </div>
+            </div>
+        )}
+
       </div>
     );
   }
@@ -711,7 +781,7 @@ function PlanPageContent() {
                           취소
                       </button>
                       <button 
-                          onClick={handleRegenerateDay}
+                          onClick={handleRegenerateClick}
                           className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl text-sm hover:bg-indigo-700"
                       >
                           수정 요청
@@ -720,14 +790,34 @@ function PlanPageContent() {
               </div>
           </div>
       )}
-    </div>
-  );
-}
 
-export default function PlanPage() {
-  return (
-    <Suspense>
-      <PlanPageContent />
-    </Suspense>
+      {isCaptchaOpen && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+              <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl relative text-center">
+                  <button 
+                      onClick={() => setIsCaptchaOpen(false)}
+                      className="absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors"
+                  >
+                      <X size={20} />
+                  </button>
+                  <div className="flex flex-col items-center mb-6">
+                      <div className="w-14 h-14 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 mb-4">
+                          <ShieldCheck size={32} />
+                      </div>
+                      <h3 className="text-xl font-black text-slate-900 mb-1">보안 확인</h3>
+                      <p className="text-sm text-slate-500">봇이 아님을 확인해주세요.</p>
+                  </div>
+                  
+                  <div className="flex justify-center">
+                      <Turnstile 
+                          sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                          onVerify={handleCaptchaSuccess}
+                          theme="light"
+                      />
+                  </div>
+              </div>
+          </div>
+      )}
+    </div>
   );
 }
