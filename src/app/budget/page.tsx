@@ -60,6 +60,7 @@ export default function BudgetExplorer() {
     setBottomAd(BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)]);
 
     const fetchData = async () => {
+      // banners 호출 로직 삭제 (404 오류 해결)
       const { data: countriesData } = await supabase
         .from("countries")
         .select("id, name_ko, name_en, flag_emoji, currency_code, meal_price_local, transport_price_local, accommodation_price_local, exchange_rates(rate_to_krw)");
