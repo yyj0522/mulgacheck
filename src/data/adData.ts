@@ -1,7 +1,7 @@
 export interface AdBanner {
   id: string;
   name: string;
-  link: string;
+  link?: string;
   imgUrl?: string;
   trackingUrl?: string;
   pcImg?: string;
@@ -9,9 +9,34 @@ export interface AdBanner {
   moLink?: string;
   moImg?: string;
   moTrack?: string;
+  coupang?: {
+    id: number;
+    trackingCode: string;
+    width: string;
+    height: string;
+    template?: string;
+  };
+  coupangMo?: {
+    id: number;
+    trackingCode: string;
+    width: string;
+    height: string;
+    template?: string;
+  };
 }
 
 export const WING_ADS: AdBanner[] = [
+  {
+    id: "coupang_wing",
+    name: "Coupang",
+    coupang: {
+      id: 965276,
+      trackingCode: "AF1306700",
+      width: "160",
+      height: "600",
+      template: "carousel"
+    }
+  },
   {
     id: "klook_wing",
     name: "Klook",
@@ -57,6 +82,24 @@ export const WING_ADS: AdBanner[] = [
 ];
 
 export const BOTTOM_ADS: AdBanner[] = [
+  {
+    id: "coupang_bottom",
+    name: "Coupang",
+    coupang: {
+      id: 965276,
+      trackingCode: "AF1306700",
+      width: "728",
+      height: "90",
+      template: "carousel"
+    },
+    coupangMo: {
+      id: 965276,
+      trackingCode: "AF1306700",
+      width: "468",
+      height: "60",
+      template: "carousel"
+    }
+  },
   {
     id: "agoda_bottom",
     name: "Agoda",
@@ -131,7 +174,7 @@ export const BOTTOM_ADS: AdBanner[] = [
     id: "rentalcars_bottom",
     name: "Rentalcars",
     link: "https://click.linkprice.com/click.php?m=rentalcars&a=A100702487&l=0004&u_id=",
-    pcImg: "", // PC 이미지 없음 (모바일만 있음)
+    pcImg: "", 
     pcTrack: "",
     moLink: "https://click.linkprice.com/click.php?m=rentalcars&a=A100702487&l=0007&u_id=",
     moImg: "https://img.linkprice.com/files/glink/rentalcars/20180607/5b18e34c4d6d6_468_60.jpg",
@@ -141,7 +184,7 @@ export const BOTTOM_ADS: AdBanner[] = [
     id: "klook_bottom",
     name: "Klook",
     link: "https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0012&u_id=",
-    pcImg: "", // PC 이미지 없음 (모바일만 있음)
+    pcImg: "", 
     pcTrack: "",
     moLink: "https://click.linkprice.com/click.php?m=klook&a=A100702487&l=0015&u_id=",
     moImg: "https://img.linkprice.com/files/glink/klook/20181011/5bbee16abf19a_468_60.jpg",
