@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { WING_ADS } from "@/data/adData";
+import CoupangBanner from "./CoupangBanner"; 
 
 function shuffleArray(array: any[]) {
   const newArr = [...array];
@@ -60,6 +61,31 @@ export default function WingBanners() {
 
   if (!mounted) return null;
 
+  const renderBanner = (ad: typeof WING_ADS[0]) => {
+    if (ad.coupang) {
+      return (
+        <div className="block shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden bg-white">
+          <CoupangBanner 
+            id={ad.coupang.id}
+            trackingCode={ad.coupang.trackingCode}
+            width={ad.coupang.width}
+            height={ad.coupang.height}
+            template={ad.coupang.template}
+          />
+        </div>
+      );
+    }
+
+    return (
+      <>
+        <a href={ad.link} target="_blank" rel="noopener noreferrer nofollow" className="block shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">
+          <img src={ad.imgUrl} alt={ad.name} width={160} height={600} className="w-[160px] h-[600px] object-cover" />
+        </a>
+        {ad.trackingUrl && <img src={ad.trackingUrl} width="1" height="1" className="hidden" alt="" />}
+      </>
+    );
+  };
+
   return (
     <div className="fixed inset-0 z-40 pointer-events-none hidden min-[1400px]:block max-w-[1920px] mx-auto">
       <div 
@@ -67,10 +93,7 @@ export default function WingBanners() {
         style={{ transform: `translateY(${offsetY}px)` }}
         className="absolute top-[calc(50%-300px)] left-[50px] xl:left-[100px] 2xl:left-[250px] pointer-events-auto"
       >
-        <a href={leftAd.link} target="_blank" rel="noopener noreferrer nofollow" className="block shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">
-          <img src={leftAd.imgUrl} alt={leftAd.name} width={160} height={600} className="w-[160px] h-[600px] object-cover" />
-        </a>
-        <img src={leftAd.trackingUrl} width="1" height="1" className="hidden" alt="" />
+        {renderBanner(leftAd)}
       </div>
 
       <div 
@@ -78,10 +101,7 @@ export default function WingBanners() {
         style={{ transform: `translateY(${offsetY}px)` }}
         className="absolute top-[calc(50%-300px)] right-[50px] xl:right-[100px] 2xl:right-[250px] pointer-events-auto flex flex-col items-end"
       >
-        <a href={rightAd.link} target="_blank" rel="noopener noreferrer nofollow" className="block shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden">
-          <img src={rightAd.imgUrl} alt={rightAd.name} width={160} height={600} className="w-[160px] h-[600px] object-cover" />
-        </a>
-        <img src={rightAd.trackingUrl} width="1" height="1" className="hidden" alt="" />
+        {renderBanner(rightAd)}
       </div>
     </div>
   );
