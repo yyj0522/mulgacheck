@@ -12,19 +12,25 @@ interface CoupangBannerProps {
 
 export default function CoupangBanner({ id, trackingCode, width, height, template = "carousel" }: CoupangBannerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isLoaded = useRef(false); 
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isLoaded.current) return;
 
     containerRef.current.innerHTML = "";
+    isLoaded.current = true; 
+
+    const wrapper = document.createElement("div");
+    wrapper.style.width = `${width}px`;
+    wrapper.style.height = `${height}px`;
+    wrapper.style.display = "block"; 
+    containerRef.current.appendChild(wrapper);
 
     const script1 = document.createElement("script");
     script1.src = "https://ads-partners.coupang.com/g.js";
     script1.async = true;
-    
+
     script1.onload = () => {
-      if (!containerRef.current) return;
-      
       const script2 = document.createElement("script");
       const config = JSON.stringify({
         id: id,
@@ -35,11 +41,17 @@ export default function CoupangBanner({ id, trackingCode, width, height, templat
         tsource: ""
       });
       
-      script2.text = `new PartnersCoupang.G(${config});`;
-      containerRef.current.appendChild(script2);
+      script2.text = `try { new PartnersCoupang.G(${config}); } catch(e) {}`;
+      
+      wrapper.appendChild(script2);
     };
 
-    containerRef.current.appendChild(script1);
+    wrapper.appendChild(script1);
+
+    return () => {
+        isLoaded.current = false;
+        if(containerRef.current) containerRef.current.innerHTML = "";
+    };
 
   }, [id, trackingCode, width, height, template]);
 
@@ -47,7 +59,7 @@ export default function CoupangBanner({ id, trackingCode, width, height, templat
     <div 
       ref={containerRef} 
       style={{ width: `${width}px`, height: `${height}px` }} 
-      className="overflow-hidden bg-slate-50" 
+      className="bg-transparent"
     />
   );
 }

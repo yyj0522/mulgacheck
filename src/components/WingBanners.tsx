@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { WING_ADS } from "@/data/adData";
-import CoupangBanner from "./CoupangBanner"; 
+import CoupangBanner from "./CoupangBanner";
 
 function shuffleArray(array: any[]) {
   const newArr = [...array];
@@ -99,7 +99,7 @@ export default function WingBanners() {
       <div 
         ref={rightRef}
         style={{ transform: `translateY(${offsetY}px)` }}
-        className="absolute top-[calc(50%-300px)] right-[50px] xl:right-[100px] 2xl:right-[250px] pointer-events-auto flex flex-col items-end"
+        className="absolute top-[calc(50%-300px)] right-[50px] xl:right-[100px] 2xl:right-[250px] pointer-events-auto"
       >
         {renderBanner(rightAd)}
       </div>

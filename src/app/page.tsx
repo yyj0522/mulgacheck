@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import SearchAndFilter from "@/components/SearchAndFilter";
 import { ArrowRight, Calculator, Sparkles, Map, Wallet } from "lucide-react";
 import { BOTTOM_ADS } from "@/data/adData";
+import MainBottomAd from "@/components/MainBottomAd";
 
 export const revalidate = 3600;
 
@@ -153,43 +154,11 @@ export default async function Home() {
               </div>
             </div>
           </Link>
-
         </div>
-
         <div className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-slate-200/40">
           <SearchAndFilter initialData={countries ?? []} />
         </div>
-
-        <div className="w-full flex justify-center mt-8 min-[1400px]:hidden">
-            {bottomAd.pcImg && (
-                <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-                    <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                        <img 
-                            src={bottomAd.pcImg} 
-                            alt={bottomAd.name} 
-                            width={728} 
-                            height={90} 
-                            className="w-full h-auto"
-                        />
-                    </a>
-                    {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
-                </div>
-            )}
-            {bottomAd.moImg && (
-                <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-                    <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                        <img 
-                            src={bottomAd.moImg} 
-                            alt={bottomAd.name} 
-                            width={468} 
-                            height={60} 
-                            className="w-full h-auto"
-                        />
-                    </a>
-                    {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
-                </div>
-            )}
-        </div>
+        <MainBottomAd />
       </main>
     </div>
   );
