@@ -5,6 +5,7 @@ import BudgetCalculator from "@/components/BudgetCalculator";
 import CommentSection from "@/components/CommentSection";
 import SurvivalCardList from "@/components/survival/SurvivalCardList";
 import WingBanners from "@/components/WingBanners";
+import MainBottomAd from "@/components/MainBottomAd";
 
 const BurgerIcon = ({ size = 24, className = "" }: { size?: number, className?: string }) => (
   <svg 
@@ -227,6 +228,8 @@ export default async function DestinationDetail({ params }: { params: Promise<{ 
           </div>
         </div>
       </div>
+
+      <MainBottomAd />
     </div>
   );
 }

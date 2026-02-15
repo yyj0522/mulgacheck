@@ -17,24 +17,41 @@ export default function PrivacyPage() {
 
         <h1 className="text-3xl font-black text-slate-900 mb-8">개인정보처리방침</h1>
         
-        <p className="text-sm text-slate-400 mb-8">최종 수정일: 2026년 2월 4일</p>
+        <p className="text-sm text-slate-400 mb-8">최종 수정일: 2026년 2월 15일</p>
 
         <p>
-          물가체크(이하 "서비스")는 이용자의 개인정보를 소중히 다루며, 관련 법령을 준수하고 있습니다.
+          물가체크(이하 "서비스")는 이용자의 개인정보를 소중히 다루며, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 등 관련 법령을 준수하고 있습니다.
         </p>
 
         <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">1. 수집하는 개인정보 항목</h3>
         <p>
-          서비스는 별도의 회원가입 없이 이용 가능하며, 이용자 식별을 위한 최소한의 정보(접속 로그, 쿠키 등)만을 수집합니다.<br/>
-          - 댓글 작성 시: 닉네임 (익명)
+          서비스는 별도의 회원가입 없이 이용 가능하며, 서비스 안정성 확보와 부정 이용 방지를 위해 다음과 같은 최소한의 정보를 자동으로 수집합니다.<br/>
+          - 필수 수집 항목: IP 주소, 접속 로그, 쿠키(Cookie), 브라우저 정보(User Agent)<br/>
+          - 선택 수집 항목(댓글 작성 시): 닉네임 (익명)
         </p>
 
-        <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">2. 쿠키(Cookie)의 운용 및 거부</h3>
+        <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">2. 개인정보의 수집 및 이용 목적</h3>
+        <p>
+          수집한 정보는 다음의 목적을 위해서만 이용합니다.<br/>
+          - 서비스 제공 및 콘텐츠 이용 통계 분석<br/>
+          - 비정상적인 접근(DDoS 공격, 매크로 등) 탐지 및 차단<br/>
+          - API 과도한 호출 방지를 위한 일일 사용량 제한(Rate Limiting) 적용
+        </p>
+
+        <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">3. IP 주소 및 접속 로그의 보관 및 파기</h3>
+        <p>
+          서비스의 보안 유지와 비정상적인 이용 행위를 방지하기 위해 수집된 IP 주소 및 접속 로그는 다음과 같이 관리됩니다.<br/>
+          - 보관 목적: 악의적인 공격 방지 및 일일 서비스 이용 횟수 제한<br/>
+          - 보관 기간: 수집일로부터 최대 3개월<br/>
+          - 파기 방법: 보관 기간이 경과한 로그 데이터는 복구 불가능한 방법으로 영구 삭제됩니다.
+        </p>
+
+        <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">4. 쿠키(Cookie)의 운용 및 거부</h3>
         <p>
           서비스는 이용자에게 편의를 제공하고 사이트 이용 형태를 분석하기 위해 '쿠키'를 사용합니다. 이용자는 브라우저 설정을 통해 쿠키 저장을 거부할 수 있습니다.
         </p>
 
-        <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">3. 구글 애드센스 광고 (필수 기재 사항)</h3>
+        <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">5. 구글 애드센스 광고</h3>
         <p>
           - 본 사이트는 구글 애드센스 광고를 송출합니다.<br />
           - 구글 등 제3자 사업자는 사용자의 과거 웹사이트 방문 기록을 바탕으로 맞춤형 광고를 제공하기 위해 쿠키(Cookie)를 사용합니다.<br />

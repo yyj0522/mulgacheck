@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { GRID_ADS } from "@/data/adData"; 
 import WingBanners from "@/components/WingBanners";
-import MainBottomAd from "@/components/MainBottomAd";
+import MainBottomAd from "@/components/MainBottomAd"; 
 import { 
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   MessageSquarePlus, ChevronLeft, 
@@ -501,6 +501,7 @@ function PlanPageContent() {
                 </Link>
             </div>
         </div>
+
         <MainBottomAd />
         
         {isCaptchaOpen && (
@@ -537,7 +538,7 @@ function PlanPageContent() {
 
   if (step === "LOADING") {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center relative z-10">
+      <div className="fixed inset-0 z-[100] bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center">
         <div className="animate-spin w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full mb-6" />
         <h2 className="text-xl font-bold text-slate-900 animate-pulse">
           {shareId ? "공유된 일정을 불러옵니다" : "최적의 경로를 계산 중입니다"}
@@ -706,11 +707,12 @@ function PlanPageContent() {
           </div>
           <div className="mt-6 pt-4 border-t border-slate-50 text-center">
             <p className="text-[10px] text-slate-300">
-                이 사이트 제휴 마케팅 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+                이 사이트는 제휴 마케팅 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
             </p>
           </div>
         </div>
       </div>
+
       <MainBottomAd />
 
       {editingDay && (
@@ -725,12 +727,6 @@ function PlanPageContent() {
                       value={editPrompt}
                       onChange={(e) => setEditPrompt(e.target.value)}
                   />
-                  <div className="mb-4">
-                      <Turnstile 
-                          sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-                          onVerify={(token) => handleCaptchaSuccess(token)}
-                      />
-                  </div>
                   <div className="flex gap-2">
                       <button 
                           onClick={() => setEditingDay(null)}
@@ -739,11 +735,39 @@ function PlanPageContent() {
                           취소
                       </button>
                       <button 
-                          onClick={handleRegenerateClick}
+                          onClick={handleRegenerateClick} 
                           className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl text-sm hover:bg-indigo-700"
                       >
                           수정 요청
                       </button>
+                  </div>
+              </div>
+          </div>
+      )}
+
+      {isCaptchaOpen && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+              <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl relative text-center">
+                  <button 
+                      onClick={() => setIsCaptchaOpen(false)}
+                      className="absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors"
+                  >
+                      <X size={20} />
+                  </button>
+                  <div className="flex flex-col items-center mb-6">
+                      <div className="w-14 h-14 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 mb-4">
+                          <ShieldCheck size={32} />
+                      </div>
+                      <h3 className="text-xl font-black text-slate-900 mb-1">보안 확인</h3>
+                      <p className="text-sm text-slate-500">봇이 아님을 확인해주세요.</p>
+                  </div>
+                  
+                  <div className="flex justify-center">
+                      <Turnstile 
+                          sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                          onVerify={handleCaptchaSuccess}
+                          theme="light"
+                      />
                   </div>
               </div>
           </div>

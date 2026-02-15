@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Wallet, Plus, Trash2, Download, RefreshCw, X, Coins, Calendar, Clock, MapPin, Receipt } from "lucide-react";
 import { toPng } from "html-to-image";
 import WingBanners from "@/components/WingBanners";
-import { BOTTOM_ADS } from "@/data/adData";
+import MainBottomAd from "@/components/MainBottomAd";
 
 type ExpenseItem = {
   id: string;
@@ -38,13 +38,10 @@ export default function TrackerPage() {
   const [time, setTime] = useState("");
   const [desc, setDesc] = useState("");
   const [amount, setAmount] = useState("");
-  const [bottomAd, setBottomAd] = useState(BOTTOM_ADS[0]);
 
   const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setBottomAd(BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)]);
-
     const fetchData = async () => {
       const { data } = await supabase
         .from("countries")
@@ -155,7 +152,7 @@ export default function TrackerPage() {
   if (!isLoaded) return <div className="min-h-screen bg-slate-50" />;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center pt-6 pb-4"> {/* pb-4: 배너와 푸터 사이 16px 여백 */}
+    <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center pt-6 pb-4">
       <WingBanners />
       <div className="w-full max-w-md px-6 flex flex-col gap-4">
         <header className="flex justify-between items-center">
@@ -345,36 +342,7 @@ export default function TrackerPage() {
         )}
       </div>
 
-      <div className="w-full flex justify-center mt-4 px-4 min-[1400px]:hidden">
-        {bottomAd.pcImg && (
-            <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-                <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                    <img 
-                        src={bottomAd.pcImg} 
-                        alt={bottomAd.name} 
-                        width={728} 
-                        height={90} 
-                        className="w-full h-auto"
-                    />
-                </a>
-                {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
-            </div>
-        )}
-        {bottomAd.moImg && (
-            <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-                <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                    <img 
-                        src={bottomAd.moImg} 
-                        alt={bottomAd.name} 
-                        width={468} 
-                        height={60} 
-                        className="w-full h-auto"
-                    />
-                </a>
-                {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
-            </div>
-        )}
-      </div>
+      <MainBottomAd />
 
       {previewUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-6 animate-fade-in">

@@ -3,12 +3,12 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import WingBanners from "@/components/WingBanners";
+import MainBottomAd from "@/components/MainBottomAd";
 import Link from "next/link";
 import { 
   ChevronLeft, Search, Calendar, Users, Sparkles, 
   MapPin, X, Copy, Plane, Hotel, Loader2, Wallet, Plus 
 } from "lucide-react";
-import { BOTTOM_ADS } from "@/data/adData";
 
 type CommunityPlan = {
   id: string;
@@ -29,13 +29,11 @@ export default function CommunityPage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPlan, setSelectedPlan] = useState<CommunityPlan | null>(null);
-  const [bottomAd, setBottomAd] = useState(BOTTOM_ADS[0]);
   const [page, setPage] = useState(0);
   const ITEMS_PER_LOAD = 10;
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    setBottomAd(BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)]);
     fetchPlans(0);
   }, []);
 
@@ -92,7 +90,7 @@ export default function CommunityPage() {
     let text = `[${planData.title}]\n여행지: ${selectedPlan.destination}\n예상 비용: ${planData.total_estimated_cost || "미정"}\n\n`;
     
     planData.itinerary.forEach((day: any) => {
-      text += `📅 Day ${day.day} (${day.day_cost || ""})\n`;
+      text += `Day ${day.day} (${day.day_cost || ""})\n`;
       day.schedule.forEach((item: any) => {
         text += `${item.time} | ${item.place}\n  - ${item.desc}\n`;
       });
@@ -104,11 +102,9 @@ export default function CommunityPage() {
   };
 
   return (
-    // min-h-screen과 flex-col을 사용하여 전체 높이 확보 및 수직 배치
     <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center">
       <WingBanners />
       
-      {/* flex-grow: 컨텐츠가 적을 때 남은 공간을 모두 차지하여 배너를 하단으로 밀어냄 */}
       <div className="w-full max-w-3xl px-6 flex-grow pt-6">
         <header className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
           <div className="flex items-center gap-4 w-full md:w-auto">
@@ -232,25 +228,7 @@ export default function CommunityPage() {
         )}
       </div>
 
-      {/* 하단 배너: mt-4(16px), mb-4(16px) -> 컨텐츠-16-배너-16-푸터(끝) */}
-      <div className="w-full flex justify-center mt-4 mb-4 px-4 min-[1400px]:hidden flex-shrink-0">
-         {bottomAd.pcImg && (
-           <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-             <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-               <img src={bottomAd.pcImg} alt={bottomAd.name} width={728} height={90} className="w-full h-auto" />
-             </a>
-             {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
-           </div>
-         )}
-         {bottomAd.moImg && (
-           <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-             <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-               <img src={bottomAd.moImg} alt={bottomAd.name} width={468} height={60} className="w-full h-auto" />
-             </a>
-             {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
-           </div>
-         )}
-      </div>
+      <MainBottomAd />
 
       {selectedPlan && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in">
@@ -296,7 +274,7 @@ export default function CommunityPage() {
                  </div>
                  {selectedPlan.plan_data.total_estimated_cost && (
                     <div className="border-t border-slate-50 p-4 bg-slate-50/50 rounded-b-[20px] text-center">
-                        <span className="text-xs font-bold text-slate-500">AI 예상 비용: </span>
+                        <span className="text-xs font-bold text-slate-500">예상 비용: </span>
                         <span className="text-sm font-black text-slate-800">{selectedPlan.plan_data.total_estimated_cost}</span>
                     </div>
                  )}

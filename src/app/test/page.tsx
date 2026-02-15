@@ -7,7 +7,7 @@ import { ChevronLeft, Share2, RefreshCw, Plane, Download, X } from "lucide-react
 import { toPng } from "html-to-image";
 import Image from "next/image";
 import WingBanners from "@/components/WingBanners";
-import { BOTTOM_ADS } from "@/data/adData";
+import MainBottomAd from "@/components/MainBottomAd";
 
 export default function TravelTestPage() {
   const [step, setStep] = useState<"intro" | "question" | "loading" | "result">("intro");
@@ -22,13 +22,10 @@ export default function TravelTestPage() {
   
   const [result, setResult] = useState<string>("ISTJ");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [bottomAd, setBottomAd] = useState(BOTTOM_ADS[0]);
 
   const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setBottomAd(BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)]);
-
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const sharedResult = params.get("result");
@@ -216,7 +213,6 @@ export default function TravelTestPage() {
           </button>
         </header>
 
-        {/* 결과 컨텐츠 */}
         <div className="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl text-center animate-in slide-in-from-bottom-10 duration-700 relative z-10">
           <span className="inline-block px-4 py-1 bg-slate-100 rounded-full text-xs font-bold text-slate-500 mb-6 uppercase tracking-wider">
             Your Travel Type
@@ -291,7 +287,6 @@ export default function TravelTestPage() {
           </div>
         </div>
 
-        {/* 버튼 2개: 컨텐츠와 16px(mt-4) 간격 */}
         <div className="mt-4 flex gap-3 w-full">
           <button 
             onClick={handleShare}
@@ -308,37 +303,7 @@ export default function TravelTestPage() {
         </div>
       </div>
 
-      {/* 광고 배너: 버튼과 16px(mt-4) 간격 */}
-      <div className="w-full flex justify-center mt-4 px-4 min-[1400px]:hidden">
-        {bottomAd.pcImg && (
-            <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-                <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                    <img 
-                        src={bottomAd.pcImg} 
-                        alt={bottomAd.name} 
-                        width={728} 
-                        height={90} 
-                        className="w-full h-auto"
-                    />
-                </a>
-                {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
-            </div>
-        )}
-        {bottomAd.moImg && (
-            <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-                <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                    <img 
-                        src={bottomAd.moImg} 
-                        alt={bottomAd.name} 
-                        width={468} 
-                        height={60} 
-                        className="w-full h-auto"
-                    />
-                </a>
-                {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
-            </div>
-        )}
-      </div>
+      <MainBottomAd />
 
       {previewUrl && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">

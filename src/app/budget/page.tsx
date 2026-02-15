@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { ChevronLeft, Plane, ArrowRight, Coins, CalendarDays, Wallet, SlidersHorizontal, TrendingUp, TrendingDown, Minus, Search } from "lucide-react";
 import WingBanners from "@/components/WingBanners";
-import { BOTTOM_ADS } from "@/data/adData";
+import MainBottomAd from "@/components/MainBottomAd";
 
 type CountryData = {
   id: string | number;
@@ -52,15 +52,11 @@ export default function BudgetExplorer() {
   const [loading, setLoading] = useState(true);
   const [calculating, setCalculating] = useState(false);
   const [isCalculated, setIsCalculated] = useState(false);
-  const [bottomAd, setBottomAd] = useState(BOTTOM_ADS[0]);
 
   const localBudget = totalBudget - flightCost;
 
   useEffect(() => {
-    setBottomAd(BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)]);
-
     const fetchData = async () => {
-      // banners 호출 로직 삭제 (404 오류 해결)
       const { data: countriesData } = await supabase
         .from("countries")
         .select("id, name_ko, name_en, flag_emoji, currency_code, meal_price_local, transport_price_local, accommodation_price_local, exchange_rates(rate_to_krw)");
@@ -310,7 +306,6 @@ export default function BudgetExplorer() {
                         </div>
                     ) : (
                         <div className="bg-white rounded-[2rem] p-10 text-center border border-slate-100 animate-fade-in-up">
-                            <div className="text-6xl mb-4">💸</div>
                             <h3 className="font-black text-slate-900 text-lg mb-2">예산이 부족해요!</h3>
                             <p className="text-slate-500 text-sm mb-6">
                                 현재 설정하신 {TRAVEL_STYLES[travelStyle].label} 스타일로는<br/>
@@ -334,36 +329,7 @@ export default function BudgetExplorer() {
         </div>
       </div>
 
-      <div className="w-full flex justify-center mt-4 px-4 min-[1400px]:hidden">
-        {bottomAd.pcImg && (
-            <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-                <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                    <img 
-                        src={bottomAd.pcImg} 
-                        alt={bottomAd.name} 
-                        width={728} 
-                        height={90} 
-                        className="w-full h-auto"
-                    />
-                </a>
-                {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
-            </div>
-        )}
-        {bottomAd.moImg && (
-            <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-                <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                    <img 
-                        src={bottomAd.moImg} 
-                        alt={bottomAd.name} 
-                        width={468} 
-                        height={60} 
-                        className="w-full h-auto"
-                    />
-                </a>
-                {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
-            </div>
-        )}
-      </div>
+      <MainBottomAd />
     </div>
   );
 }
