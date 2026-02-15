@@ -30,7 +30,7 @@ export const WING_ADS: AdBanner[] = [
     id: "coupang_wing",
     name: "Coupang",
     coupang: {
-      id: 965276,
+      id: 965285,
       trackingCode: "AF1306700",
       width: "160",
       height: "600",
@@ -86,14 +86,14 @@ export const BOTTOM_ADS: AdBanner[] = [
     id: "coupang_bottom",
     name: "Coupang",
     coupang: {
-      id: 965276,
+      id: 965285,
       trackingCode: "AF1306700",
       width: "728",
       height: "90",
       template: "carousel"
     },
     coupangMo: {
-      id: 965276,
+      id: 965285,
       trackingCode: "AF1306700",
       width: "468",
       height: "60",

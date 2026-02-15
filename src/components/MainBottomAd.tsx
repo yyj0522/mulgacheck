@@ -22,7 +22,6 @@ export default function MainBottomAd() {
             trackingCode={ad.coupang.trackingCode}
             width={ad.coupang.width}
             height={ad.coupang.height}
-            template={ad.coupang.template}
           />
         ) : (
           ad.pcImg && (
@@ -43,7 +42,6 @@ export default function MainBottomAd() {
             trackingCode={ad.coupangMo.trackingCode}
             width={ad.coupangMo.width}
             height={ad.coupangMo.height}
-            template={ad.coupangMo.template}
           />
         ) : (
           ad.moImg && (

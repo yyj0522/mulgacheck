@@ -64,13 +64,12 @@ export default function WingBanners() {
   const renderBanner = (ad: typeof WING_ADS[0]) => {
     if (ad.coupang) {
       return (
-        <div className="block shadow-lg hover:shadow-xl transition-shadow rounded-lg overflow-hidden bg-white">
+        <div className="block rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow bg-white">
           <CoupangBanner 
             id={ad.coupang.id}
             trackingCode={ad.coupang.trackingCode}
             width={ad.coupang.width}
             height={ad.coupang.height}
-            template={ad.coupang.template}
           />
         </div>
       );
