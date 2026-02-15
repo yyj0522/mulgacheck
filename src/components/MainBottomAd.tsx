@@ -15,7 +15,7 @@ export default function MainBottomAd() {
 
   return (
     <div className="w-full flex justify-center mt-8 min-[1400px]:hidden">
-      <div className="hidden md:block w-[728px] h-[90px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden bg-white mx-auto">
+      <div className="hidden md:flex justify-center w-full max-w-[728px] min-h-[90px] mx-auto">
         {ad.coupang ? (
           <CoupangBanner 
             id={ad.coupang.id}
@@ -26,35 +26,33 @@ export default function MainBottomAd() {
           />
         ) : (
           ad.pcImg && (
-            <>
-              <a href={ad.link} target="_blank" rel="noopener noreferrer nofollow" className="block w-full h-full">
-                <img src={ad.pcImg} alt={ad.name} width={728} height={90} className="w-full h-full object-cover" />
+            <div className="rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <a href={ad.link} target="_blank" rel="noopener noreferrer nofollow" className="block">
+                <img src={ad.pcImg} alt={ad.name} width={728} height={90} className="w-full h-auto" />
               </a>
               {ad.pcTrack && <img src={ad.pcTrack} width="1" height="1" className="hidden" alt="" />}
-            </>
+            </div>
           )
         )}
       </div>
 
-      <div className="block md:hidden w-[468px] h-[60px] max-w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden bg-white mx-auto">
+      <div className="flex md:hidden justify-center w-full max-w-[468px] min-h-[60px] mx-auto">
         {ad.coupangMo ? (
-          <div className="flex justify-center">
-             <CoupangBanner 
-              id={ad.coupangMo.id}
-              trackingCode={ad.coupangMo.trackingCode}
-              width={ad.coupangMo.width}
-              height={ad.coupangMo.height}
-              template={ad.coupangMo.template}
-            />
-          </div>
+          <CoupangBanner 
+            id={ad.coupangMo.id}
+            trackingCode={ad.coupangMo.trackingCode}
+            width={ad.coupangMo.width}
+            height={ad.coupangMo.height}
+            template={ad.coupangMo.template}
+          />
         ) : (
           ad.moImg && (
-            <>
-              <a href={ad.moLink || ad.link} target="_blank" rel="noopener noreferrer nofollow" className="block w-full h-full">
-                <img src={ad.moImg} alt={ad.name} width={468} height={60} className="w-full h-full object-cover" />
+            <div className="rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+              <a href={ad.moLink || ad.link} target="_blank" rel="noopener noreferrer nofollow" className="block">
+                <img src={ad.moImg} alt={ad.name} width={468} height={60} className="w-full h-auto" />
               </a>
               {ad.moTrack && <img src={ad.moTrack} width="1" height="1" className="hidden" alt="" />}
-            </>
+            </div>
           )
         )}
       </div>

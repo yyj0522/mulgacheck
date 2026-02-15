@@ -3,8 +3,9 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation"; 
 import { supabase } from "@/lib/supabase";
-import { BOTTOM_ADS, GRID_ADS } from "@/data/adData";
+import { GRID_ADS } from "@/data/adData"; 
 import WingBanners from "@/components/WingBanners";
+import MainBottomAd from "@/components/MainBottomAd";
 import { 
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   MessageSquarePlus, ChevronLeft, 
@@ -63,7 +64,6 @@ function PlanPageContent() {
   
   const [result, setResult] = useState<TripResult | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
-  const [bottomAd, setBottomAd] = useState(BOTTOM_ADS[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 4;
   const [editingDay, setEditingDay] = useState<number | null>(null);
@@ -75,7 +75,6 @@ function PlanPageContent() {
   const isSharedMode = !!shareId;
 
   useEffect(() => {
-    setBottomAd(BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)]);
     
     if (shareId) {
       loadSharedPlan(shareId);
@@ -502,25 +501,7 @@ function PlanPageContent() {
                 </Link>
             </div>
         </div>
-
-        <div className="w-full flex justify-center mt-4 px-4 min-[1400px]:hidden">
-           {bottomAd.pcImg && (
-             <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-               <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                 <img src={bottomAd.pcImg} alt={bottomAd.name} width={728} height={90} className="w-full h-auto" />
-               </a>
-               {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
-             </div>
-           )}
-           {bottomAd.moImg && (
-             <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-               <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-                 <img src={bottomAd.moImg} alt={bottomAd.name} width={468} height={60} className="w-full h-auto" />
-               </a>
-               {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
-             </div>
-           )}
-        </div>
+        <MainBottomAd />
         
         {isCaptchaOpen && (
             <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
@@ -725,30 +706,12 @@ function PlanPageContent() {
           </div>
           <div className="mt-6 pt-4 border-t border-slate-50 text-center">
             <p className="text-[10px] text-slate-300">
-                이 사이트는 제휴 마케팅 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
+                이 사이트 제휴 마케팅 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
             </p>
           </div>
         </div>
       </div>
-
-      <div className="w-full flex justify-center mt-4 px-4 min-[1400px]:hidden">
-         {bottomAd.pcImg && (
-           <div className="hidden md:block w-full max-w-[728px] shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-             <a href={bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-               <img src={bottomAd.pcImg} alt={bottomAd.name} width={728} height={90} className="w-full h-auto" />
-             </a>
-             {bottomAd.pcTrack && <img src={bottomAd.pcTrack} width="1" height="1" className="hidden" alt="" />}
-           </div>
-         )}
-         {bottomAd.moImg && (
-           <div className="block md:hidden w-full shadow-sm hover:shadow-md transition-shadow rounded-lg overflow-hidden">
-             <a href={bottomAd.moLink || bottomAd.link} target="_blank" rel="noopener noreferrer nofollow">
-               <img src={bottomAd.moImg} alt={bottomAd.name} width={468} height={60} className="w-full h-auto" />
-             </a>
-             {bottomAd.moTrack && <img src={bottomAd.moTrack} width="1" height="1" className="hidden" alt="" />}
-           </div>
-         )}
-      </div>
+      <MainBottomAd />
 
       {editingDay && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
@@ -762,6 +725,12 @@ function PlanPageContent() {
                       value={editPrompt}
                       onChange={(e) => setEditPrompt(e.target.value)}
                   />
+                  <div className="mb-4">
+                      <Turnstile 
+                          sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
+                          onVerify={(token) => handleCaptchaSuccess(token)}
+                      />
+                  </div>
                   <div className="flex gap-2">
                       <button 
                           onClick={() => setEditingDay(null)}
@@ -770,39 +739,11 @@ function PlanPageContent() {
                           취소
                       </button>
                       <button 
-                          onClick={handleRegenerateClick} 
+                          onClick={handleRegenerateClick}
                           className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl text-sm hover:bg-indigo-700"
                       >
                           수정 요청
                       </button>
-                  </div>
-              </div>
-          </div>
-      )}
-
-      {isCaptchaOpen && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-              <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl relative text-center">
-                  <button 
-                      onClick={() => setIsCaptchaOpen(false)}
-                      className="absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors"
-                  >
-                      <X size={20} />
-                  </button>
-                  <div className="flex flex-col items-center mb-6">
-                      <div className="w-14 h-14 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 mb-4">
-                          <ShieldCheck size={32} />
-                      </div>
-                      <h3 className="text-xl font-black text-slate-900 mb-1">보안 확인</h3>
-                      <p className="text-sm text-slate-500">봇이 아님을 확인해주세요.</p>
-                  </div>
-                  
-                  <div className="flex justify-center">
-                      <Turnstile 
-                          sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-                          onVerify={handleCaptchaSuccess}
-                          theme="light"
-                      />
                   </div>
               </div>
           </div>
