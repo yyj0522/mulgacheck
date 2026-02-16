@@ -2,26 +2,26 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { checkRateLimit, saveLog } from "@/utils/rateLimit";
 
-const apiKey = process.env.GEMINI_API_KEY;
-const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
-const genAI = new GoogleGenerativeAI(apiKey || "");
+const apiKey = process.env.GEMINI_API_KEY || "";
+const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || "";
+const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function POST(req: Request) {
   try {
+    if (!apiKey) {
+      console.error("Server Error: GEMINI_API_KEY is missing in environment variables.");
+      return NextResponse.json({ error: "서버 설정 오류: API 키가 없습니다." }, { status: 500 });
+    }
+
     const forwarded = req.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
 
     const { allowed, limit } = await checkRateLimit(ip, 'generate');
-    
     if (!allowed) {
       return NextResponse.json(
         { error: `일정 생성은 하루에 ${limit}회까지만 가능합니다.` },
         { status: 429 }
       );
-    }
-
-    if (!apiKey) {
-      return NextResponse.json({ error: "서버 설정 오류: API 키가 없습니다." }, { status: 500 });
     }
 
     const { 
@@ -40,19 +40,24 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "보안 검증 토큰이 없습니다." }, { status: 403 });
     }
 
-    const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            secret: turnstileSecret,
-            response: turnstileToken,
-            remoteip: ip
-        })
-    });
+    if (turnstileSecret) { 
+      const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+              secret: turnstileSecret,
+              response: turnstileToken,
+              remoteip: ip
+          })
+      });
 
-    const verifyData = await verifyRes.json();
-    if (!verifyData.success) {
-        return NextResponse.json({ error: "보안 검증에 실패했습니다." }, { status: 403 });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+          console.error("Turnstile Validation Failed:", verifyData);
+          return NextResponse.json({ error: "보안 검증에 실패했습니다." }, { status: 403 });
+      }
+    } else {
+        console.warn("Warning: TURNSTILE_SECRET_KEY is missing. Skipping verification.");
     }
 
     if (!destination || !days) {
@@ -73,14 +78,14 @@ export async function POST(req: Request) {
 
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash", 
-        tools: [{ googleSearch: {} }] as any,
+        tools: [{ googleSearch: {} }] as any, 
         generationConfig: {
             responseMimeType: "application/json",
         }
     });
 
-    const flightText = includeFlight ? "예산에 항공권 비용 포함" : "항공권 비용 별도(예산에서 제외)";
-    const hotelText = includeAccommodation ? "예산에 숙박비 포함" : "숙박비 별도(예산에서 제외)";
+    const flightText = includeFlight ? "예산에 항공권 포함" : "항공권 별도";
+    const hotelText = includeAccommodation ? "예산에 숙박비 포함" : "숙박비 별도";
 
     const prompt = `
       Create a realistic travel itinerary based on the user's request.
@@ -128,7 +133,14 @@ export async function POST(req: Request) {
     const response = await result.response;
     const text = response.text();
     const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
-    const data = JSON.parse(cleanedText);
+    
+    let data;
+    try {
+        data = JSON.parse(cleanedText);
+    } catch (e) {
+        console.error("JSON Parse Error:", cleanedText);
+        return NextResponse.json({ error: "AI 응답 형식이 올바르지 않습니다." }, { status: 500 });
+    }
 
     if (data.error) {
         return NextResponse.json({ error: data.error }, { status: 400 });
@@ -139,10 +151,11 @@ export async function POST(req: Request) {
     return NextResponse.json(data);
 
   } catch (error: any) {
-    
+    console.error("Generate API Error:", error); 
+
     if (error.message?.includes("404") || error.status === 404) {
         return NextResponse.json(
-            { error: "AI 모델 연결에 실패했습니다." },
+            { error: "AI 모델 연결에 실패했습니다. (Gemini 2.5 Flash)" },
             { status: 404 }
         );
     }
