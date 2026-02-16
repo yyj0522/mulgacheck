@@ -15,8 +15,8 @@ function shuffleArray(array: any[]) {
 
 export default function WingBanners() {
   const [mounted, setMounted] = useState(false);
-  const [leftAd, setLeftAd] = useState(WING_ADS[0]);
-  const [rightAd, setRightAd] = useState(WING_ADS[1]);
+  const [leftAd, setLeftAd] = useState<typeof WING_ADS[0] | null>(null);
+  const [rightAd, setRightAd] = useState<typeof WING_ADS[0] | null>(null);
   const [offsetY, setOffsetY] = useState(0);
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
@@ -51,7 +51,7 @@ export default function WingBanners() {
 
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", handleScroll);
-    handleScroll();
+    setTimeout(handleScroll, 100);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -59,9 +59,11 @@ export default function WingBanners() {
     };
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted || !leftAd || !rightAd) return null;
 
   const renderBanner = (ad: typeof WING_ADS[0]) => {
+    if (!ad) return null;
+    
     if (ad.coupang) {
       return (
         <div className="block rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow bg-white">

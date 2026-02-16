@@ -5,14 +5,14 @@ import { BOTTOM_ADS } from "@/data/adData";
 
 export default function BottomBanner() {
   const [mounted, setMounted] = useState(false);
-  const [ad, setAd] = useState(BOTTOM_ADS[0]);
+  const [ad, setAd] = useState<typeof BOTTOM_ADS[0] | null>(null);
 
   useEffect(() => {
     setMounted(true);
     setAd(BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)]);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted || !ad) return null;
 
   return (
     <div className="w-full flex flex-col items-center justify-center my-8">

@@ -2,16 +2,17 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { checkRateLimit, saveLog } from "@/utils/rateLimit";
 
-const apiKey = process.env.GEMINI_API_KEY || "";
-const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || "";
-const genAI = new GoogleGenerativeAI(apiKey);
-
 export async function POST(req: Request) {
   try {
+    const apiKey = process.env.GEMINI_API_KEY;
+    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+
     if (!apiKey) {
-      console.error("Server Error: GEMINI_API_KEY is missing in environment variables.");
+      console.error("Server Error: GEMINI_API_KEY is missing.");
       return NextResponse.json({ error: "서버 설정 오류: API 키가 없습니다." }, { status: 500 });
     }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
 
     const forwarded = req.headers.get("x-forwarded-for");
     const ip = forwarded ? forwarded.split(",")[0].trim() : "unknown";
@@ -56,8 +57,6 @@ export async function POST(req: Request) {
           console.error("Turnstile Validation Failed:", verifyData);
           return NextResponse.json({ error: "보안 검증에 실패했습니다." }, { status: 403 });
       }
-    } else {
-        console.warn("Warning: TURNSTILE_SECRET_KEY is missing. Skipping verification.");
     }
 
     if (!destination || !days) {
@@ -69,19 +68,9 @@ export async function POST(req: Request) {
        return NextResponse.json({ error: "올바른 여행지 이름을 입력해주세요." }, { status: 400 });
     }
 
-    if (userPrompt && userPrompt.length > 100) {
-      return NextResponse.json(
-        { error: "추가 요청사항은 100자 이내로 입력해주세요." },
-        { status: 400 }
-      );
-    }
-
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash", 
         tools: [{ googleSearch: {} }] as any, 
-        generationConfig: {
-            responseMimeType: "application/json",
-        }
     });
 
     const flightText = includeFlight ? "예산에 항공권 포함" : "항공권 별도";
@@ -92,6 +81,7 @@ export async function POST(req: Request) {
       Use Google Search to find real, currently operating places and accurate prices.
       
       **IMPORTANT: All output must be in Korean (한국어).**
+      **IMPORTANT: Output ONLY valid JSON code. Do not include any other text.**
 
       [User Request]
       - Destination: ${destination}
@@ -132,14 +122,20 @@ export async function POST(req: Request) {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    const cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    
+    let cleanedText = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    const jsonStart = cleanedText.indexOf('{');
+    const jsonEnd = cleanedText.lastIndexOf('}');
+    if (jsonStart !== -1 && jsonEnd !== -1) {
+        cleanedText = cleanedText.substring(jsonStart, jsonEnd + 1);
+    }
     
     let data;
     try {
         data = JSON.parse(cleanedText);
     } catch (e) {
         console.error("JSON Parse Error:", cleanedText);
-        return NextResponse.json({ error: "AI 응답 형식이 올바르지 않습니다." }, { status: 500 });
+        return NextResponse.json({ error: "AI 응답을 처리하는 중 문제가 발생했습니다. 다시 시도해주세요." }, { status: 500 });
     }
 
     if (data.error) {
@@ -168,7 +164,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { error: "일정을 생성하는 중 오류가 발생했습니다." },
+      { error: `서버 오류: ${error.message || "알 수 없는 오류"}` },
       { status: 500 }
     );
   }
