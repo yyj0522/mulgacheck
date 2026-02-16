@@ -126,10 +126,19 @@ function PlanPageContent() {
     setIsLimitReached(false);
 
     try {
+      let finalBudget = formData.budget.trim();
+      const cleanBudget = finalBudget.replace(/,/g, "");
+
+      if (cleanBudget && /^[0-9]+$/.test(cleanBudget)) {
+          finalBudget = `${cleanBudget}만원`;
+      } else if (finalBudget.endsWith("만")) {
+          finalBudget = `${finalBudget}원`;
+      }
+
       const res = await fetch("/api/generate-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, turnstileToken: token }),
+        body: JSON.stringify({ ...formData, budget: finalBudget, turnstileToken: token }),
       });
 
       if (res.status === 429) {
@@ -397,7 +406,7 @@ function PlanPageContent() {
                   </label>
                   <input 
                     type="text" 
-                    placeholder="예: 100만원 (미입력 시 가성비)"
+                    placeholder="예: 150 (단위: 만원)"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition-colors mb-3"
                     value={formData.budget}
                     onChange={(e) => setFormData({...formData, budget: e.target.value})}

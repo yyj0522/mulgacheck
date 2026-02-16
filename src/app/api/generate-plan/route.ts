@@ -93,9 +93,13 @@ export async function POST(req: Request) {
 
       [Instructions]
       1. **Validation**: First, search if "${destination}" is a valid tourist destination. If it is a fake place, internet cafe, or nonsense, return { "error": "유효하지 않은 여행지입니다." } immediately.
-      2. **Search & Verify**: Use Google Search to ensure all recommended places are currently open and popular.
-      3. **Route Optimization**: Group nearby locations for each day to minimize travel time.
-      4. **Budget**: Search for average prices to fit the budget strictly.
+      2. **Currency & Budget (CRITICAL)**: 
+         - Identify the local currency of ${destination}.
+         - **Search for the current exchange rate** between KRW (South Korean Won) and the local currency.
+         - Convert the user's budget (${budget}) to the local currency.
+         - **Plan the trip to utilize about 90-100% of this converted budget.** Do not make it too cheap.
+      3. **Search & Verify**: Use Google Search to ensure all recommended places are currently open and popular.
+      4. **Route Optimization**: Group nearby locations for each day to minimize travel time.
       5. **Format**: Output JSON only. No markdown, no emojis. 
       6. **Language**: Write Title, Place names, Descriptions, and Costs in **Korean**.
 
