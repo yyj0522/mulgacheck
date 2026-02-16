@@ -35,29 +35,30 @@ export async function POST(req: Request) {
     });
 
     const prompt = `
-      당신은 여행 플래너입니다. 
-      "${destination}" 여행의 ${day}일차 일정을 수정해주세요.
-      여행 스타일: ${style}
+      Modify the schedule for Day ${day} of the trip to ${destination}.
+      Use Google Search to find locations, check opening hours, and estimate prices.
       
-      [현재 ${day}일차 일정]
+      **IMPORTANT: All output must be in Korean (한국어).**
+
+      [Current Day ${day} Schedule]
       ${JSON.stringify(currentSchedule)}
 
-      [수정 요청사항]
+      [User Modification Request]
       "${userPrompt}"
 
-      위 요청사항을 반영하여 해당 날짜의 일정을 재구성해주세요.
-      - 시간대별로 현실적인 동선을 고려하세요.
-      - 이동시간을 고려하세요.
-      - 식당/장소는 구체적인 명칭을 사용하세요.
-      - **변경된 일정에 맞춰 '일차별 예상 경비(day_cost)'를 반드시 다시 계산해서 작성하세요.**
-      - **중요: 반드시 아래 JSON 스키마를 정확히 지켜주세요. schedule 키는 필수이며 배열이어야 합니다.**
+      [Instructions]
+      1. **Search & Check**: If the user requests a specific place, search for its location and opening hours. Ensure it fits the route.
+      2. **Optimize Route**: Adjust the schedule sequence based on the new location's proximity to other stops.
+      3. **Recalculate Cost**: Update 'day_cost' based on the changes. Search for accurate prices if needed.
+      4. **Format**: Output strictly valid JSON.
+      5. **Language**: Write all descriptions and costs in **Korean**.
 
       [Output JSON Schema]
       {
         "day": ${day},
-        "day_cost": "이 날짜의 예상 식비/교통비 합계 (예: 식비 50,000원 + 교통비 10,000원)",
+        "day_cost": "Updated daily total (e.g. 식비 6,000엔 + 교통비 800엔)",
         "schedule": [
-          { "time": "HH:MM", "place": "장소명", "desc": "설명" }
+          { "time": "HH:MM", "place": "Place Name (Korean)", "desc": "Activity & Cost (Korean)" }
         ]
       }
     `;

@@ -83,46 +83,40 @@ export async function POST(req: Request) {
     const hotelText = includeAccommodation ? "예산에 숙박비 포함" : "숙박비 별도(예산에서 제외)";
 
     const prompt = `
-      당신은 20년 경력의 베테랑 여행 가이드입니다. 
-      사용자의 요청에 맞춰 **실제로 수행 가능한 현실적인** 여행 일정을 기획해야 합니다.
-
-      [여행 정보]
-      - 여행지: ${destination}
-      - 기간: ${days}
-      - 동행: ${companion}
-      - 스타일: ${style}
-      - 예산: ${budget || "미정"} (${flightText}, ${hotelText})
-      - 추가 요청사항: "${userPrompt || "없음"}"
+      Create a realistic travel itinerary based on the user's request.
+      Use Google Search to find real, currently operating places and accurate prices.
       
-      [검증 및 차단 지침 (매우 중요)]
-      1. 사용자가 입력한 여행지 "${destination}"이 **실제 지도에 존재하고 관광이 가능한 도시나 국가**인지 엄격하게 검증하세요.
-      2. "혁준이네집", "PC방", "daosduo", 무작위 문자열, 사람 이름 등 관광지가 아닌 경우, 
-         **절대로 일정을 만들지 말고** JSON의 error 필드에 "유효하지 않은 여행지입니다."라고 출력하고 종료하세요.
-      3. 10명 중 1명의 정상 사용자가 불편하더라도, 조금이라도 의심스러우면 차단하세요.
+      **IMPORTANT: All output must be in Korean (한국어).**
 
-      [일정 생성 필수 지침]
-      1. **현실적인 동선**: 장소 간 이동 거리와 교통편 시간을 반드시 고려하세요. 순간 이동은 불가능합니다.
-      2. **구체적 명칭**: "맛있는 식당" 대신 "이치란 라멘", "스타벅스 시부야점" 처럼 실존하는 상호명을 쓰세요.
-      3. **예산 반영**: 입력된 예산(${budget})에 맞춰 식당 등급(고급/가성비)을 조정하세요.
-      4. **이모지 금지**: 텍스트에 이모지를 절대 사용하지 마세요.
-      5. **현지 화폐**: 비용 표시는 해당 국가의 화폐 단위로 표기하세요 (예: 일본-엔, 베트남-동).
+      [User Request]
+      - Destination: ${destination}
+      - Duration: ${days}
+      - Companion: ${companion}
+      - Style: ${style}
+      - Budget: ${budget || "Not specified"} (${flightText}, ${hotelText})
+      - Details: "${userPrompt || "None"}"
 
-      [출력 JSON 스키마]
-      유효하지 않은 여행지일 경우: { "error": "유효하지 않은 여행지입니다." }
-      
-      유효한 경우:
+      [Instructions]
+      1. **Validation**: First, search if "${destination}" is a valid tourist destination. If it is a fake place, internet cafe, or nonsense, return { "error": "유효하지 않은 여행지입니다." } immediately.
+      2. **Search & Verify**: Use Google Search to ensure all recommended places are currently open and popular.
+      3. **Route Optimization**: Group nearby locations for each day to minimize travel time.
+      4. **Budget**: Search for average prices to fit the budget strictly.
+      5. **Format**: Output JSON only. No markdown, no emojis. 
+      6. **Language**: Write Title, Place names, Descriptions, and Costs in **Korean**.
+
+      [JSON Schema]
       {
-        "title": "여행 제목 (예: 100만원으로 떠나는 오사카 3박 4일)",
-        "total_estimated_cost": "총 예상 비용 (예: 약 95,000엔)",
+        "title": "Creative Title (e.g. 100만원으로 떠나는 오사카 식도락 여행)",
+        "total_estimated_cost": "Total Estimated Cost (e.g. 약 95,000엔)",
         "itinerary": [
           {
             "day": 1,
-            "day_cost": "일차별 예상 식비/교통비 합계 (예: 식비 5,000엔 + 교통비 1,000엔)",
+            "day_cost": "Daily Total (e.g. 식비 5,000엔 + 교통비 1,000엔)",
             "schedule": [
               { 
                 "time": "HH:MM", 
-                "place": "장소명", 
-                "desc": "활동 내용 및 예상 소요 비용 (이동 시간 포함하여 현실적으로 작성)" 
+                "place": "Specific Place Name (Korean)", 
+                "desc": "Activity description & cost (Korean). Mention travel time if moving." 
               }
             ]
           }
