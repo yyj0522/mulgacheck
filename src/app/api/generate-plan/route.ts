@@ -73,6 +73,7 @@ export async function POST(req: Request) {
 
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash", 
+        tools: [{ googleSearch: {} }] as any,
         generationConfig: {
             responseMimeType: "application/json",
         }
@@ -101,7 +102,6 @@ export async function POST(req: Request) {
 
       [일정 생성 필수 지침]
       1. **현실적인 동선**: 장소 간 이동 거리와 교통편 시간을 반드시 고려하세요. 순간 이동은 불가능합니다.
-         (예: 오전 10시 도쿄, 오후 1시 오사카 -> 불가능하므로 절대 금지)
       2. **구체적 명칭**: "맛있는 식당" 대신 "이치란 라멘", "스타벅스 시부야점" 처럼 실존하는 상호명을 쓰세요.
       3. **예산 반영**: 입력된 예산(${budget})에 맞춰 식당 등급(고급/가성비)을 조정하세요.
       4. **이모지 금지**: 텍스트에 이모지를 절대 사용하지 마세요.

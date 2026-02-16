@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { GRID_ADS } from "@/data/adData"; 
 import WingBanners from "@/components/WingBanners";
-import MainBottomAd from "@/components/MainBottomAd"; 
+import MainBottomAd from "@/components/MainBottomAd";
 import { 
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   MessageSquarePlus, ChevronLeft, 
@@ -75,7 +75,6 @@ function PlanPageContent() {
   const isSharedMode = !!shareId;
 
   useEffect(() => {
-    
     if (shareId) {
       loadSharedPlan(shareId);
     }
@@ -110,8 +109,7 @@ function PlanPageContent() {
 
   const handleRegenerateClick = () => {
     if (!editingDay || !result) return;
-    setCaptchaMode("REGENERATE");
-    setIsCaptchaOpen(true);
+    executeRegenerate();
   };
 
   const handleCaptchaSuccess = (token: string) => {
@@ -119,8 +117,6 @@ function PlanPageContent() {
     
     if (captchaMode === "GENERATE") {
         executeGenerate(token);
-    } else if (captchaMode === "REGENERATE") {
-        executeRegenerate(token);
     }
   };
 
@@ -160,7 +156,7 @@ function PlanPageContent() {
     }
   };
 
-  const executeRegenerate = async (token: string) => {
+  const executeRegenerate = async () => {
     setIsRegeneratingDay(editingDay);
     setEditingDay(null); 
 
@@ -176,7 +172,6 @@ function PlanPageContent() {
           prompt: editPrompt,
           destination: formData.destination,
           style: formData.style,
-          turnstileToken: token
         }),
       });
 
@@ -735,7 +730,7 @@ function PlanPageContent() {
                           취소
                       </button>
                       <button 
-                          onClick={handleRegenerateClick} 
+                          onClick={handleRegenerateClick}
                           className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl text-sm hover:bg-indigo-700"
                       >
                           수정 요청

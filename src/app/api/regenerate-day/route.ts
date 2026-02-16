@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import { checkRateLimit, saveLog } from "@/utils/rateLimit";
 
 const apiKey = process.env.GEMINI_API_KEY;
-const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
 const genAI = new GoogleGenerativeAI(apiKey || "");
 
 export async function POST(req: Request) {
@@ -20,26 +19,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { day, currentSchedule, prompt: userPrompt, destination, style, turnstileToken } = await req.json();
-
-    if (!turnstileToken) {
-        return NextResponse.json({ error: "보안 검증 토큰이 없습니다." }, { status: 403 });
-    }
-
-    const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            secret: turnstileSecret,
-            response: turnstileToken,
-            remoteip: ip
-        })
-    });
-
-    const verifyData = await verifyRes.json();
-    if (!verifyData.success) {
-        return NextResponse.json({ error: "보안 검증에 실패했습니다." }, { status: 403 });
-    }
+    const { day, currentSchedule, prompt: userPrompt, destination, style } = await req.json();
 
     if (userPrompt && userPrompt.length > 100) {
       return NextResponse.json(
@@ -50,6 +30,7 @@ export async function POST(req: Request) {
 
     const model = genAI.getGenerativeModel({ 
         model: "gemini-2.5-flash", 
+        tools: [{ googleSearch: {} }] as any,
         generationConfig: { responseMimeType: "application/json" }
     });
 

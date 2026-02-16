@@ -2,8 +2,8 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export async function checkRateLimit(ip: string, endpoint: 'generate' | 'regenerate') {
   const LIMITS = {
-    generate: 5,
-    regenerate: 5
+    generate: 3,
+    regenerate: 20
   };
 
   const limit = LIMITS[endpoint];
