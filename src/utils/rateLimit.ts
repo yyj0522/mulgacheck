@@ -11,25 +11,30 @@ export async function checkRateLimit(ip: string, endpoint: 'generate' | 'regener
   const oneDayAgo = new Date();
   oneDayAgo.setHours(oneDayAgo.getHours() - 24);
 
-  const { count, error } = await supabaseAdmin
-    .from('api_logs')
-    .select('*', { count: 'exact', head: true })
-    .eq('ip_address', ip)
-    .eq('endpoint', endpoint)
-    .gte('created_at', oneDayAgo.toISOString());
+  try {
+    const { count, error } = await supabaseAdmin
+      .from('api_logs')
+      .select('*', { count: 'exact', head: true })
+      .eq('ip_address', ip)
+      .eq('endpoint', endpoint)
+      .gte('created_at', oneDayAgo.toISOString());
 
-  if (error) {
-    console.error("Rate Limit Check Error:", error);
-    return { allowed: true, limit, usage: 0 }; 
+    if (error) {
+      console.error("Rate Limit Check Error (DB 접속 실패):", error);
+      return { allowed: true, limit, usage: 0 }; 
+    }
+
+    const currentUsage = count || 0;
+
+    if (currentUsage >= limit) {
+      return { allowed: false, limit, usage: currentUsage };
+    }
+
+    return { allowed: true, limit, usage: currentUsage };
+  } catch (e) {
+    console.error("Rate Limit Unexpected Error:", e);
+    return { allowed: true, limit, usage: 0 };
   }
-
-  const currentUsage = count || 0;
-
-  if (currentUsage >= limit) {
-    return { allowed: false, limit, usage: currentUsage };
-  }
-
-  return { allowed: true, limit, usage: currentUsage };
 }
 
 export async function saveLog(ip: string, endpoint: 'generate' | 'regenerate') {
@@ -38,5 +43,7 @@ export async function saveLog(ip: string, endpoint: 'generate' | 'regenerate') {
     endpoint: endpoint
   });
   
-  if (error) console.error("Failed to save api log:", error);
+  if (error) {
+      console.error("Failed to save api log (저장 실패):", error);
+  }
 }

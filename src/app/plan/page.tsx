@@ -10,7 +10,7 @@ import {
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   MessageSquarePlus, ChevronLeft, 
   Copy, Share2, Edit3, ChevronRight, Loader2, AlertTriangle,
-  Plane, Hotel, Wallet, Globe2, ArrowRight, X, ShieldCheck
+  Plane, Hotel, Wallet, Globe2, ArrowRight, X, ShieldCheck, Clock
 } from "lucide-react";
 import Link from "next/link";
 import Turnstile from "react-turnstile";
@@ -305,25 +305,19 @@ function PlanPageContent() {
     return (
         <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center relative z-10">
             <div className="bg-white p-8 rounded-[2.5rem] shadow-xl max-w-sm w-full animate-fade-in-up border border-indigo-50">
-                <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <AlertTriangle className="text-rose-500" size={32} />
+                <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <Clock className="text-indigo-500" size={32} />
                 </div>
                 <h2 className="text-2xl font-black text-slate-900 mb-3">
-                    일시적인 오류 발생
+                    일일 제한 횟수 초과
                 </h2>
                 <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-                    현재 이용자가 많아 서비스 이용이 제한되었습니다.<br/>
-                    <strong>잠시 후(약 1분 뒤)</strong> 다시 시도해주시거나,<br/>
-                    내일 다시 이용해주세요.
+                    하루 3회까지 무료로 생성할 수 있습니다.<br/>
+                    오늘의 사용량을 모두 소진하셨네요.<br/>
+                    <strong>내일 다시 방문해주세요!</strong>
                 </p>
                 <div className="space-y-3">
-                    <button 
-                        onClick={() => window.location.reload()}
-                        className="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200"
-                    >
-                        다시 시도하기
-                    </button>
-                    <Link href="/" className="block w-full py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-colors">
+                    <Link href="/" className="block w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
                         메인으로 이동
                     </Link>
                 </div>
