@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/x9z-adm-manager", "/api"],
+      disallow: ["/admin", "/api"],
     },
     sitemap: "https://www.mulgacheck.com/sitemap.xml",
   };
