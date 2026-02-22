@@ -8,6 +8,9 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.mulgacheck.com/"),
+  alternates: {
+    canonical: "/",
+  },
   title: {
     template: "%s | 물가체크",
     default: "물가체크 - 여행 예산, 감 말고 데이터로",
@@ -50,9 +53,9 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "물가체크",
-  "alternateName": ["MulgaCheck", "물가체크 여행"],
-  "url": "https://www.mulgacheck.com/"
+  name: "물가체크",
+  alternateName: ["MulgaCheck", "물가체크 여행"],
+  url: "https://www.mulgacheck.com/"
 };
 
 export default function RootLayout({
