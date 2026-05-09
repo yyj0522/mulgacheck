@@ -3,8 +3,8 @@
 @layer base {
   body {
     /* @apply 대신 표준 CSS를 사용하여 충돌 방지 */
-    background-color: #f8fafc; /* slate-50 */
-    color: #0f172a; /* slate-900 */
+    background-color: #f8fafc; 
+    color: #0f172a; 
     -webkit-font-smoothing: antialiased;
   }
 }

@@ -31,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${baseUrl}/community/${plan.id}`,
         lastModified: plan.created_at ? new Date(plan.created_at) : new Date(),
         changeFrequency: "weekly" as const, 
-        priority: 0.7, // 메인 콘텐츠보단 낮게 설정
+        priority: 0.7, 
       }))
     : [];
 

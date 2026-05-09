@@ -51,13 +51,6 @@ export default function PrivacyPage() {
           서비스는 이용자에게 편의를 제공하고 사이트 이용 형태를 분석하기 위해 '쿠키'를 사용합니다. 이용자는 브라우저 설정을 통해 쿠키 저장을 거부할 수 있습니다.
         </p>
 
-        <h3 className="text-xl font-bold text-slate-900 mt-6 mb-3">5. 구글 애드센스 광고</h3>
-        <p>
-          - 본 사이트는 구글 애드센스 광고를 송출합니다.<br />
-          - 구글 등 제3자 사업자는 사용자의 과거 웹사이트 방문 기록을 바탕으로 맞춤형 광고를 제공하기 위해 쿠키(Cookie)를 사용합니다.<br />
-          - 사용자는 <a href="https://www.google.com/settings/ads" target="_blank" className="text-indigo-600 underline">광고 설정</a>을 방문하여 맞춤형 광고를 차단할 수 있습니다.
-        </p>
-
         <div className="mt-12 pt-8 border-t border-slate-200">
           <p className="text-sm">개인정보 관리 책임자: projectc029@gmail.com</p>
         </div>
