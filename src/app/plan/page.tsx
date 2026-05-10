@@ -3,13 +3,10 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation"; 
 import { supabase } from "@/lib/supabase";
-import { GRID_ADS } from "@/data/adData"; 
-import WingBanners from "@/components/WingBanners";
-import MainBottomAd from "@/components/MainBottomAd";
 import { 
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   MessageSquarePlus, ChevronLeft, 
-  Copy, Share2, Edit3, ChevronRight, Loader2, AlertTriangle,
+  Copy, Share2, Edit3, ChevronRight, Loader2,
   Plane, Hotel, Wallet, Globe2, ArrowRight, X, ShieldCheck, Clock
 } from "lucide-react";
 import Link from "next/link";
@@ -329,7 +326,6 @@ function PlanPageContent() {
   if (step === "INPUT") {
     return (
       <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center justify-start overflow-x-hidden pt-6 pb-4">
-        <WingBanners />
         
         <div className="w-full max-w-md px-6">
             <Link href="/" className="inline-flex items-center text-slate-400 font-bold hover:text-indigo-600 transition-colors mb-8">
@@ -499,8 +495,6 @@ function PlanPageContent() {
                 </Link>
             </div>
         </div>
-
-        <MainBottomAd />
         
         {isCaptchaOpen && (
             <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
@@ -555,7 +549,6 @@ function PlanPageContent() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center pt-6 pb-4">
-      <WingBanners />
       
       <div className="w-full max-w-3xl px-6">
         <header className="flex justify-between items-center mb-8">
@@ -678,40 +671,7 @@ function PlanPageContent() {
             </div>
         )}
 
-        <div className="bg-white rounded-[2rem] p-8 shadow-sm border border-slate-100 mb-4 mt-4 pt-8">
-          <div className="text-center mb-6">
-            <h3 className="font-black text-xl text-slate-900 mb-2">여행 전, 놓치신 건 없으신가요?</h3>
-            <p className="text-sm text-slate-400">최저가 예약으로 경비를 아껴보세요</p>
-          </div>
-          
-          <div className="flex flex-wrap justify-center gap-4">
-            {GRID_ADS.map((ad) => (
-              <a 
-                key={ad.id} 
-                href={ad.link} 
-                target="_blank" 
-                rel="noopener noreferrer nofollow"
-                className="group flex flex-col items-center bg-white border border-slate-100 rounded-xl p-3 hover:shadow-lg transition-all hover:-translate-y-1 w-[140px]"
-              >
-                <img src={ad.trackingUrl} width="1" height="1" className="hidden" alt="" />
-                <div className="w-[120px] h-[60px] flex items-center justify-center mb-2">
-                   <img src={ad.imgUrl} alt={ad.name} width={120} height={60} className="object-contain max-w-full max-h-full" />
-                </div>
-                <span className="text-[10px] font-bold text-slate-400 group-hover:text-indigo-600 transition-colors text-center break-keep leading-tight px-1">
-                    {ad.name}
-                </span>
-              </a>
-            ))}
-          </div>
-          <div className="mt-6 pt-4 border-t border-slate-50 text-center">
-            <p className="text-[10px] text-slate-300">
-                이 사이트는 제휴 마케팅 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.
-            </p>
-          </div>
-        </div>
       </div>
-
-      <MainBottomAd />
 
       {editingDay && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">

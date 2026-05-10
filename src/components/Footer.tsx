@@ -19,12 +19,6 @@ export default function Footer() {
           <p className="mb-1">
             본 사이트는 정보 제공을 목적으로 운영되며, 여행 상품의 직접적인 판매 당사자가 아닙니다.
           </p>
-          <p className="font-medium text-slate-500">
-            이 사이트는 쿠팡 파트너스를 포함한 제휴마케팅이 포함된 광고로 커미션을 지급 받습니다.
-          </p>
-          <p className="mt-1 text-slate-400">
-            또한, 이 사이트는 링크프라이스 활동을 통해 일정액의 수수료를 제공받을 수 있습니다.
-          </p>
           <p className="mt-1 text-slate-400">
             제휴/오류문의 : projectc029@gmail.com
           </p>

@@ -6,8 +6,6 @@ import { TEST_QUESTIONS, TEST_RESULTS } from "@/data/travelTest";
 import { ChevronLeft, Share2, RefreshCw, Plane, Download, X } from "lucide-react";
 import { toPng } from "html-to-image";
 import Image from "next/image";
-import WingBanners from "@/components/WingBanners";
-import MainBottomAd from "@/components/MainBottomAd";
 
 export default function TravelTestPage() {
   const [step, setStep] = useState<"intro" | "question" | "loading" | "result">("intro");
@@ -197,7 +195,6 @@ export default function TravelTestPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 relative z-10 flex flex-col items-center justify-start overflow-x-hidden pt-6 pb-4">
-      <WingBanners />
       
       <div className="w-full max-w-md px-6 relative z-10">
         <header className="flex justify-between items-center mb-8 text-slate-500">
@@ -303,8 +300,6 @@ export default function TravelTestPage() {
         </div>
       </div>
 
-      <MainBottomAd />
-
       {previewUrl && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md relative shadow-2xl">
@@ -320,7 +315,7 @@ export default function TravelTestPage() {
               이미지를 꾹 눌러서 저장하세요!
             </p>
             
-            <div className="rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-slate-50">
+            <div className="rounded-xl overflow-hidden border border-slate-200 shadow-inner bg-slate-50 max-h-[60vh] overflow-y-auto">
               <img src={previewUrl} alt="테스트 결과" className="w-full h-auto object-contain" />
             </div>
             

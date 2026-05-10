@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import WingBanners from "@/components/WingBanners";
-import MainBottomAd from "@/components/MainBottomAd";
 import Link from "next/link";
 import { ChevronLeft, Search, MapPin, Plane, Hotel, Loader2, Wallet, Plus, Sparkles } from "lucide-react";
 
@@ -74,7 +72,6 @@ export default function CommunityPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center">
-      <WingBanners />
       
       <div className="w-full max-w-3xl px-6 flex-grow pt-6">
         <header className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
@@ -166,7 +163,6 @@ export default function CommunityPage() {
           </>
         )}
       </div>
-      <MainBottomAd />
     </div>
   );
 }

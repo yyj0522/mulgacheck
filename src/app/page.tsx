@@ -3,14 +3,10 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import SearchAndFilter from "@/components/SearchAndFilter";
 import { ArrowRight, Calculator, Sparkles, Map, Wallet } from "lucide-react";
-import { BOTTOM_ADS } from "@/data/adData";
-import MainBottomAd from "@/components/MainBottomAd";
 
 export const revalidate = 3600;
 
 export default async function Home() {
-  const bottomAd = BOTTOM_ADS[Math.floor(Math.random() * BOTTOM_ADS.length)];
-
   const { data: countries } = await supabase
     .from("countries")
     .select("*, exchange_rates(rate_to_krw)");
@@ -158,7 +154,6 @@ export default async function Home() {
         <div className="w-full bg-white/50 backdrop-blur-sm border border-white/60 rounded-[2.5rem] p-6 md:p-10 shadow-xl shadow-slate-200/40">
           <SearchAndFilter initialData={countries ?? []} />
         </div>
-        <MainBottomAd />
       </main>
     </div>
   );

@@ -5,8 +5,6 @@ import { CHECKLIST_CATEGORIES } from "@/data/checklistItems";
 import { Check, Share2, Download, RefreshCw, ArrowLeft, X, Plus, Trash2, PackageCheck } from "lucide-react";
 import Link from "next/link";
 import { toPng } from "html-to-image";
-import WingBanners from "@/components/WingBanners";
-import MainBottomAd from "@/components/MainBottomAd";
 
 type AddedItem = {
   category: string;
@@ -170,7 +168,6 @@ export default function ChecklistPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center pt-6 pb-4">
-      <WingBanners />
       
       <div className="w-full max-w-3xl px-6 flex flex-col">
         <header className="flex justify-between items-center mb-6">
@@ -286,8 +283,6 @@ export default function ChecklistPage() {
             </button>
         </div>
       </div>
-
-      <MainBottomAd />
 
       {previewUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-6 animate-fade-in">

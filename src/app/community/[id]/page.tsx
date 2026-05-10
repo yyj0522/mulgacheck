@@ -2,8 +2,6 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 import { Metadata } from "next";
 import Link from "next/link";
 import { ChevronLeft, Calendar, Users, MapPin, Wallet, Sparkles, Plane, Hotel } from "lucide-react";
-import WingBanners from "@/components/WingBanners";
-import MainBottomAd from "@/components/MainBottomAd";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -71,7 +69,6 @@ export default async function CommunityPlanDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center pt-6 pb-12">
-      <WingBanners />
       
       <div className="w-full max-w-2xl px-6">
         <header className="mb-6">
@@ -149,7 +146,6 @@ export default async function CommunityPlanDetailPage({ params }: Props) {
             </Link>
         </div>
 
-        <MainBottomAd />
       </div>
     </div>
   );

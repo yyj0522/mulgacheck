@@ -3,10 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { ArrowLeft, Wallet, Plus, Trash2, Download, RefreshCw, X, Coins, Calendar, Clock, MapPin, Receipt } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Download, RefreshCw, X, Coins, Calendar, Clock, MapPin, Receipt } from "lucide-react";
 import { toPng } from "html-to-image";
-import WingBanners from "@/components/WingBanners";
-import MainBottomAd from "@/components/MainBottomAd";
 
 type ExpenseItem = {
   id: string;
@@ -153,7 +151,7 @@ export default function TrackerPage() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center pt-6 pb-4">
-      <WingBanners />
+      
       <div className="w-full max-w-md px-6 flex flex-col gap-4">
         <header className="flex justify-between items-center">
           <Link href="/" className="p-3 bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition-colors shadow-sm group">
@@ -341,8 +339,6 @@ export default function TrackerPage() {
             </div>
         )}
       </div>
-
-      <MainBottomAd />
 
       {previewUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-6 animate-fade-in">

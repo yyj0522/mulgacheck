@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { ChevronLeft, Plane, ArrowRight, Coins, CalendarDays, Wallet, SlidersHorizontal, TrendingUp, TrendingDown, Minus, Search } from "lucide-react";
-import WingBanners from "@/components/WingBanners";
-import MainBottomAd from "@/components/MainBottomAd";
 
 type CountryData = {
   id: string | number;
@@ -114,7 +112,6 @@ export default function BudgetExplorer() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center relative z-10 pt-4 pb-4">
-      <WingBanners />
       
       <div className="w-full max-w-md px-6">
         <header className="mb-6">
@@ -328,8 +325,6 @@ export default function BudgetExplorer() {
             ) : null}
         </div>
       </div>
-
-      <MainBottomAd />
     </div>
   );
 }
