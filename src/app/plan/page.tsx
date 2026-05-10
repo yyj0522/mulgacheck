@@ -7,7 +7,7 @@ import {
   Users, Calendar, Sparkles, MapPin, RefreshCw, AlertCircle, 
   MessageSquarePlus, ChevronLeft, 
   Copy, Share2, Edit3, ChevronRight, Loader2,
-  Plane, Hotel, Wallet, Globe2, ArrowRight, X, ShieldCheck, Clock
+  Plane, Hotel, Globe2, ArrowRight, X, ShieldCheck, Clock, Map, Wallet
 } from "lucide-react";
 import Link from "next/link";
 import Turnstile from "react-turnstile";
@@ -300,21 +300,21 @@ function PlanPageContent() {
 
   if (isLimitReached) {
     return (
-        <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center relative z-10">
-            <div className="bg-white p-8 rounded-[2.5rem] shadow-xl max-w-sm w-full animate-fade-in-up border border-indigo-50">
-                <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <Clock className="text-indigo-500" size={32} />
+        <div className="min-h-screen bg-[#F5F7FA] flex flex-col items-center justify-center p-6 text-center font-sans">
+            <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-slate-200/60 max-w-sm w-full animate-fade-in-up">
+                <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <Clock className="text-slate-600" size={32} />
                 </div>
-                <h2 className="text-2xl font-black text-slate-900 mb-3">
+                <h2 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">
                     일일 제한 횟수 초과
                 </h2>
-                <p className="text-slate-500 text-sm mb-8 leading-relaxed">
+                <p className="text-slate-500 text-sm mb-8 leading-relaxed font-medium">
                     하루 3회까지 무료로 생성할 수 있습니다.<br/>
                     오늘의 사용량을 모두 소진하셨네요.<br/>
                     <strong>내일 다시 방문해주세요!</strong>
                 </p>
                 <div className="space-y-3">
-                    <Link href="/" className="block w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">
+                    <Link href="/" className="block w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-colors shadow-md">
                         메인으로 이동
                     </Link>
                 </div>
@@ -325,44 +325,38 @@ function PlanPageContent() {
 
   if (step === "INPUT") {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center justify-start overflow-x-hidden pt-6 pb-4">
-        
-        <div className="w-full max-w-md px-6">
-            <Link href="/" className="inline-flex items-center text-slate-400 font-bold hover:text-indigo-600 transition-colors mb-8">
-                <ChevronLeft size={20} /> 메인으로
-            </Link>
+      <div className="min-h-screen bg-[#F5F7FA] font-sans">
+        <main className="w-full max-w-[800px] mx-auto px-4 sm:px-6 pt-8 pb-24">
+            <header className="mb-8 flex flex-col items-start gap-2">
+                <Link href="/" className="inline-flex items-center text-slate-500 font-bold hover:text-slate-900 transition-colors mb-4 bg-white px-4 py-2 rounded-xl border border-slate-200/60 shadow-sm">
+                    <ChevronLeft size={18} className="mr-1" /> 메인으로
+                </Link>
+                <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tighter">AI 일정 생성</h1>
+                <p className="text-slate-500 text-sm font-medium">예산과 취향에 맞춘 최적의 여행 코스를 만들어드려요.</p>
+            </header>
 
-            <div className="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 animate-fade-in-up">
-              <div className="text-center mb-8">
-                <span className="inline-block px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-xs font-bold mb-2">Beta</span>
-                <h1 className="text-3xl font-black text-slate-900 leading-tight">
-                  여행 일정<br />
-                  <span className="text-indigo-600">자동 생성기</span>
-                </h1>
-                <p className="text-slate-400 text-sm mt-2">맞춤형 일정을 계획해드립니다</p>
-              </div>
-
-              <div className="space-y-5">
+            <div className="bg-white rounded-[2rem] p-6 md:p-10 shadow-sm border border-slate-200/60 mb-8 animate-fade-in-up">
+              <div className="space-y-8">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                    <MapPin size={14} /> 어디로 가시나요?
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-3 tracking-wider">
+                    <MapPin size={16} className="inline mr-1 text-indigo-500" /> 어디로 가시나요?
                   </label>
                   <input 
                     type="text" 
                     placeholder="예: 오사카, 다낭, 파리"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition-colors"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
                     value={formData.destination}
                     onChange={(e) => setFormData({...formData, destination: e.target.value})}
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                      <Calendar size={14} /> 기간
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-3 tracking-wider">
+                      <Calendar size={16} className="inline mr-1 text-indigo-500" /> 기간
                     </label>
                     <select 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none appearance-none"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 appearance-none"
                       value={formData.days}
                       onChange={(e) => setFormData({...formData, days: e.target.value})}
                     >
@@ -373,11 +367,11 @@ function PlanPageContent() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                      <Users size={14} /> 누구와?
+                    <label className="block text-xs font-bold text-slate-700 uppercase mb-3 tracking-wider">
+                      <Users size={16} className="inline mr-1 text-indigo-500" /> 누구와?
                     </label>
                     <select 
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none appearance-none"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 appearance-none"
                       value={formData.companion}
                       onChange={(e) => setFormData({...formData, companion: e.target.value})}
                     >
@@ -391,51 +385,51 @@ function PlanPageContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                    <Wallet size={14} /> 1인당 예산 (선택)
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-3 tracking-wider">
+                    <Wallet size={16} className="inline mr-1 text-indigo-500" /> 1인당 예산 (선택)
                   </label>
                   <input 
                     type="text" 
                     placeholder="예: 150 (단위: 만원)"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-800 focus:outline-none focus:border-indigo-500 transition-colors mb-3"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-bold text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all mb-4"
                     value={formData.budget}
                     onChange={(e) => setFormData({...formData, budget: e.target.value})}
                   />
                   <div className="flex gap-4">
-                      <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
+                      <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
                           <input 
                               type="checkbox" 
                               checked={formData.includeFlight}
                               onChange={(e) => setFormData({...formData, includeFlight: e.target.checked})}
                               className="w-4 h-4 accent-indigo-600 rounded"
                           />
-                          <span className="text-xs font-bold text-slate-600 flex items-center gap-1"><Plane size={12}/> 항공권 포함</span>
+                          <span className="text-sm font-bold text-slate-700 flex items-center gap-1"><Plane size={14}/> 항공권 포함</span>
                       </label>
-                      <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
+                      <label className="flex items-center gap-2 cursor-pointer bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 hover:bg-slate-100 transition-colors flex-1 justify-center">
                           <input 
                               type="checkbox" 
                               checked={formData.includeAccommodation}
                               onChange={(e) => setFormData({...formData, includeAccommodation: e.target.checked})}
                               className="w-4 h-4 accent-indigo-600 rounded"
                           />
-                          <span className="text-xs font-bold text-slate-600 flex items-center gap-1"><Hotel size={12}/> 숙소 포함</span>
+                          <span className="text-sm font-bold text-slate-700 flex items-center gap-1"><Hotel size={14}/> 숙소 포함</span>
                       </label>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                    <Sparkles size={14} /> 여행 스타일
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-3 tracking-wider">
+                    <Sparkles size={16} className="inline mr-1 text-indigo-500" /> 여행 스타일
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {["맛집 투어", "힐링/휴양", "관광지 정복", "쇼핑 위주", "가성비"].map((tag) => (
                       <button
                         key={tag}
                         onClick={() => setFormData({...formData, style: tag})}
-                        className={`px-4 py-2 rounded-full text-sm font-bold border transition-colors ${
+                        className={`px-5 py-2.5 rounded-xl text-sm font-bold border transition-colors ${
                           formData.style === tag 
-                          ? "bg-indigo-600 text-white border-indigo-600" 
-                          : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50"
+                          ? "bg-slate-900 text-white border-slate-900" 
+                          : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                         }`}
                       >
                         {tag}
@@ -445,74 +439,70 @@ function PlanPageContent() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase mb-2 flex items-center gap-1">
-                    <MessageSquarePlus size={14} /> 추가 요청사항 (선택)
+                  <label className="block text-xs font-bold text-slate-700 uppercase mb-3 tracking-wider">
+                    <MessageSquarePlus size={16} className="inline mr-1 text-indigo-500" /> 추가 요청사항 (선택)
                   </label>
                   <textarea 
                     maxLength={200}
                     rows={3}
                     placeholder="예: 부모님과 함께라서 걷는 일정은 줄여주세요.&#13;&#10;예: 유니버셜 스튜디오는 둘째 날에 꼭 넣어주세요."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-slate-800 text-sm focus:outline-none focus:border-indigo-500 transition-colors resize-none placeholder:text-slate-300"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 font-medium text-slate-800 text-sm focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-colors resize-none placeholder:text-slate-400"
                     value={formData.prompt}
                     onChange={(e) => setFormData({...formData, prompt: e.target.value})}
                   />
-                  <div className="text-right text-[10px] text-slate-300 mt-1">
+                  <div className="text-right text-xs font-bold text-slate-400 mt-2">
                     {formData.prompt.length} / 200
                   </div>
                 </div>
 
                 {errorMsg && (
-                  <div className="bg-rose-50 text-rose-500 p-4 rounded-xl text-sm font-bold flex items-start gap-2">
-                    <AlertCircle size={16} className="mt-0.5 shrink-0" />
+                  <div className="bg-rose-50 text-rose-600 p-4 rounded-xl text-sm font-bold flex items-start gap-2">
+                    <AlertCircle size={18} className="mt-0.5 shrink-0" />
                     {errorMsg}
                   </div>
                 )}
 
                 <button 
                   onClick={handleGenerateClick}
-                  className="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all hover:-translate-y-1"
+                  className="w-full py-5 bg-indigo-600 text-white text-lg font-black rounded-xl shadow-md shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                   일정 생성하기
                 </button>
               </div>
             </div>
 
-            <div className="mt-6 animate-fade-in-up delay-100">
-                <Link href="/community" className="block relative overflow-hidden bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-lg hover:border-indigo-200 transition-all hover:-translate-y-1 group">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h3 className="text-slate-800 font-black text-lg flex items-center gap-2">
-                                다른 여행자들은 어디로 갈까?
-                            </h3>
-                            <p className="text-slate-500 text-sm font-medium mt-1">
-                                실제 여행 일정과 예산 구경하기
-                            </p>
+            <Link href="/community" className="block bg-white p-6 md:p-8 rounded-[2rem] border border-slate-200 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-5">
+                        <div className="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-700">
+                            <Globe2 size={28} />
                         </div>
-                        <div className="bg-indigo-50 p-3 rounded-full text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                            <ArrowRight size={20} />
+                        <div>
+                            <h3 className="text-slate-900 font-black text-lg md:text-xl">여행자 라운지 구경하기</h3>
+                            <p className="text-slate-500 text-sm font-medium mt-1">다른 사람들이 생성한 일정과 예산을 확인해보세요.</p>
                         </div>
                     </div>
-                </Link>
-            </div>
-        </div>
+                    <ChevronRight size={24} className="text-slate-400 group-hover:text-indigo-600 transition-colors" />
+                </div>
+            </Link>
+        </main>
         
         {isCaptchaOpen && (
-            <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+            <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in">
                 <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl relative text-center">
                     <button 
                         onClick={() => setIsCaptchaOpen(false)}
-                        className="absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors"
+                        className="absolute top-4 right-4 p-2 bg-slate-100 rounded-lg text-slate-500 hover:bg-slate-200 transition-colors"
                     >
                         <X size={20} />
                     </button>
                     <div className="flex flex-col items-center mb-6">
-                        <div className="w-14 h-14 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 mb-4">
+                        <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-4">
                             <ShieldCheck size={32} />
                         </div>
-                        <h3 className="text-xl font-black text-slate-900 mb-1">보안 확인</h3>
-                        <p className="text-sm text-slate-500">봇이 아님을 확인해주세요.</p>
+                        <h3 className="text-xl font-black text-slate-900 mb-2">보안 확인</h3>
+                        <p className="text-sm text-slate-500 font-medium">봇이 아님을 확인해주세요.</p>
                     </div>
-                    
                     <div className="flex justify-center">
                         <Turnstile 
                             sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
@@ -523,19 +513,18 @@ function PlanPageContent() {
                 </div>
             </div>
         )}
-
       </div>
     );
   }
 
   if (step === "LOADING") {
     return (
-      <div className="fixed inset-0 z-[100] bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center">
-        <div className="animate-spin w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full mb-6" />
-        <h2 className="text-xl font-bold text-slate-900 animate-pulse">
-          {shareId ? "공유된 일정을 불러옵니다" : "최적의 경로를 계산 중입니다"}
+      <div className="fixed inset-0 z-[100] bg-[#F5F7FA] flex flex-col items-center justify-center p-6 text-center font-sans">
+        <div className="animate-spin w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full mb-6" />
+        <h2 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">
+          {shareId ? "일정을 불러오는 중입니다" : "최적의 동선을 설계 중입니다"}
         </h2>
-        <p className="text-slate-400 text-sm mt-2">잠시만 기다려주세요</p>
+        <p className="text-slate-500 text-sm font-bold">잠시만 기다려주세요</p>
       </div>
     );
   }
@@ -548,63 +537,65 @@ function PlanPageContent() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] relative z-10 flex flex-col items-center pt-6 pb-4">
-      
-      <div className="w-full max-w-3xl px-6">
+    <div className="min-h-screen bg-[#F5F7FA] font-sans">
+      <main className="w-full max-w-[1024px] mx-auto px-4 sm:px-6 pt-8 pb-24 flex flex-col">
         <header className="flex justify-between items-center mb-8">
-          <Link href="/" className="inline-flex items-center text-slate-400 font-bold hover:text-indigo-600 transition-colors">
-            <ChevronLeft size={20} /> 메인으로
+          <Link href="/" className="inline-flex items-center text-slate-500 font-bold hover:text-slate-900 transition-colors bg-white px-4 py-2 rounded-xl border border-slate-200/60 shadow-sm">
+            <ChevronLeft size={18} className="mr-1" /> 메인으로
           </Link>
           {!isSharedMode && (
-            <button onClick={() => setStep("INPUT")} className="flex items-center text-slate-400 font-bold hover:text-indigo-600">
-                <RefreshCw size={18} className="mr-1" /> 다시 하기
+            <button onClick={() => setStep("INPUT")} className="flex items-center text-slate-500 font-bold hover:text-slate-900 bg-white px-4 py-2 rounded-xl border border-slate-200/60 shadow-sm transition-colors">
+                <RefreshCw size={16} className="mr-1.5" /> 다시 하기
             </button>
           )}
         </header>
 
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-black text-slate-900 mb-2">{result?.title || "나만의 여행 일정"}</h1>
-          <p className="text-slate-500 font-medium mb-3">
-            {formData.destination} · {formData.days} · {formData.style}
-          </p>
+        <div className="mb-10 text-center bg-white p-8 md:p-12 rounded-[2.5rem] border border-slate-200/60 shadow-sm animate-fade-in-up">
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-5">{result?.title || "나만의 여행 일정"}</h1>
+          <div className="flex justify-center gap-2 mb-6 flex-wrap">
+            <span className="bg-slate-50 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-100">{formData.destination}</span>
+            <span className="bg-slate-50 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-100">{formData.days}</span>
+            <span className="bg-slate-50 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg border border-slate-100">{formData.style}</span>
+          </div>
+          
           {result?.total_estimated_cost && (
-              <div className="inline-block bg-amber-50 text-amber-600 px-4 py-2 rounded-full text-sm font-black border border-amber-100 shadow-sm mb-4">
+              <div className="inline-block bg-indigo-50 text-indigo-700 px-6 py-3 rounded-2xl text-lg font-black border border-indigo-100 mb-8">
                   총 예상 비용: {result.total_estimated_cost}
               </div>
           )}
           
-          <div className="flex justify-center gap-2 mt-4 flex-wrap">
+          <div className="flex justify-center gap-3 flex-wrap">
             <button 
                 onClick={handleCopyText}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full text-slate-700 text-sm font-bold shadow-sm hover:bg-slate-50 active:scale-95 transition-all"
+                className="flex items-center gap-2 px-5 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm font-bold shadow-sm hover:bg-slate-50 active:scale-95 transition-all"
             >
-                <Copy size={16} /> 일정 복사
+                <Copy size={18} /> 일정 텍스트 복사
             </button>
             <button 
                 onClick={handleShareLink}
-                className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-full text-sm font-bold shadow-md shadow-indigo-200 hover:bg-indigo-700 active:scale-95 transition-all"
+                className="flex items-center gap-2 px-5 py-3.5 bg-slate-900 text-white rounded-xl text-sm font-bold shadow-sm hover:bg-slate-800 active:scale-95 transition-all"
             >
-                <Share2 size={16} /> 링크 공유
+                <Share2 size={18} /> 링크 공유하기
             </button>
             {!isSharedMode && (
                 <button 
                     onClick={handlePublishToCommunity}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full text-sm font-bold shadow-md shadow-emerald-200 hover:opacity-90 active:scale-95 transition-all"
+                    className="flex items-center gap-2 px-5 py-3.5 bg-indigo-600 text-white rounded-xl text-sm font-bold shadow-sm shadow-indigo-200 hover:bg-indigo-700 active:scale-95 transition-all"
                 >
-                    <Globe2 size={16} /> 일정 자랑하기
+                    <Globe2 size={18} /> 라운지에 자랑하기
                 </button>
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
           {currentItinerary?.map((dayPlan) => (
-            <div key={dayPlan.day} className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow relative">
+            <div key={dayPlan.day} className="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-slate-200/60 hover:shadow-md transition-shadow relative">
               
-              <div className="flex justify-between items-start mb-4 pb-3 border-b border-indigo-50">
+              <div className="flex justify-between items-start mb-8 pb-4 border-b border-slate-100">
                 <div>
-                    <h3 className="font-black text-lg text-indigo-600 flex items-center gap-2 mb-1">
-                        <span className="bg-indigo-50 px-3 py-1 rounded-lg text-sm border border-indigo-100">Day {dayPlan.day}</span>
+                    <h3 className="font-black text-xl text-indigo-600 flex items-center gap-2 mb-1.5">
+                        Day {dayPlan.day}
                     </h3>
                     {dayPlan.day_cost && (
                         <p className="text-xs font-bold text-slate-400">{dayPlan.day_cost}</p>
@@ -613,8 +604,8 @@ function PlanPageContent() {
                 {!isSharedMode && (
                     <button 
                         onClick={() => setEditingDay(dayPlan.day)}
-                        className="text-slate-300 hover:text-indigo-600 transition-colors p-1"
-                        title="이 날짜만 다시 만들기"
+                        className="text-slate-400 hover:text-indigo-600 transition-colors p-2 bg-slate-50 rounded-xl hover:bg-indigo-50"
+                        title="이 날짜 일정 수정하기"
                     >
                         <Edit3 size={18} />
                     </button>
@@ -623,26 +614,26 @@ function PlanPageContent() {
 
               {isRegeneratingDay === dayPlan.day && (
                   <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center rounded-[2rem]">
-                      <Loader2 className="animate-spin text-indigo-600 mb-2" size={32} />
-                      <span className="text-xs font-bold text-indigo-600">일정 수정 중...</span>
+                      <Loader2 className="animate-spin text-indigo-600 mb-3" size={36} />
+                      <span className="text-sm font-bold text-indigo-600">일정 재구성 중...</span>
                   </div>
               )}
 
-              <div className="space-y-8 pl-4">
+              <div className="space-y-8 pl-2">
                 {dayPlan.schedule?.map((item, i) => (
-                  <div key={i} className="relative flex gap-4">
+                  <div key={i} className="relative flex gap-5">
                     <div className="flex flex-col items-center">
-                        <div className="text-xs font-bold text-indigo-500 bg-indigo-50 px-2 py-1 rounded-md mb-2 w-max">
+                        <div className="text-[11px] font-black text-slate-500 bg-slate-100 px-2.5 py-1.5 rounded-lg mb-2 w-max">
                             {item.time}
                         </div>
                         <div className="w-0.5 h-full bg-slate-100 relative">
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-white border-[3px] border-indigo-400" />
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-indigo-400" />
                         </div>
                     </div>
                     
                     <div className="flex-1 pb-4">
-                      <h4 className="font-bold text-slate-800 text-base">{item.place}</h4>
-                      <p className="text-slate-500 text-sm mt-1 leading-relaxed">{item.desc}</p>
+                      <h4 className="font-bold text-slate-900 text-base mb-1.5">{item.place}</h4>
+                      <p className="text-slate-500 text-sm font-medium leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -652,80 +643,52 @@ function PlanPageContent() {
         </div>
 
         {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-4 mb-12">
+            <div className="flex justify-center items-center gap-4">
                 <button 
                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
-                    className="p-2 rounded-full bg-white border border-slate-200 disabled:opacity-50 hover:bg-slate-50"
+                    className="p-3 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-slate-50 transition-colors shadow-sm"
                 >
-                    <ChevronLeft size={20} />
+                    <ChevronLeft size={20} className="text-slate-600" />
                 </button>
-                <span className="text-sm font-bold text-slate-500">{currentPage} / {totalPages}</span>
+                <span className="text-sm font-black text-slate-800 tracking-widest">{currentPage} / {totalPages}</span>
                 <button 
                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
-                    className="p-2 rounded-full bg-white border border-slate-200 disabled:opacity-50 hover:bg-slate-50"
+                    className="p-3 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-slate-50 transition-colors shadow-sm"
                 >
-                    <ChevronRight size={20} />
+                    <ChevronRight size={20} className="text-slate-600" />
                 </button>
             </div>
         )}
 
-      </div>
+      </main>
 
       {editingDay && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-              <div className="bg-white rounded-[2rem] p-6 w-full max-w-md shadow-2xl relative">
-                  <h3 className="font-black text-lg text-slate-900 mb-4 text-center">
-                      Day {editingDay} 일정 수정하기
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-fade-in font-sans">
+              <div className="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl relative">
+                  <h3 className="font-black text-xl text-slate-900 mb-6 text-center tracking-tight">
+                      Day {editingDay} 일정 수정
                   </h3>
                   <textarea 
-                      className="w-full bg-slate-50 border-0 rounded-xl p-4 text-sm mb-4 h-32 focus:ring-2 focus:ring-indigo-500 outline-none resize-none"
-                      placeholder="예: 저녁을 스시 오마카세로 바꿔줘.&#13;&#10;예: 오전 일정을 조금 더 여유롭게 조정해줘."
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm font-medium mb-6 h-32 focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 resize-none placeholder:text-slate-400"
+                      placeholder="예: 저녁 식사를 현지 시장 투어로 변경해주세요.&#13;&#10;예: 오전 일정을 조금 더 여유롭게 조정해주세요."
                       value={editPrompt}
                       onChange={(e) => setEditPrompt(e.target.value)}
                   />
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                       <button 
                           onClick={() => setEditingDay(null)}
-                          className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm hover:bg-slate-200"
+                          className="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-xl text-sm hover:bg-slate-200 transition-colors"
                       >
                           취소
                       </button>
                       <button 
                           onClick={handleRegenerateClick}
-                          className="flex-1 py-3 bg-indigo-600 text-white font-bold rounded-xl text-sm hover:bg-indigo-700"
+                          className="flex-1 py-4 bg-indigo-600 text-white font-bold rounded-xl text-sm hover:bg-indigo-700 transition-colors shadow-md"
                       >
                           수정 요청
                       </button>
-                  </div>
-              </div>
-          </div>
-      )}
-
-      {isCaptchaOpen && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-              <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl relative text-center">
-                  <button 
-                      onClick={() => setIsCaptchaOpen(false)}
-                      className="absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-500 hover:bg-slate-200 transition-colors"
-                  >
-                      <X size={20} />
-                  </button>
-                  <div className="flex flex-col items-center mb-6">
-                      <div className="w-14 h-14 bg-indigo-50 rounded-full flex items-center justify-center text-indigo-600 mb-4">
-                          <ShieldCheck size={32} />
-                      </div>
-                      <h3 className="text-xl font-black text-slate-900 mb-1">보안 확인</h3>
-                      <p className="text-sm text-slate-500">봇이 아님을 확인해주세요.</p>
-                  </div>
-                  
-                  <div className="flex justify-center">
-                      <Turnstile 
-                          sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY!}
-                          onVerify={handleCaptchaSuccess}
-                          theme="light"
-                      />
                   </div>
               </div>
           </div>
