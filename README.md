@@ -59,22 +59,3 @@
   1. `supabase-admin.ts`를 별도로 구성하여 `SUPABASE_SERVICE_ROLE_KEY`를 통해 관리자 권한으로 `api_logs` 테이블에 접근하도록 수정하여 권한 문제를 해결했습니다.
   2. SQL 쿼리로 명확하게 조회(`count`) 기준을 잡고, 만약 DB 에러가 발생하더라도 사용자 경험을 해치지 않기 위해 일단 `allowed: true`로 통과시키되 백그라운드에 로그를 남기는 유연한 에러 핸들링을 적용했습니다.
   3. 프론트엔드 단에 일일 제한 초과 시 명확한 안내 문구와 직관적인 에러 UI를 구현하여 사용자 이탈을 방지했습니다.
-
-## 설치 및 로컬 실행 방법 (Getting Started)
-
-```powershell
-# 1. 저장소 클론
-git clone [https://github.com/your-username/mulgacheck.git](https://github.com/your-username/mulgacheck.git)
-
-# 2. 프로젝트 폴더로 이동
-cd mulgacheck
-
-# 3. 의존성 패키지 설치
-npm install
-
-# 4. 환경변수 설정
-# 프로젝트 루트 경로에 .env.local 파일을 생성하고 아래 데이터를 입력합니다.
-New-Item -Path . -Name ".env.local" -ItemType "file" -Value "NEXT_PUBLIC_SUPABASE_URL=`"your_supabase_url`"`nNEXT_PUBLIC_SUPABASE_ANON_KEY=`"your_supabase_key`"`nSUPABASE_SERVICE_ROLE_KEY=`"your_service_role_key`"`nGEMINI_API_KEY=`"your_gemini_api_key`"`nNEXT_PUBLIC_TURNSTILE_SITE_KEY=`"your_turnstile_site_key`"`nTURNSTILE_SECRET_KEY=`"your_turnstile_secret_key`""
-
-# 5. 개발 서버 실행
-npm run dev
